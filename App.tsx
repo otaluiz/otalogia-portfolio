@@ -262,74 +262,75 @@ export default function App() {
         </header>
 
         <main id="conteudo" className="caldera-container">
-          {/* Caldera Hero Section: Giant Headline + 3D Wave Grid Visual Card */}
-          <section id="inicio" className="hero-caldera">
-            {/* Left: Main Editorial Card (Limestone, 40px radius) */}
-            <div className="hero-main-card">
+          {/* Caldera Unified Hero Section: 3D Wave Grid occupies the entire background */}
+          <section id="inicio" className="hero-caldera-single">
+            {/* 3D Wave Grid background */}
+            <div className="hero-wave-backdrop" aria-hidden="true">
+              <Suspense fallback={<div className="w-full h-full bg-[#f7f6f2]" />}>
+                <WaveGrid colorBase="#f7f6f2" colorHigh="#fc5000" />
+              </Suspense>
+            </div>
+
+            {/* Editorial Content directly over the 3D wave grid */}
+            <div className="hero-single-content">
               <div>
-                <span className="caldera-tag">
+                <span className="caldera-tag hero-reveal">
                   SISTEMAS · DADOS · INTELIGÊNCIA ARTIFICIAL
                 </span>
 
                 <h1 className="hero-display-title">
-                  TECNOLOGIA.
-                  <br />
-                  APLICADA AO
-                  <br />
-                  SEU <em>NEGÓCIO.</em>
+                  <span className="headline-line">
+                    <span>TECNOLOGIA.</span>
+                  </span>
+                  <span className="headline-line">
+                    <span>APLICADA AO</span>
+                  </span>
+                  <span className="headline-line">
+                    <span>
+                      SEU <em>NEGÓCIO.</em>
+                    </span>
+                  </span>
                 </h1>
-              </div>
 
-              <div>
-                <p className="text-[17px] max-w-[480px] text-[#070607]/85 mb-8">
+                <p className="hero-single-desc hero-reveal">
                   Sistemas web sob medida, análise de dados e inteligência artificial para conectar sua
                   operação, simplificar processos repetitivos e apoiar decisões estratégicas.
                 </p>
 
-                <div className="flex flex-wrap items-center gap-4">
-                  <motion.div whileHover={reduced ? {} : { x: 3 }}>
+                <div className="flex flex-wrap items-center gap-4 mt-8 hero-reveal">
+                  <motion.div
+                    whileHover={reduced ? {} : { scale: 1.03 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
                     <Button asChild variant="default" size="lg">
                       <a href="#solucoes">Encontre sua solução ↗</a>
                     </Button>
                   </motion.div>
 
-                  <motion.div whileHover={reduced ? {} : { x: 3 }}>
+                  <motion.div
+                    whileHover={reduced ? {} : { scale: 1.03 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
                     <Button asChild variant="secondary" size="lg">
                       <a href="#laboratorio">Explorar laboratório ↓</a>
                     </Button>
                   </motion.div>
                 </div>
               </div>
-            </div>
 
-            {/* Right: Caldera Visual Card with franky-adl 3D Wave Grid (40px radius) */}
-            <div className="hero-visual-card">
-              <div className="hero-wave-mount">
-                <Suspense fallback={<div className="w-full h-full bg-[#10150f]" />}>
-                  <WaveGrid colorBase="#f7f6f2" colorHigh="#fc5000" />
-                </Suspense>
-              </div>
-
-              <div className="hero-hud-top">
-                <span className="caldera-tag ember">
-                  <i className="w-2 h-2 rounded-full bg-[#070607] inline-block mr-1.5" />
-                  3D WAVE GRID
+              <div className="hero-single-bottom hero-reveal">
+                <span className="text-[13px] font-mono text-[#070607]/75 uppercase tracking-wider">
+                  Da complexidade à clareza
                 </span>
-                <span className="text-[12px] font-mono text-white/70">O / 001</span>
-              </div>
-
-              <div className="hero-hud-bottom">
-                <div>
-                  <div className="font-display text-[20px] text-white tracking-wide">
-                    SIMULAÇÃO EM TEMPO REAL
-                  </div>
-                  <div className="text-[12px] text-white/70">Mova o cursor para propagar ondas</div>
-                </div>
-                <div className="text-right">
-                  <span className="text-[11px] font-mono text-[#fc5000] font-bold">
-                    SHADOWS ON · 40×40
-                  </span>
-                </div>
+                <a
+                  href="#solucoes"
+                  className="text-[13px] font-semibold text-[#fc5000] tracking-wider hover:underline"
+                >
+                  ROLE PARA EXPLORAR ↓
+                </a>
+                <span className="text-[13px] font-mono text-[#070607]/75 uppercase tracking-wider">
+                  Sistemas conectados
+                </span>
               </div>
             </div>
           </section>

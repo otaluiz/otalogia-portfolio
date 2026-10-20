@@ -302,68 +302,77 @@ em {
   pointer-events: none;
 }
 
-/* Hero Section */
-.hero-caldera {
-  display: grid;
-  grid-template-columns: 1.15fr 0.85fr;
-  gap: 24px;
-  margin-bottom: 40px;
-}
-
-.hero-main-card {
+/* Hero Section: Single Unified Card with 3D Wave Grid in Background */
+.hero-caldera-single {
+  position: relative;
   background-color: var(--color-limestone);
   border-radius: var(--radius-cards);
+  overflow: hidden;
+  border: 1px solid rgba(7, 6, 7, 0.08);
+  min-height: 640px;
+  margin-bottom: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.hero-wave-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0.92;
+}
+
+.hero-single-content {
+  position: relative;
+  z-index: 2;
   padding: 56px 48px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-height: 580px;
+  min-height: 640px;
+  pointer-events: none;
+}
+
+.hero-single-content a,
+.hero-single-content button {
+  pointer-events: auto;
 }
 
 .hero-display-title {
-  font-size: clamp(64px, 7.5vw, 120px);
+  font-size: clamp(64px, 8.5vw, 136px);
   line-height: 0.92;
   color: var(--color-obsidian);
   margin: 24px 0;
 }
 
-.hero-visual-card {
-  background-color: var(--color-obsidian);
-  border-radius: var(--radius-cards);
+.headline-line {
+  display: block;
   overflow: hidden;
-  position: relative;
-  min-height: 580px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 32px;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
 }
 
-.hero-wave-mount {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
+.headline-line > span {
+  display: block;
 }
 
-.hero-hud-top {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.hero-single-desc {
+  font-size: 18px;
+  max-width: 540px;
+  color: var(--color-obsidian);
+  line-height: 1.6;
 }
 
-.hero-hud-bottom {
-  position: relative;
-  z-index: 2;
-  background: rgba(7, 6, 7, 0.75);
-  backdrop-filter: blur(12px);
-  padding: 16px 20px;
-  border-radius: var(--radius-medium);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+.hero-single-bottom {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding-top: 32px;
+  border-top: 1.5px dotted rgba(7, 6, 7, 0.25);
+  margin-top: 32px;
 }
 
 /* Stat Feature Row (Caldera signature: 40px radius cards with huge display type) */
@@ -731,12 +740,21 @@ em {
     padding: 28px;
     border-radius: 28px;
   }
-  .hero-main-card, .hero-visual-card {
-    padding: 32px 24px;
-    min-height: 480px;
+  .hero-caldera-single {
+    min-height: 540px;
+    border-radius: 28px;
+  }
+  .hero-single-content {
+    padding: 36px 24px;
+    min-height: 540px;
   }
   .hero-display-title {
-    font-size: 58px;
+    font-size: clamp(52px, 14vw, 76px);
+  }
+  .hero-single-bottom {
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
   }
   .caldera-footer-pill {
     flex-direction: column;
