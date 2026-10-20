@@ -24,7 +24,7 @@ const variants = cva(
         sulfur:
           'bg-[#f5f28e] text-[#070607] hover:bg-[#ece97e] py-2 px-4 text-[13px] font-medium shadow-none',
         dark:
-          'bg-[#070607] text-[#ffffff] hover:bg-[#202020] py-3 px-6 font-medium shadow-none',
+          'btn-dark bg-[#070607] text-white hover:bg-[#202020] py-3 px-6 font-medium shadow-none',
       },
       size: {
         default: 'py-3 px-6',

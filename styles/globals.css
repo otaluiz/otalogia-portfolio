@@ -218,32 +218,39 @@ em {
   border-radius: var(--radius-pills);
 }
 
-/* Category Tag Badge: Sulfur (#f5f28e) Pill */
+/* Clean Editorial Eyebrows (No yellow pins) */
 .caldera-tag {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background-color: var(--color-sulfur);
-  color: var(--color-obsidian);
-  border-radius: var(--radius-pills);
-  font-family: var(--font-body);
-  font-weight: 500;
-  font-size: 13px;
+  background: transparent !important;
+  color: inherit;
+  border-radius: 0;
+  padding: 0;
+  font-family: monospace;
+  font-weight: 600;
+  font-size: 12px;
   line-height: 1.2;
-  padding: 4px 12px;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.08em;
   width: fit-content;
+  opacity: 0.75;
 }
 
-.caldera-tag.ember {
-  background-color: var(--color-ember);
-  color: var(--color-obsidian);
+/* Dark Button Pure White Text Guarantee */
+.btn-dark,
+.btn-dark a,
+a.btn-dark,
+button.btn-dark {
+  background-color: #070607 !important;
+  color: #ffffff !important;
 }
 
-.caldera-tag.chalk {
-  background-color: var(--color-chalk);
-  color: var(--color-obsidian);
+.btn-dark:hover,
+a.btn-dark:hover,
+button.btn-dark:hover {
+  background-color: #222222 !important;
+  color: #ffffff !important;
 }
 
 /* Dotted Divider */

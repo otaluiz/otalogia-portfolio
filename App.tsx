@@ -113,7 +113,9 @@ function Dashboard() {
     <div className="caldera-dashboard" data-reveal>
       <div className="flex justify-between items-center gap-4 flex-wrap">
         <div>
-          <span className="caldera-tag">LAB / BUSINESS INTELLIGENCE</span>
+          <span className="text-[12px] font-mono tracking-widest text-[#070607]/70 uppercase font-medium">
+            LAB / BUSINESS INTELLIGENCE
+          </span>
           <h3 className="mt-2">DO DADO À PERSPECTIVA.</h3>
         </div>
         <select
@@ -274,7 +276,7 @@ export default function App() {
             {/* Editorial Content directly over the 3D wave grid */}
             <div className="hero-single-content">
               <div>
-                <span className="caldera-tag hero-reveal">
+                <span className="hero-reveal text-[13px] font-mono tracking-widest text-[#070607]/70 uppercase font-medium">
                   SISTEMAS · DADOS · INTELIGÊNCIA ARTIFICIAL
                 </span>
 
@@ -366,7 +368,9 @@ export default function App() {
           <section id="solucoes" className="mb-20">
             <div className="flex flex-col md:flex-row justify-between items-start gap-6 mb-8">
               <div>
-                <span className="caldera-tag">01 / O QUE POSSO CONSTRUIR COM VOCÊ</span>
+                <span className="text-[13px] font-mono tracking-widest text-[#070607]/70 uppercase font-medium">
+                  01 / O QUE POSSO CONSTRUIR COM VOCÊ
+                </span>
                 <h2 className="text-[clamp(44px,5.5vw,82px)] mt-3">
                   SEU DESAFIO. A TECNOLOGIA <em>CERTA.</em>
                 </h2>
@@ -382,7 +386,9 @@ export default function App() {
                 <div key={s.n} className="solution-card-caldera">
                   <div>
                     <div className="flex justify-between items-center">
-                      <span className="caldera-tag">{s.tag}</span>
+                      <span className="text-[12px] font-mono tracking-wider text-[#070607]/60 uppercase font-semibold">
+                        {s.tag}
+                      </span>
                       <span className="font-display text-[28px] text-[#fc5000]">{s.n}</span>
                     </div>
                     <h3>{s.name}</h3>
@@ -408,7 +414,9 @@ export default function App() {
           <section id="laboratorio" className="lab-caldera">
             <div className="flex flex-col md:flex-row justify-between items-start gap-6">
               <div>
-                <span className="caldera-tag ember">02 / LABORATÓRIO INTERATIVO</span>
+                <span className="text-[13px] font-mono tracking-widest text-[#fc5000] uppercase font-medium">
+                  02 / LABORATÓRIO INTERATIVO
+                </span>
                 <h2 className="mt-3">
                   DO CONCEITO AO <em>FUNCIONAMENTO.</em>
                 </h2>
@@ -475,7 +483,9 @@ export default function App() {
           {/* Process Section (Caldera Step Cards) */}
           <section id="processo" className="mb-20">
             <div>
-              <span className="caldera-tag">03 / COMO TRABALHO</span>
+              <span className="text-[13px] font-mono tracking-widest text-[#070607]/70 uppercase font-medium">
+                03 / COMO TRABALHO
+              </span>
               <h2 className="text-[clamp(44px,5.5vw,82px)] mt-3">
                 ANTES DO CÓDIGO, O <em>CONTEXTO.</em>
               </h2>
@@ -501,7 +511,9 @@ export default function App() {
           {/* About Section (Otalogia Brand & Background) */}
           <section id="sobre" className="about-caldera">
             <div className="about-mark-card">
-              <span className="caldera-tag chalk">ENGENHARIA & IA</span>
+              <span className="text-[12px] font-mono tracking-widest text-white/80 uppercase font-medium">
+                ENGENHARIA & IA
+              </span>
               <div className="about-big-o">
                 O<span>↗</span>
               </div>
@@ -512,7 +524,9 @@ export default function App() {
 
             <div className="about-content-card">
               <div>
-                <span className="caldera-tag">04 / POR TRÁS DA OTALOGIA</span>
+                <span className="text-[13px] font-mono tracking-widest text-[#070607]/70 uppercase font-medium">
+                  04 / POR TRÁS DA OTALOGIA
+                </span>
                 <h2 className="mt-3">
                   ENGENHARIA PARA CONSTRUIR.
                   <br />
@@ -547,7 +561,9 @@ export default function App() {
           {/* Contact Conversion Banner (Caldera Ember Card with 40px radius) */}
           <section id="contato" className="contact-caldera">
             <div className="flex justify-between items-center flex-wrap gap-4">
-              <span className="caldera-tag chalk">QUAL É O DESAFIO DO SEU NEGÓCIO?</span>
+              <span className="text-[13px] font-mono font-semibold tracking-wider text-[#070607]/80 uppercase">
+                QUAL É O DESAFIO DO SEU NEGÓCIO?
+              </span>
               <span className="text-[13px] font-mono font-semibold tracking-wider">
                 VAMOS COMEÇAR POR UMA CONVERSA
               </span>
@@ -572,8 +588,19 @@ export default function App() {
                 Conte sobre a sua operação, sua ideia de sistema ou aquele processo que precisa de fluidez e
                 automação.
               </p>
-              <Button asChild variant="dark" size="lg">
-                <a href={instagram} target="_blank" rel="noopener noreferrer">
+              <Button
+                asChild
+                variant="dark"
+                size="lg"
+                className="btn-dark !bg-[#070607] !text-white hover:!bg-[#222222]"
+              >
+                <a
+                  href={instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="!text-white font-semibold"
+                  style={{ color: '#ffffff' }}
+                >
                   Falar no Instagram @otalogia ↗
                 </a>
               </Button>
