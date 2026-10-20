@@ -1,111 +1,432 @@
 import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
+import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js'
+import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js'
 import { waveVertexShader } from '@/lib/wave-vertex-shader'
-/** React adaptation of franky-adl/3d-wave-grid. MIT, copyright 2026 franky-adl. */
-export default function WaveGrid() {
-  const host = useRef<HTMLDivElement>(null)
+import { VignetteRGBShiftShader } from '@/lib/vignette-rgb-shift-shader'
+
+interface WaveGridProps {
+  colorBase?: string
+  colorHigh?: string
+  className?: string
+}
+
+/**
+ * 3D Wave Grid — faithful React implementation of franky-adl/3d-wave-grid (MIT).
+ * Uses Three.js instanced mesh, dynamic wave deformation shader, shadow mapping,
+ * mouse trail texture raycasting, and post-processing with Vignette RGB shift.
+ * Styled with Otalogia brand palette (#f4f1ea base and #ef512b signature orange wave high).
+ */
+export default function WaveGrid({
+  colorBase = '#f4f1ea',
+  colorHigh = '#ef512b',
+  className = '',
+}: WaveGridProps) {
+  const hostRef = useRef<HTMLDivElement>(null)
+
   useEffect(() => {
-    const el = host.current
+    const el = hostRef.current
     if (!el) return
-    let renderer: THREE.WebGLRenderer
-    try { renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: 'low-power' }) } catch { return }
-    const mobile = el.clientWidth < 600
-    const count = mobile ? 24 : 40
-    const spacing = .84
-    const bounds = count * spacing
+
+    // Scene setup
     const scene = new THREE.Scene()
-    const camera = new THREE.PerspectiveCamera(40, 1, .1, 200)
-    const pointer = new THREE.Vector2(), dampedPointer = new THREE.Vector2()
-    const reduced = matchMedia('(prefers-reduced-motion: reduce)')
-    const geometry = new THREE.BoxGeometry(.8, 3, .8)
-    const offsets = new THREE.InstancedBufferAttribute(new Float32Array(count * count * 2), 2)
-    geometry.setAttribute('aOffset', offsets)
-    const data = new Float32Array(128 * 4)
-    const texture = new THREE.DataTexture(data, 128, 1, THREE.RGBAFormat, THREE.FloatType)
-    texture.needsUpdate = true
-    const uniforms = {
-      uTrailTexture: { value: texture }, uTrailCount: { value: 0 },
-      uFadeTime: { value: 1.6 }, uWaveSpeed: { value: 5 }, uWaveFreq: { value: 1.2 },
-      uWaveWidth: { value: 3 }, uAmplitude: { value: 1.5 }, uJitter: { value: .2 },
-      uMaxHeight: { value: 1.1 }, uColorBase: { value: new THREE.Color('#667551') },
-      uColorHigh: { value: new THREE.Color('#ef512b') },
+
+    // Renderer with shadows and tone mapping
+    let renderer: THREE.WebGLRenderer
+    try {
+      renderer = new THREE.WebGLRenderer({
+        alpha: true,
+        antialias: true,
+        powerPreference: 'high-performance',
+      })
+    } catch {
+      return
     }
-    const material = new THREE.MeshPhongMaterial({ color: 0xffffff, shininess: 32, specular: '#c4cbb7' })
-    material.onBeforeCompile = shader => {
-      Object.assign(shader.uniforms, uniforms)
-      shader.vertexShader = waveVertexShader(shader.vertexShader)
-      shader.fragmentShader = shader.fragmentShader.replace('#include <common>', `#include <common>
-        varying float vHeight; uniform vec3 uColorBase; uniform vec3 uColorHigh; uniform float uMaxHeight;`)
-        .replace('#include <color_fragment>', `#include <color_fragment>
-        float t = clamp(vHeight / uMaxHeight, 0.0, 1.0);
-        diffuseColor.rgb = mix(uColorBase, uColorHigh, t);`)
-    }
-    const mesh = new THREE.InstancedMesh(geometry, material, count * count)
-    const dummy = new THREE.Object3D()
-    const offset = (count - 1) * spacing / 2
-    for (let i = 0; i < count; i++) for (let j = 0; j < count; j++) {
-      const index = i * count + j, x = i * spacing - offset, z = j * spacing - offset
-      dummy.position.set(x, 0, z); dummy.updateMatrix(); mesh.setMatrixAt(index, dummy.matrix); offsets.setXY(index, x, z)
-    }
-    mesh.instanceMatrix.needsUpdate = true
-    offsets.needsUpdate = true
-    scene.add(mesh)
-    scene.add(new THREE.AmbientLight('#eeece4', 1.5))
-    const light = new THREE.DirectionalLight('#fff4dd', 2.5); light.position.set(-15, 20, 10); scene.add(light)
-    const fill = new THREE.DirectionalLight('#eeece4', .7); fill.position.set(12, 8, -5); scene.add(fill)
+
     renderer.outputColorSpace = THREE.SRGBColorSpace
     renderer.toneMapping = THREE.ACESFilmicToneMapping
-    renderer.toneMappingExposure = 1
-    el.appendChild(renderer.domElement)
-    const trail: { x: number; z: number; age: number; strength: number }[] = []
-    function addPoint(x: number, z: number, strength = 1) { if (trail.length >= (mobile ? 20 : 48)) trail.shift(); trail.push({ x, z, age: 0, strength }) }
-    // Static wave in reduced-motion mode; no automatic or pointer animation.
-    addPoint(-bounds * .14, bounds * .05, 1.4)
-    trail[0].age = 1
-    const raycaster = new THREE.Raycaster(), plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -1.5)
-    const hit = new THREE.Vector3()
-    let lastPoint: THREE.Vector3 | null = null, idle = 3, pulse = 0, t = 0
-    const onPointer = (e: PointerEvent) => {
-      if (reduced.matches || e.pointerType === 'touch') return
-      const r = el.getBoundingClientRect()
-      pointer.set((e.clientX - r.left) / r.width * 2 - 1, -(e.clientY - r.top) / r.height * 2 + 1)
-      raycaster.setFromCamera(pointer, camera)
-      if (!raycaster.ray.intersectPlane(plane, hit) || Math.abs(hit.x) > bounds / 2 || Math.abs(hit.z) > bounds / 2) return
-      const distance = lastPoint ? hit.distanceTo(lastPoint) : 1
-      if (distance < .2) return
-      addPoint(hit.x, hit.z, Math.min(1.5, distance)); lastPoint = hit.clone(); idle = 0
+    renderer.toneMappingExposure = 1.85
+    renderer.shadowMap.enabled = true
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap
+    renderer.setClearColor(0x000000, 0) // transparent clear for seamless background shader blend
+
+    const isMobile = window.innerWidth < 768
+    const gridSize = isMobile ? 28 : 40
+    const cubeWidth = 0.8
+    const cubeHeight = 3.0
+    const gap = 0.01
+    const spacing = cubeWidth + gap
+    const bounds = gridSize * spacing
+    const count = gridSize * gridSize
+
+    // Camera — looking top-down with perspective, tilted by cursor
+    const camera = new THREE.PerspectiveCamera(40, el.clientWidth / el.clientHeight, 0.1, 200)
+    const radius = 12
+    const alphaRange = Math.PI * 0.035
+    const betaRange = Math.PI * 0.055
+
+    const mouse = new THREE.Vector2(0, 0)
+    const lerpedMouse = new THREE.Vector2(0, 0)
+
+    function updateCamera(mx: number, my: number) {
+      const alpha = my * alphaRange
+      const beta = mx * betaRange
+
+      camera.position.set(
+        -radius * Math.cos(alpha) * Math.sin(beta),
+        radius * Math.cos(alpha) * Math.cos(beta),
+        radius * Math.sin(alpha)
+      )
+      camera.up.set(0, 0, -1)
+      camera.lookAt(0, 0, 0)
     }
-    const onLeave = () => { pointer.set(0, 0); lastPoint = null }
-    el.addEventListener('pointermove', onPointer); el.addEventListener('pointerleave', onLeave)
-    const updateCamera = () => {
-      const d = bounds * 1.65
-      camera.position.set(d * (.25 + dampedPointer.x * .06), d * .78, d * (.48 + dampedPointer.y * .04))
-      camera.lookAt(0, 0, 0); camera.updateMatrixWorld()
+
+    updateCamera(0, 0)
+
+    // Lighting
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6)
+    scene.add(ambientLight)
+
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 3.8)
+    directionalLight.position.set(-20, 10, 6)
+    directionalLight.castShadow = true
+    directionalLight.shadow.mapSize.set(1024, 1024)
+    directionalLight.shadow.radius = 4
+    directionalLight.shadow.camera.near = 0.1
+    directionalLight.shadow.camera.far = 60
+    directionalLight.shadow.camera.left = -22
+    directionalLight.shadow.camera.right = 22
+    directionalLight.shadow.camera.top = 22
+    directionalLight.shadow.camera.bottom = -22
+    directionalLight.shadow.bias = 0.0001
+    scene.add(directionalLight)
+
+    const directionalLight2 = new THREE.DirectionalLight(0xffffff, 1.0)
+    directionalLight2.position.set(10, 5, -3)
+    directionalLight2.castShadow = false
+    scene.add(directionalLight2)
+
+    // Trail Texture for the wave vertex shader (128 x 1 float texture)
+    const MAX_TRAIL = 128
+    const trailData = new Float32Array(MAX_TRAIL * 4)
+    const trailTexture = new THREE.DataTexture(
+      trailData,
+      MAX_TRAIL,
+      1,
+      THREE.RGBAFormat,
+      THREE.FloatType
+    )
+    trailTexture.needsUpdate = true
+
+    const uniforms = {
+      uTrailTexture: { value: trailTexture },
+      uTrailCount: { value: 0 },
+      uFadeTime: { value: 2.0 },
+      uWaveSpeed: { value: 6.0 },
+      uWaveFreq: { value: 1.2 },
+      uWaveWidth: { value: 3.0 },
+      uAmplitude: { value: 0.4 },
+      uJitter: { value: 0.2 },
+      uMaxHeight: { value: 0.4 },
+      uColorBase: { value: new THREE.Color(colorBase) },
+      uColorHigh: { value: new THREE.Color(colorHigh) },
     }
-    function resize() { if (!el) return; const w = el.clientWidth, h = el.clientHeight; if (!w || !h) return; renderer.setPixelRatio(Math.min(devicePixelRatio, mobile ? 1.25 : 1.5)); renderer.setSize(w, h); camera.aspect = w / h; camera.updateProjectionMatrix(); updateCamera() }
-    const ro = new ResizeObserver(resize); ro.observe(el)
-    let visible = true, lost = false, raf = 0, last = performance.now()
-    const io = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting }); io.observe(el)
-    const onLost = (event: Event) => { event.preventDefault(); lost = true; el.classList.add('grid-fallback') }
-    const onRestored = () => { lost = false; el.classList.remove('grid-fallback'); resize() }
-    renderer.domElement.addEventListener('webglcontextlost', onLost)
-    renderer.domElement.addEventListener('webglcontextrestored', onRestored)
-    const animate = (now: number) => {
-      raf = requestAnimationFrame(animate)
-      const dt = Math.min((now - last) / 1000, .05); last = now
-      if (!visible || document.hidden || lost) return
-      if (!reduced.matches) {
-        t += dt; idle += dt; pulse += dt
-        if (idle > 3 && pulse > 1.7) { addPoint(Math.sin(t * .7) * bounds * .2, Math.cos(t * .43) * bounds * .2, 1.25); pulse = 0 }
-        for (let i = trail.length - 1; i >= 0; i--) { trail[i].age += dt; if (trail[i].age > 6.4) trail.splice(i, 1) }
-        dampedPointer.lerp(pointer, 1 - Math.exp(-dt * 3)); updateCamera()
+
+    // Geometry and offsets
+    const geometry = new THREE.BoxGeometry(cubeWidth, cubeHeight, cubeWidth)
+    const offsetAttribute = new THREE.InstancedBufferAttribute(new Float32Array(count * 2), 2)
+    geometry.setAttribute('aOffset', offsetAttribute)
+
+    // Material with custom vertex and fragment shaders
+    const material = new THREE.MeshPhongMaterial({
+      color: 0xffffff,
+      shininess: 32,
+      specular: 0x555555,
+    })
+
+    material.onBeforeCompile = (shader) => {
+      Object.assign(shader.uniforms, uniforms)
+      shader.vertexShader = waveVertexShader(shader.vertexShader)
+      shader.fragmentShader = shader.fragmentShader
+        .replace(
+          '#include <common>',
+          `#include <common>
+          varying float vHeight;
+          uniform vec3  uColorBase;
+          uniform vec3  uColorHigh;
+          uniform float uMaxHeight;`
+        )
+        .replace(
+          '#include <color_fragment>',
+          `#include <color_fragment>
+          float t = clamp( vHeight / uMaxHeight, 0.0, 1.0 );
+          diffuseColor.rgb = mix( uColorBase, uColorHigh, t );`
+        )
+    }
+
+    // Custom depth material for accurate self-shadowing waves
+    const depthMaterial = new THREE.MeshDepthMaterial({
+      depthPacking: THREE.RGBADepthPacking,
+    })
+    depthMaterial.onBeforeCompile = (shader) => {
+      Object.assign(shader.uniforms, uniforms)
+      shader.vertexShader = waveVertexShader(shader.vertexShader)
+    }
+
+    // InstancedMesh
+    const instancedMesh = new THREE.InstancedMesh(geometry, material, count)
+    instancedMesh.customDepthMaterial = depthMaterial
+    instancedMesh.castShadow = true
+    instancedMesh.receiveShadow = true
+
+    const dummy = new THREE.Object3D()
+    const offset = ((gridSize - 1) * spacing) / 2
+
+    for (let i = 0; i < gridSize; i++) {
+      for (let j = 0; j < gridSize; j++) {
+        const index = i * gridSize + j
+        const x = i * spacing - offset
+        const z = j * spacing - offset
+        dummy.position.set(x, 0, z)
+        dummy.updateMatrix()
+        instancedMesh.setMatrixAt(index, dummy.matrix)
+        offsetAttribute.setXY(index, x, z)
       }
-      trail.forEach((point, i) => { data[i * 4] = point.x; data[i * 4 + 1] = point.z; data[i * 4 + 2] = point.age; data[i * 4 + 3] = point.strength })
-      uniforms.uTrailCount.value = trail.length; texture.needsUpdate = true
-      renderer.render(scene, camera)
     }
-    resize(); raf = requestAnimationFrame(animate)
-    return () => { cancelAnimationFrame(raf); ro.disconnect(); io.disconnect(); el.removeEventListener('pointermove', onPointer); el.removeEventListener('pointerleave', onLeave); renderer.domElement.removeEventListener('webglcontextlost', onLost); renderer.domElement.removeEventListener('webglcontextrestored', onRestored); mesh.dispose(); geometry.dispose(); material.dispose(); texture.dispose(); renderer.dispose(); renderer.domElement.remove() }
-  }, [])
-  return <div ref={host} className="wave-grid" aria-hidden="true" />
+    instancedMesh.instanceMatrix.needsUpdate = true
+    offsetAttribute.needsUpdate = true
+    scene.add(instancedMesh)
+
+    // Raycast Plane for mouse world coordinates
+    const rayPlane = new THREE.Mesh(
+      new THREE.PlaneGeometry(bounds * 2, bounds * 2),
+      new THREE.MeshBasicMaterial({ side: THREE.DoubleSide, visible: false })
+    )
+    rayPlane.rotation.x = -Math.PI / 2
+    rayPlane.updateMatrixWorld(true)
+    scene.add(rayPlane)
+
+    const raycaster = new THREE.Raycaster()
+    const mouseCoords = new THREE.Vector2()
+
+    // Post Processing with EffectComposer & VignetteRGBShiftShader
+    const composer = new EffectComposer(renderer)
+    const renderPass = new RenderPass(scene, camera)
+    composer.addPass(renderPass)
+
+    const vignettePass = new ShaderPass(VignetteRGBShiftShader)
+    vignettePass.uniforms.shiftAmount.value = 0.005
+    vignettePass.uniforms.vignetteRadius.value = 0.3
+    vignettePass.uniforms.vignetteSoftness.value = 0.35
+    composer.addPass(vignettePass)
+
+    const outputPass = new OutputPass()
+    composer.addPass(outputPass)
+
+    el.appendChild(renderer.domElement)
+
+    // Mouse Trail logic
+    interface TrailPoint {
+      x: number
+      z: number
+      age: number
+      distDelta: number
+    }
+
+    const trail: TrailPoint[] = []
+    let lastPoint: { x: number; z: number } | null = null
+    let timeSinceLastMove = 0
+    let randomPointTimer = 0
+    let isPlacingRandomPoints = true
+    const trailSpacing = 0.1
+
+    function addPoint(x: number, z: number, distDelta = 1.0) {
+      if (trail.length >= MAX_TRAIL) {
+        trail.shift()
+      }
+      trail.push({ x, z, age: 0, distDelta })
+      lastPoint = { x, z }
+    }
+
+    function addRandomPoint() {
+      const x = (Math.random() * 0.5 - 0.25) * bounds
+      const z = (Math.random() * 0.5 - 0.25) * bounds
+      const distDelta = 0.8 + Math.random() * 0.25
+      addPoint(x, z, distDelta)
+    }
+
+    // Seed initial ripple
+    addPoint(bounds * 0.1, -bounds * 0.1, 1.2)
+
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
+
+    // Global pointer listener attached to window or el so whole hero tracks
+    function onPointerMove(e: PointerEvent) {
+      if (reducedMotion.matches || !el) return
+
+      const rect = el.getBoundingClientRect()
+      // Check if within reasonable proximity to hero
+      if (
+        e.clientX < rect.left - 100 ||
+        e.clientX > rect.right + 100 ||
+        e.clientY < rect.top - 100 ||
+        e.clientY > rect.bottom + 100
+      ) {
+        return
+      }
+
+      mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1
+      mouse.y = -(((e.clientY - rect.top) / rect.height) * 2 - 1)
+
+      mouseCoords.copy(mouse)
+      raycaster.setFromCamera(mouseCoords, camera)
+      const hits = raycaster.intersectObject(rayPlane)
+      if (hits.length === 0) return
+
+      const { x, z } = hits[0].point
+      let distDelta = 0
+      if (lastPoint) {
+        const dx = x - lastPoint.x
+        const dz = z - lastPoint.z
+        distDelta = Math.sqrt(dx * dx + dz * dz)
+        if (distDelta < trailSpacing) return
+      }
+
+      addPoint(x, z, Math.min(1.5, Math.max(0.4, distDelta)))
+      timeSinceLastMove = 0
+      isPlacingRandomPoints = false
+      randomPointTimer = 0
+    }
+
+    window.addEventListener('pointermove', onPointerMove, { passive: true })
+
+    // Sizing and ResizeObserver
+    function resize() {
+      if (!el) return
+      const w = el.clientWidth
+      const h = el.clientHeight
+      if (!w || !h) return
+
+      const dpr = Math.min(window.devicePixelRatio, 2)
+      renderer.setPixelRatio(dpr)
+      renderer.setSize(w, h)
+      composer.setPixelRatio(dpr)
+      composer.setSize(w, h)
+
+      camera.aspect = w / h
+      camera.updateProjectionMatrix()
+    }
+
+    const ro = new ResizeObserver(resize)
+    ro.observe(el)
+    resize()
+
+    // Visibility / Intersection observer
+    let isVisible = true
+    let isLost = false
+    const io = new IntersectionObserver(([entry]) => {
+      isVisible = entry.isIntersecting
+    })
+    io.observe(el)
+
+    const onContextLost = (e: Event) => {
+      e.preventDefault()
+      isLost = true
+    }
+    const onContextRestored = () => {
+      isLost = false
+      resize()
+    }
+    renderer.domElement.addEventListener('webglcontextlost', onContextLost)
+    renderer.domElement.addEventListener('webglcontextrestored', onContextRestored)
+
+    // Animation Loop
+    let raf = 0
+    let lastTime = performance.now()
+
+    function animate(now: number) {
+      raf = requestAnimationFrame(animate)
+
+      const dt = Math.min((now - lastTime) / 1000, 0.05)
+      lastTime = now
+
+      if (!isVisible || document.hidden || isLost) return
+
+      if (!reducedMotion.matches) {
+        // Camera smooth lerp
+        lerpedMouse.x += (mouse.x - lerpedMouse.x) * 0.04
+        lerpedMouse.y += (mouse.y - lerpedMouse.y) * 0.04
+        updateCamera(lerpedMouse.x, lerpedMouse.y)
+
+        // Age trail points
+        const expiry = 2.0 * 4.0
+        for (let i = trail.length - 1; i >= 0; i--) {
+          trail[i].age += dt
+          if (trail[i].age > expiry) {
+            trail.splice(i, 1)
+          }
+        }
+
+        // Random idle points
+        timeSinceLastMove += dt
+        if (timeSinceLastMove >= 2.5 && !isPlacingRandomPoints) {
+          isPlacingRandomPoints = true
+          randomPointTimer = 0
+        }
+
+        if (isPlacingRandomPoints) {
+          randomPointTimer += dt
+          if (randomPointTimer >= 1.5) {
+            addRandomPoint()
+            randomPointTimer = 0
+          }
+        }
+
+        // Upload trail data
+        const liveCount = Math.min(trail.length, MAX_TRAIL)
+        for (let i = 0; i < liveCount; i++) {
+          const ti = i * 4
+          trailData[ti] = trail[i].x
+          trailData[ti + 1] = trail[i].z
+          trailData[ti + 2] = trail[i].age
+          trailData[ti + 3] = trail[i].distDelta
+        }
+        trailTexture.needsUpdate = true
+        uniforms.uTrailCount.value = liveCount
+      }
+
+      composer.render()
+    }
+
+    raf = requestAnimationFrame(animate)
+
+    return () => {
+      cancelAnimationFrame(raf)
+      window.removeEventListener('pointermove', onPointerMove)
+      ro.disconnect()
+      io.disconnect()
+      renderer.domElement.removeEventListener('webglcontextlost', onContextLost)
+      renderer.domElement.removeEventListener('webglcontextrestored', onContextRestored)
+
+      geometry.dispose()
+      material.dispose()
+      depthMaterial.dispose()
+      trailTexture.dispose()
+      composer.dispose()
+      renderer.dispose()
+      if (renderer.domElement.parentNode) {
+        renderer.domElement.parentNode.removeChild(renderer.domElement)
+      }
+    }
+  }, [colorBase, colorHigh])
+
+  return (
+    <div
+      ref={hostRef}
+      className={`wave-grid-container w-full h-full relative overflow-hidden select-none ${className}`}
+      aria-hidden="true"
+    />
+  )
 }
