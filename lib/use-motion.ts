@@ -1,0 +1,6 @@
+import { useEffect, type RefObject } from 'react'
+import Lenis from 'lenis'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+gsap.registerPlugin(ScrollTrigger)
+export function usePageMotion(root:RefObject<HTMLDivElement|null>){useEffect(()=>{const mm=gsap.matchMedia();let lenis:Lenis|undefined;let tick:((t:number)=>void)|undefined;mm.add('(prefers-reduced-motion: no-preference)',()=>{lenis=new Lenis({duration:1.05,smoothWheel:true,anchors:true});lenis.on('scroll',ScrollTrigger.update);tick=t=>lenis?.raf(t*1000);gsap.ticker.add(tick);const ctx=gsap.context(()=>{gsap.from('.headline-line > span',{yPercent:110,duration:1.1,stagger:.12,ease:'power4.out'});gsap.utils.toArray<HTMLElement>('[data-reveal]').forEach(el=>{gsap.from(el,{y:40,opacity:0,duration:.85,ease:'power3.out',scrollTrigger:{trigger:el,start:'top 90%',once:true}})});gsap.to('.scroll-line',{scaleX:1,ease:'none',scrollTrigger:{trigger:document.documentElement,start:'top top',end:'bottom bottom',scrub:true}});gsap.to('.hero-object',{y:70,rotate:8,ease:'none',scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:.8}})},root);return ()=>{ctx.revert();if(tick)gsap.ticker.remove(tick);lenis?.destroy()}});return()=>mm.revert()},[root])}

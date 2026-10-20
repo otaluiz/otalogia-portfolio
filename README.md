@@ -1,29 +1,36 @@
-# Otalogia — portfólio
+# Otalogia — sistemas, dados e IA
 
-Landing page editorial para [@otalogia](https://www.instagram.com/otalogia/), inspirada na direção visual da skill Awwwards fornecida para o projeto.
+Portfólio em React + TypeScript + Vite, com Tailwind CSS 4 e estrutura compatível com shadcn/ui. Posicionamento: soluções tecnológicas para a operação e o marketing de empresas de serviços.
 
-## Abrir
+## Desenvolvimento
 
-Abra `dist/index.html` no navegador. Não é necessário instalar dependências ou executar um build.
+Node.js 22 recomendado.
 
-## Estrutura
+```sh
+npm install
+npm run dev
+npm run build
+```
 
-- `dist/index.html`: conteúdo e estrutura da página.
-- `dist/style.css`: identidade visual, animações e layout responsivo.
-- `dist/app.js`: filtros da galeria, modal, menu mobile e indicador de rolagem.
+O build executa a verificação TypeScript antes de gerar `dist/`. A Vercel usa `vercel.json`: raiz do repositório, preset Vite, instalação `npm install`, build `npm run build`, saída `dist`.
 
-## Hospedar
+## Estrutura e shadcn
 
-Publique o conteúdo da pasta `dist` em uma hospedagem estática. Use `dist` como diretório de publicação e deixe o comando de build vazio.
+- `components/ui/`: componentes reutilizáveis, incluindo `agentic-factory-3d.tsx`, `shader-orb.tsx` e `button.tsx`.
+- `styles/globals.css`: Tailwind, identidade visual e responsividade.
+- `styles/machine.css`: estilos isolados da máquina 3D.
+- `lib/machine-scene.ts`: cena procedural original adaptada ao domínio da Otalogia.
+- `lib/use-motion.ts`: Lenis e GSAP ScrollTrigger.
+- `App.tsx`: conteúdo, serviços, filtros de BI e integração.
 
-## Personalizar
+`components.json` define `@/components/ui` como caminho padrão. Essa convenção permite que o CLI encontre componentes, aliases e estilos sem espalhar arquivos pela aplicação. Tailwind e TypeScript já estão configurados; não é necessário recriar o projeto. Para adicionar componentes: `npx shadcn@latest add <componente>`.
 
-Edite os textos e links em `dist/index.html` e as cores em `:root` no arquivo `dist/style.css`.
+## Animações
 
-Os três estudos visuais são demonstrativos, criados para esta proposta. O conteúdo do Instagram não pôde ser consultado automaticamente. Substitua os estudos por trabalhos reais antes de apresentar a seleção como portfólio autoral.
+Lenis controla rolagem suave e sincroniza com o ticker GSAP. GSAP anima título, entradas de seções, paralaxe e progresso. Framer Motion controla menu, transição dos serviços e gráfico. Nenhuma propriedade do mesmo elemento é controlada por duas bibliotecas. O shader GLSL procedural representa informação em movimento. A cena 3D é carregada sob demanda; pausada inicialmente com movimento reduzido, com limite de pixel ratio e suspensão fora da tela. Rodas e toque preservam a rolagem da página.
 
-## Acessibilidade e validação
+O laboratório e o dashboard são demonstrações. Os dados de BI são fictícios. Não há automação real conectada, coleta de informações, API de IA ou credenciais no site.
 
-Inclui navegação por teclado, foco visível, modal nativo, link para pular ao conteúdo e suporte a movimento reduzido. As fontes externas têm alternativas locais.
+## Créditos
 
-Foram verificados a sintaxe JavaScript, os identificadores, as âncoras internas e os arquivos locais. A renderização em navegador ainda não foi verificada.
+A máquina é adaptada de [Agentic 3D Templates](https://github.com/eugeneshilow/agentic-3d-templates), por Eugeneshilow / vibecoding.tech, a partir do componente solicitado. O original permite uso em projetos pessoais e comerciais, mas não redistribuição ou revenda como template. Este repositório é o site específico da Otalogia, não um template redistribuível. Crédito visual preservado.
