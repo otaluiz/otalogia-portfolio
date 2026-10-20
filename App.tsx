@@ -9,6 +9,8 @@ const WaveGrid = lazy(() => import('@/components/ui/wave-grid'))
 const Factory = lazy(() => import('@/components/ui/agentic-factory-3d'))
 
 const instagram = 'https://www.instagram.com/otalogia/'
+const phone = '+55 65 992791582'
+const whatsappUrl = 'https://wa.me/5565992791582?text=Ol%C3%A1!%20Vim%20pelo%20site%20da%20Otalogia.'
 
 const services = [
   {
@@ -546,14 +548,24 @@ export default function App() {
 
               <div>
                 <div className="dotted-divider" />
-                <a
-                  className="font-medium text-[#fc5000] hover:underline inline-flex items-center gap-2 text-[15px]"
-                  href={instagram}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Conheça o conteúdo no Instagram @otalogia ↗
-                </a>
+                <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+                  <a
+                    className="font-medium text-[#fc5000] hover:underline inline-flex items-center gap-2 text-[15px]"
+                    href={instagram}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Instagram @otalogia ↗
+                  </a>
+                  <a
+                    className="font-medium text-[#070607] hover:underline inline-flex items-center gap-2 text-[15px]"
+                    href={whatsappUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    WhatsApp {phone} ↗
+                  </a>
+                </div>
               </div>
             </div>
           </section>
@@ -571,7 +583,7 @@ export default function App() {
 
             <div>
               <a
-                href={instagram}
+                href={whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="contact-title-huge group cursor-pointer"
@@ -584,40 +596,91 @@ export default function App() {
             </div>
 
             <div className="flex justify-between items-end flex-wrap gap-4 border-t-[1.5px] border-[#070607]/20 pt-6">
-              <p className="text-[15px] max-w-[420px] font-medium text-[#070607]">
-                Conte sobre a sua operação, sua ideia de sistema ou aquele processo que precisa de fluidez e
-                automação.
-              </p>
-              <Button
-                asChild
-                variant="dark"
-                size="lg"
-                className="btn-dark !bg-[#070607] !text-white hover:!bg-[#222222]"
-              >
-                <a
-                  href={instagram}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="!text-white font-semibold"
-                  style={{ color: '#ffffff' }}
+              <div>
+                <p className="text-[15px] max-w-[420px] font-medium text-[#070607]">
+                  Conte sobre a sua operação, sua ideia de sistema ou aquele processo que precisa de fluidez e
+                  automação.
+                </p>
+                <div className="mt-3 flex items-center gap-2 flex-wrap text-[14px]">
+                  <span className="font-mono text-[#070607]/75">WhatsApp / Contato:</span>
+                  <a
+                    href={whatsappUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-mono font-bold text-[#070607] hover:underline"
+                  >
+                    {phone} ↗
+                  </a>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-3">
+                <Button
+                  asChild
+                  variant="dark"
+                  size="lg"
+                  className="btn-dark !bg-[#070607] !text-white hover:!bg-[#222222]"
                 >
-                  Falar no Instagram @otalogia ↗
-                </a>
-              </Button>
+                  <a
+                    href={whatsappUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="!text-white font-semibold flex items-center gap-2"
+                    style={{ color: '#ffffff' }}
+                  >
+                    Falar no WhatsApp {phone} ↗
+                  </a>
+                </Button>
+                <Button
+                  asChild
+                  variant="secondary"
+                  size="lg"
+                  className="border-[#070607] text-[#070607] hover:bg-[#070607]/10"
+                >
+                  <a
+                    href={instagram}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-semibold text-[#070607]"
+                  >
+                    Instagram @otalogia ↗
+                  </a>
+                </Button>
+              </div>
             </div>
           </section>
 
           {/* Caldera Pill Footer */}
-          <footer className="caldera-footer-pill">
+          <footer className="caldera-footer-pill flex-wrap gap-4">
             <a href="#inicio" className="caldera-logo text-[24px]">
               OTALOGIA<span>↗</span>
             </a>
             <span className="text-[13px] text-[#070607]/75">
               © {new Date().getFullYear()} · Tecnologia aplicada ao seu negócio.
             </span>
-            <a href="#inicio" className="font-medium hover:text-[#fc5000] text-[13px]">
-              Voltar ao topo ↑
-            </a>
+            <div className="flex items-center gap-4 text-[13px] flex-wrap">
+              <a
+                href={whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-mono font-medium hover:text-[#fc5000] text-[#070607]"
+              >
+                WhatsApp {phone} ↗
+              </a>
+              <span className="opacity-30">·</span>
+              <a
+                href={instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium hover:text-[#fc5000] text-[#070607]"
+              >
+                @otalogia ↗
+              </a>
+              <span className="opacity-30">·</span>
+              <a href="#inicio" className="font-medium hover:text-[#fc5000] text-[#070607]">
+                Voltar ao topo ↑
+              </a>
+            </div>
           </footer>
         </main>
       </div>
