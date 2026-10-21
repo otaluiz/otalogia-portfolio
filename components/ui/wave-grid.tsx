@@ -309,7 +309,7 @@ export default function WaveGrid({
       const h = el.clientHeight
       if (!w || !h) return
 
-      const dpr = Math.min(window.devicePixelRatio, 2)
+      const dpr = Math.min(window.devicePixelRatio, w < 768 ? 1.25 : 1.5)
       renderer.setPixelRatio(dpr)
       renderer.setSize(w, h)
       composer.setPixelRatio(dpr)

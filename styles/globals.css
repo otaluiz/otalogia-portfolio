@@ -5,9 +5,9 @@
 :root {
   --color-ember: #fc5000;
   --color-plasma-violet: #524ae9;
-  --color-sulfur: #f5f28e;
-  --color-limestone: #f7f6f2;
-  --color-pumice: #e2e2df;
+  --color-sulfur: #3285ff;
+  --color-limestone: rgba(15, 12, 25, 0.76);
+  --color-pumice: #070607;
   --color-obsidian: #070607;
   --color-chalk: #ffffff;
 
@@ -28,8 +28,8 @@
 
   font-family: var(--font-body);
   font-weight: 500;
-  color: var(--color-obsidian);
-  background-color: var(--color-pumice);
+  color: #f4f1fa;
+  background-color: #070607;
 }
 
 * {
@@ -38,8 +38,8 @@
 
 body {
   margin: 0;
-  background-color: var(--color-pumice);
-  color: var(--color-obsidian);
+  background-color: #070607;
+  color: #f4f1fa;
   font-family: var(--font-body);
   font-weight: 500;
   overflow-x: hidden;
@@ -68,7 +68,7 @@ button {
 
 ::selection {
   background: var(--color-ember);
-  color: var(--color-obsidian);
+  color: #f4f1fa;
 }
 
 :focus-visible {
@@ -121,7 +121,7 @@ em {
   top: -80px;
   left: 20px;
   background: var(--color-ember);
-  color: var(--color-obsidian);
+  color: #f4f1fa;
   z-index: 1000;
   padding: 12px 24px;
   border-radius: var(--radius-pills);
@@ -167,7 +167,7 @@ em {
   font-family: var(--font-display);
   font-size: 32px;
   letter-spacing: 0.04em;
-  color: var(--color-obsidian);
+  color: #f4f1fa;
   display: flex;
   align-items: center;
   gap: 4px;
@@ -188,7 +188,7 @@ em {
   font-family: var(--font-body);
   font-weight: 500;
   font-size: 15px;
-  color: var(--color-obsidian);
+  color: #f4f1fa;
   padding: 8px 16px;
   border-radius: var(--radius-pills);
   transition: all 0.15s;
@@ -213,7 +213,7 @@ em {
   font-family: var(--font-body);
   font-weight: 600;
   font-size: 14px;
-  color: var(--color-obsidian);
+  color: #f4f1fa;
   padding: 8px 14px;
   border-radius: var(--radius-pills);
 }
@@ -297,7 +297,7 @@ button.btn-dark:hover {
 }
 
 .caldera-card.dark {
-  background-color: var(--color-obsidian);
+  background-color: #f4f1fa;
   color: var(--color-chalk);
 }
 
@@ -312,7 +312,7 @@ button.btn-dark:hover {
 /* Hero Section: Single Unified Card with 3D Wave Grid in Background */
 .hero-caldera-single {
   position: relative;
-  background-color: var(--color-limestone);
+  background-color: rgba(7, 6, 7, .12);
   border-radius: var(--radius-cards);
   overflow: hidden;
   border: 1px solid rgba(7, 6, 7, 0.08);
@@ -352,7 +352,7 @@ button.btn-dark:hover {
 .hero-display-title {
   font-size: clamp(64px, 8.5vw, 136px);
   line-height: 0.92;
-  color: var(--color-obsidian);
+  color: #f4f1fa;
   margin: 24px 0;
 }
 
@@ -370,7 +370,7 @@ button.btn-dark:hover {
 .hero-single-desc {
   font-size: 18px;
   max-width: 540px;
-  color: var(--color-obsidian);
+  color: #f4f1fa;
   line-height: 1.6;
 }
 
@@ -395,11 +395,11 @@ button.btn-dark:hover {
 
 .stat-card-caldera.limestone {
   background-color: var(--color-limestone);
-  color: var(--color-obsidian);
+  color: #f4f1fa;
 }
 
 .stat-card-caldera.limestone .stat-number {
-  color: var(--color-obsidian);
+  color: #f4f1fa;
 }
 
 .stat-label {
@@ -448,7 +448,7 @@ button.btn-dark:hover {
 
 .solution-card-caldera h3 {
   font-size: 42px;
-  color: var(--color-obsidian);
+  color: #f4f1fa;
   margin: 16px 0 12px;
 }
 
@@ -468,7 +468,7 @@ button.btn-dark:hover {
   font-family: var(--font-body);
   font-weight: 500;
   font-size: 15px;
-  color: var(--color-obsidian);
+  color: #f4f1fa;
 }
 
 .solution-card-caldera li span {
@@ -478,7 +478,7 @@ button.btn-dark:hover {
 
 /* Interactive Laboratory & Factory (3D) */
 .lab-caldera {
-  background-color: var(--color-obsidian);
+  background-color: #f4f1fa;
   color: var(--color-chalk);
   border-radius: var(--radius-cards);
   padding: 56px 48px;
@@ -530,7 +530,7 @@ button.btn-dark:hover {
 
 .lab-step-btn.active {
   background: var(--color-ember);
-  color: var(--color-obsidian);
+  color: #f4f1fa;
   border-color: var(--color-ember);
   font-weight: 600;
 }
@@ -540,13 +540,13 @@ button.btn-dark:hover {
   background-color: var(--color-limestone);
   border-radius: var(--radius-cards);
   padding: 40px;
-  color: var(--color-obsidian);
+  color: #f4f1fa;
   margin-top: 40px;
 }
 
 .caldera-dashboard h3 {
   font-size: 38px;
-  color: var(--color-obsidian);
+  color: #f4f1fa;
 }
 
 .dashboard-select {
@@ -555,7 +555,7 @@ button.btn-dark:hover {
   border-radius: var(--radius-pills);
   padding: 8px 16px;
   font-weight: 500;
-  color: var(--color-obsidian);
+  color: #f4f1fa;
 }
 
 .caldera-chart {
@@ -613,7 +613,7 @@ button.btn-dark:hover {
 
 .process-card-caldera h3 {
   font-size: 32px;
-  color: var(--color-obsidian);
+  color: #f4f1fa;
   margin: 16px 0 8px;
 }
 
@@ -645,7 +645,7 @@ button.btn-dark:hover {
 
 .about-big-o span {
   font-size: 0.6em;
-  color: var(--color-obsidian);
+  color: #f4f1fa;
 }
 
 .about-content-card {
@@ -660,13 +660,13 @@ button.btn-dark:hover {
 .about-content-card h2 {
   font-size: clamp(40px, 4.5vw, 68px);
   margin-bottom: 20px;
-  color: var(--color-obsidian);
+  color: #f4f1fa;
 }
 
 /* Contact Conversion Card */
 .contact-caldera {
   background-color: var(--color-ember);
-  color: var(--color-obsidian);
+  color: #f4f1fa;
   border-radius: var(--radius-cards);
   padding: 64px 56px;
   margin-bottom: 60px;
@@ -685,7 +685,7 @@ button.btn-dark:hover {
   font-family: var(--font-display);
   font-size: clamp(64px, 8.5vw, 130px);
   line-height: 0.92;
-  color: var(--color-obsidian);
+  color: #f4f1fa;
   margin: 24px 0;
   display: flex;
   align-items: center;
@@ -812,4 +812,64 @@ button.btn-dark:hover {
 .about-photo-card > p { max-width: 32ch; line-height: 1.6; }
 @media (max-width: 980px) {
   .about-photo-card { width: 100%; aspect-ratio: 3 / 4; }
+}
+
+/* Grain remains visible without putting the canvas behind the document background. */
+.otalogia-page { isolation: isolate; padding-top: 20px; }
+.otalogia-grain { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; background: radial-gradient(ellipse at 5% 15%, #772a0f, transparent 55%), radial-gradient(ellipse at 95% 75%, #38216e, transparent 60%), #070607; }
+.otalogia-grain canvas { display: block; }
+.hero-wave-backdrop { opacity: .28; mask-image: linear-gradient(90deg, transparent, #000 90%); }
+.hero-caldera-single { background: rgba(7,6,7,.15); border-color: #ffffff18; }
+.caldera-nav, .solution-card-caldera, .process-card-caldera, .about-content-card, .caldera-dashboard, .caldera-footer-pill, .stat-card-caldera.limestone { border: 1px solid #ffffff20; }
+.caldera-nav { backdrop-filter: blur(16px); }
+.lab-caldera { background: rgba(7,6,7,.78); }
+.dashboard-select { border-color: #ffffff60; min-height: 44px; }
+.dashboard-select option { background: #101018; color: #f4f1fa; }
+.caldera-chart { border-color: #ffffff40; }
+.caldera-chart i { background: #3285ff; }
+.nav-divider-dot { background: #ffffff40; }
+.caldera-container > section { scroll-margin-top: 110px; }
+.solutions-grid-caldera > *, .about-caldera > *, .process-grid-caldera > * { min-width: 0; }
+.contact-caldera, .contact-title-huge { color: #070607; }
+.contact-caldera [class*="text-[#f4f1fa]"] { color: #070607; }
+@media (max-width: 1023px) {
+  .caldera-nav-links { display: none; }
+  .caldera-menu-btn { display: block; min-height: 44px; }
+  #mobile-nav { max-width: var(--page-max-width); margin-inline: auto; backdrop-filter: blur(16px); }
+}
+@media (max-width: 680px) {
+  :root { --radius-cards: 24px; --card-padding: 22px; }
+  .otalogia-page { padding-top: max(12px, env(safe-area-inset-top)); }
+  .caldera-container { padding-inline: 16px; }
+  .caldera-nav-wrapper { top: 10px; padding-inline: 12px; margin-bottom: 24px; }
+  .caldera-nav { padding: 8px 12px 8px 18px; }
+  .caldera-logo { font-size: 27px; }
+  .caldera-nav > div > a { display: none; }
+  .hero-caldera-single, .hero-single-content { min-height: 0; }
+  .hero-single-content { padding: 42px 20px; }
+  .hero-display-title { font-size: clamp(36px, 10.3vw, 68px); line-height: 1; }
+  .hero-single-content > div > span { font-size: 10px; letter-spacing: .08em; }
+  .hero-single-desc { font-size: 16px; }
+  .hero-single-content .hero-reveal.flex { gap: 12px; }
+  .hero-single-content .hero-reveal.flex > div, .hero-single-content .hero-reveal.flex a { width: 100%; }
+  .solution-card-caldera, .process-card-caldera, .about-content-card, .caldera-dashboard { padding: 24px 20px; }
+  .solution-card-caldera h3 { font-size: 34px; overflow-wrap: anywhere; }
+  .solution-card-caldera > div > .flex { flex-wrap: wrap; gap: 12px; }
+  .stat-row-caldera { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; }
+  .stat-card-caldera { padding: 22px 16px; }
+  .stat-label { font-size: 10px; overflow-wrap: anywhere; }
+  .stat-number { font-size: 48px; }
+  .stat-desc { font-size: 12px; }
+  .lab-caldera { padding: 28px 12px; }
+  .lab-caldera h2 { font-size: clamp(36px,10vw,52px); }
+  .lab-step-btn { min-height: 44px; }
+  .contact-caldera { padding: 32px 22px; min-height: 0; }
+  .contact-title-huge { font-size: clamp(44px,12vw,72px); overflow-wrap: anywhere; }
+  .caldera-footer-pill { padding: 24px 18px; }
+  .caldera-footer-pill > div { justify-content: center; }
+  .caldera-container > section { margin-bottom: 40px; }
+  .process-controls button { min-height: 44px; }
+}
+@media (max-width: 400px) {
+  .solution-card-caldera .gf-root { zoom: .76; }
 }

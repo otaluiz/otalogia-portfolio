@@ -1,33 +1,24 @@
 import { GrainGradient } from '@paper-design/shaders-react'
 import { memo } from 'react'
+import { useReducedMotion } from 'framer-motion'
 
-/**
- * Background Grain Gradient Shader configured to match:
- * https://shaders.paper.design/grain-gradient#colors=7300ff,eba8ff,00bfff,2b00ff&colorBack=000000&softness=0.5&intensity=0.5&noise=0.25&shape=corners&speed=1&scale=1&rotation=0&offsetX=0&offsetY=0
- */
+/** Paper grain sits inside the isolated page, above its fallback and below content. */
 export const BackgroundShader = memo(function BackgroundShader() {
+  const reduced = useReducedMotion()
   return (
-    <div
-      className="fixed inset-0 -z-30 pointer-events-none overflow-hidden select-none bg-black"
-      aria-hidden="true"
-    >
+    <div className="otalogia-grain" aria-hidden="true">
       <GrainGradient
-        className="w-full h-full"
         style={{ width: '100%', height: '100%' }}
-        colors={['#7300ff', '#eba8ff', '#00bfff', '#2b00ff']}
-        colorBack="#000000"
-        softness={0.5}
-        intensity={0.5}
-        noise={0.25}
+        colors={['#fc5000', '#7300ff', '#3285ff', '#524ae9']}
+        colorBack="#070607"
+        softness={0.65}
+        intensity={0.45}
+        noise={0.28}
         shape="corners"
-        speed={1}
+        speed={reduced ? 0 : 0.35}
         scale={1}
-        rotation={0}
-        offsetX={0}
-        offsetY={0}
       />
     </div>
   )
 })
-
 export default BackgroundShader

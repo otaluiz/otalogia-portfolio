@@ -146,7 +146,7 @@ function Dashboard() {
     <div className="caldera-dashboard" data-reveal>
       <div className="flex justify-between items-center gap-4 flex-wrap">
         <div>
-          <span className="text-[12px] font-mono tracking-widest text-[#070607]/70 uppercase font-medium">
+          <span className="text-[12px] font-mono tracking-widest text-[#f4f1fa]/70 uppercase font-medium">
             LAB / BUSINESS INTELLIGENCE
           </span>
           <h3 className="mt-2">DO DADO À PERSPECTIVA.</h3>
@@ -163,21 +163,21 @@ function Dashboard() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-        <div className="p-4 border-t-[1.5px] border-dotted border-[#070607]/30">
+        <div className="p-4 border-t-[1.5px] border-dotted border-white/30">
           <span className="text-[12px] uppercase opacity-75">Oportunidades</span>
-          <div className="font-display text-[48px] mt-1 text-[#070607]">
+          <div className="font-display text-[48px] mt-1 text-[#f4f1fa]">
             {values.reduce((a, b) => a + b, 0)}
           </div>
         </div>
-        <div className="p-4 border-t-[1.5px] border-dotted border-[#070607]/30">
+        <div className="p-4 border-t-[1.5px] border-dotted border-white/30">
           <span className="text-[12px] uppercase opacity-75">Maior volume mensal</span>
           <div className="font-display text-[48px] mt-1 text-[#fc5000]">
             {Math.max(...values)}
           </div>
         </div>
-        <div className="p-4 border-t-[1.5px] border-dotted border-[#070607]/30">
+        <div className="p-4 border-t-[1.5px] border-dotted border-white/30">
           <span className="text-[12px] uppercase opacity-75">Fonte</span>
-          <div className="text-[18px] font-medium mt-3 text-[#070607]">Dados operacionais</div>
+          <div className="text-[18px] font-medium mt-3 text-[#f4f1fa]">Dados operacionais</div>
         </div>
       </div>
 
@@ -216,7 +216,7 @@ export default function App() {
 
   return (
     <MotionConfig reducedMotion="user">
-      <div ref={root} className="min-h-screen relative pb-12">
+      <div ref={root} className="otalogia-page min-h-screen relative pb-12">
         {/* Global Grain Gradient Background Shader */}
         <BackgroundShader />
 
@@ -269,7 +269,7 @@ export default function App() {
             {menu && (
               <motion.nav
                 id="mobile-nav"
-                className="mt-3 bg-[#f7f6f2] border border-[#070607]/10 rounded-[32px] p-6 flex flex-col gap-3 md:hidden"
+                className="mt-3 bg-[#101018]/95 border border-white/10 rounded-[32px] p-6 flex flex-col gap-3 lg:hidden"
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
@@ -300,15 +300,15 @@ export default function App() {
           <section id="inicio" className="hero-caldera-single">
             {/* 3D Wave Grid background */}
             <div className="hero-wave-backdrop" aria-hidden="true">
-              <Suspense fallback={<div className="w-full h-full bg-[#f7f6f2]" />}>
-                <WaveGrid colorBase="#f7f6f2" colorHigh="#fc5000" />
+              <Suspense fallback={<div className="w-full h-full bg-[#101018]/95" />}>
+                <WaveGrid colorBase="#171126" colorHigh="#fc5000" />
               </Suspense>
             </div>
 
             {/* Editorial Content directly over the 3D wave grid */}
             <div className="hero-single-content">
               <div>
-                <span className="hero-reveal text-[13px] font-mono tracking-widest text-[#070607]/70 uppercase font-medium">
+                <span className="hero-reveal text-[13px] font-mono tracking-widest text-[#f4f1fa]/70 uppercase font-medium">
                   SISTEMAS · DADOS · INTELIGÊNCIA ARTIFICIAL
                 </span>
 
@@ -317,7 +317,7 @@ export default function App() {
                     <span className="inline-block">
                       <HalftoneText
                         text="TECNOLOGIA."
-                        ink="#070607"
+                        ink="#f4f1fa"
                         warm="#fc5000"
                         dotGap={4}
                         radius={75}
@@ -334,7 +334,7 @@ export default function App() {
                         <HalftoneText
                           text="NEGÓCIO."
                           ink="#fc5000"
-                          warm="#070607"
+                          warm="#3285ff"
                           dotGap={4}
                           radius={75}
                         />
@@ -402,14 +402,14 @@ export default function App() {
           <section id="solucoes" className="mb-20">
             <div className="flex flex-col md:flex-row justify-between items-start gap-6 mb-8">
               <div>
-                <span className="text-[13px] font-mono tracking-widest text-[#070607]/70 uppercase font-medium">
+                <span className="text-[13px] font-mono tracking-widest text-[#f4f1fa]/70 uppercase font-medium">
                   01 / O QUE POSSO CONSTRUIR COM VOCÊ
                 </span>
                 <h2 className="text-[clamp(44px,5.5vw,82px)] mt-3">
                   SEU DESAFIO. A TECNOLOGIA <em>CERTA.</em>
                 </h2>
               </div>
-              <p className="text-[16px] max-w-[420px] text-[#070607]/80">
+              <p className="text-[16px] max-w-[420px] text-[#f4f1fa]/80">
                 Soluções para empresas de serviços que desejam organizar a operação, integrar suas ferramentas
                 e dar o próximo passo tecnológico com robustez e clareza.
               </p>
@@ -420,13 +420,13 @@ export default function App() {
                 <div key={s.n} className="solution-card-caldera overflow-visible">
                   <div>
                     <div className="flex justify-between items-center">
-                      <span className="text-[12px] font-mono tracking-wider text-[#070607]/60 uppercase font-semibold">
+                      <span className="text-[12px] font-mono tracking-wider text-[#f4f1fa]/60 uppercase font-semibold">
                         {s.tag}
                       </span>
                       <span className="font-display text-[28px] text-[#fc5000]">{s.n}</span>
                     </div>
                     <h3>{s.name}</h3>
-                    <p className="text-[15px] text-[#070607]/80 leading-relaxed">{s.desc}</p>
+                    <p className="text-[15px] text-[#f4f1fa]/80 leading-relaxed">{s.desc}</p>
                   </div>
 
                   {/* Interactive Frosted Glass Folder */}
@@ -434,7 +434,7 @@ export default function App() {
                     <GlassFolder
                       label="Serviços"
                       meta={`${s.n} · ${s.name}`}
-                      tone="light"
+                      tone="dark"
                       art={s.folderArt}
                       seed={i * 97 + 13}
                       width={290}
@@ -442,7 +442,7 @@ export default function App() {
                       action="none"
                       appearDelay={i * 120}
                     />
-                    <span className="text-[11px] font-mono tracking-wider text-[#070607]/50 uppercase mt-2 select-none">
+                    <span className="text-[11px] font-mono tracking-wider text-[#f4f1fa]/50 uppercase mt-2 select-none">
                       Clique na pasta para abrir os temas ↗
                     </span>
                   </div>
@@ -528,7 +528,7 @@ export default function App() {
           {/* Process Section (Caldera Step Cards) */}
           <section id="processo" className="mb-20">
             <div>
-              <span className="text-[13px] font-mono tracking-widest text-[#070607]/70 uppercase font-medium">
+              <span className="text-[13px] font-mono tracking-widest text-[#f4f1fa]/70 uppercase font-medium">
                 03 / COMO TRABALHO
               </span>
               <h2 className="text-[clamp(44px,5.5vw,82px)] mt-3">
@@ -547,7 +547,7 @@ export default function App() {
                     <span className="step-num">{num}</span>
                     <h3>{title}</h3>
                   </div>
-                  <p className="text-[15px] text-[#070607]/80 leading-relaxed">{desc}</p>
+                  <p className="text-[15px] text-[#f4f1fa]/80 leading-relaxed">{desc}</p>
                 </div>
               ))}
             </div>
@@ -575,7 +575,7 @@ export default function App() {
 
             <div className="about-content-card">
               <div>
-                <span className="text-[13px] font-mono tracking-widest text-[#070607]/70 uppercase font-medium">
+                <span className="text-[13px] font-mono tracking-widest text-[#f4f1fa]/70 uppercase font-medium">
                   04 / POR TRÁS DA OTALOGIA
                 </span>
                 <h2 className="mt-3">
@@ -584,11 +584,11 @@ export default function App() {
                   SENSIBILIDADE PARA <em>ENTENDER.</em>
                 </h2>
 
-                <p className="text-[16px] text-[#070607]/85 mb-4 leading-relaxed">
+                <p className="text-[16px] text-[#f4f1fa]/85 mb-4 leading-relaxed">
                   Minha trajetória reúne engenharia de controle e automação, engenharia de software, data
                   science, gestão ágil de projetos, neurociência e psicologia aplicada.
                 </p>
-                <p className="text-[16px] text-[#070607]/85 mb-6 leading-relaxed">
+                <p className="text-[16px] text-[#f4f1fa]/85 mb-6 leading-relaxed">
                   Conecto essa bagagem multidisciplinar ao desenvolvimento de sistemas web eficientes, dashboards
                   inteligentes e rotinas com inteligência artificial. Também conduzo uma agência de marketing
                   orientada a dados e produzo conteúdo técnico para simplificar conceitos complexos.
@@ -607,7 +607,7 @@ export default function App() {
                     Instagram @otalogia ↗
                   </a>
                   <a
-                    className="font-medium text-[#070607] hover:underline inline-flex items-center gap-2 text-[15px]"
+                    className="font-medium text-[#f4f1fa] hover:underline inline-flex items-center gap-2 text-[15px]"
                     href={whatsappUrl}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -622,7 +622,7 @@ export default function App() {
           {/* Contact Conversion Banner (Caldera Ember Card with 40px radius) */}
           <section id="contato" className="contact-caldera">
             <div className="flex justify-between items-center flex-wrap gap-4">
-              <span className="text-[13px] font-mono font-semibold tracking-wider text-[#070607]/80 uppercase">
+              <span className="text-[13px] font-mono font-semibold tracking-wider text-[#f4f1fa]/80 uppercase">
                 QUAL É O DESAFIO DO SEU NEGÓCIO?
               </span>
               <span className="text-[13px] font-mono font-semibold tracking-wider">
@@ -644,19 +644,19 @@ export default function App() {
               </a>
             </div>
 
-            <div className="flex justify-between items-end flex-wrap gap-4 border-t-[1.5px] border-[#070607]/20 pt-6">
+            <div className="flex justify-between items-end flex-wrap gap-4 border-t-[1.5px] border-white/20 pt-6">
               <div>
-                <p className="text-[15px] max-w-[420px] font-medium text-[#070607]">
+                <p className="text-[15px] max-w-[420px] font-medium text-[#f4f1fa]">
                   Conte sobre a sua operação, sua ideia de sistema ou aquele processo que precisa de fluidez e
                   automação.
                 </p>
                 <div className="mt-3 flex items-center gap-2 flex-wrap text-[14px]">
-                  <span className="font-mono text-[#070607]/75">WhatsApp / Contato:</span>
+                  <span className="font-mono text-[#f4f1fa]/75">WhatsApp / Contato:</span>
                   <a
                     href={whatsappUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="font-mono font-bold text-[#070607] hover:underline"
+                    className="font-mono font-bold text-[#f4f1fa] hover:underline"
                   >
                     {phone} ↗
                   </a>
@@ -680,7 +680,7 @@ export default function App() {
                   rel="noopener noreferrer"
                   variant="secondary"
                   size="lg"
-                  className="font-semibold text-[#070607]"
+                  className="font-semibold text-[#f4f1fa]"
                 >
                   Instagram @otalogia ↗
                 </CursorEdgeGlowButton>
@@ -693,7 +693,7 @@ export default function App() {
             <a href="#inicio" className="caldera-logo text-[24px]">
               OTALOGIA<span>↗</span>
             </a>
-            <span className="text-[13px] text-[#070607]/75">
+            <span className="text-[13px] text-[#f4f1fa]/75">
               © {new Date().getFullYear()} · Tecnologia aplicada ao seu negócio.
             </span>
             <div className="flex items-center gap-4 text-[13px] flex-wrap">
@@ -701,7 +701,7 @@ export default function App() {
                 href={whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-medium hover:text-[#fc5000] text-[#070607]"
+                className="font-medium hover:text-[#fc5000] text-[#f4f1fa]"
               >
                 WhatsApp ↗
               </a>
@@ -710,12 +710,12 @@ export default function App() {
                 href={instagram}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-medium hover:text-[#fc5000] text-[#070607]"
+                className="font-medium hover:text-[#fc5000] text-[#f4f1fa]"
               >
                 @otalogia ↗
               </a>
               <span className="opacity-30">·</span>
-              <a href="#inicio" className="font-medium hover:text-[#fc5000] text-[#070607]">
+              <a href="#inicio" className="font-medium hover:text-[#fc5000] text-[#f4f1fa]">
                 Voltar ao topo ↑
               </a>
             </div>
