@@ -510,6 +510,12 @@ button.btn-dark:hover {
   padding: 40px 20px;
 }
 
+/* 3D Machine Frame Caldera Integration */
+.machine.factory-scope {
+  border-radius: 28px !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
 .lab-pills-row {
   display: flex;
   flex-wrap: wrap;

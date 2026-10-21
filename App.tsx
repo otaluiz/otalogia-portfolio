@@ -179,7 +179,6 @@ export default function App() {
   const reduced = useReducedMotion()
   const [menu, setMenu] = useState(false)
   const [service, setService] = useState(0)
-  const [machine, setMachine] = useState(false)
   const [station, setStation] = useState<StationId>('cabinet')
   const [ready, setReady] = useState(false)
   const current = steps.find((s) => s.id === station)!
@@ -429,35 +428,34 @@ export default function App() {
               </p>
             </div>
 
-            {machine ? (
-              <Suspense fallback={<div className="lab-poster-caldera">Preparando o laboratório 3D…</div>}>
+            <div className="flex items-center gap-2 font-mono text-[12px] mt-6 mb-4 flex-wrap text-white/70">
+              <span className="px-3 py-1 border border-white/15 rounded-[800px] bg-white/5">DADOS</span>
+              <span className="text-[#fc5000]">→</span>
+              <span className="px-3 py-1 border border-white/15 rounded-[800px] bg-white/5">
+                INTELIGÊNCIA ARTIFICIAL
+              </span>
+              <span className="text-[#fc5000]">→</span>
+              <span className="px-3 py-1 border border-white/15 rounded-[800px] bg-white/5">SISTEMAS</span>
+              <span className="text-[#fc5000]">→</span>
+              <span className="px-3 py-1 border border-[#fc5000] text-[#fc5000] rounded-[800px] bg-[#fc5000]/10 font-semibold">
+                RESULTADOS
+              </span>
+            </div>
+
+            <div className="my-6 rounded-[28px] overflow-hidden border border-white/15 shadow-2xl bg-[#10150f]">
+              <Suspense
+                fallback={
+                  <div className="min-h-[540px] flex flex-col items-center justify-center p-8 text-center bg-[#10150f]">
+                    <div className="w-8 h-8 border-2 border-[#fc5000] border-t-transparent rounded-full animate-spin mb-4" />
+                    <p className="font-mono text-[13px] text-white/70 uppercase tracking-wider">
+                      Carregando laboratório 3D interativo…
+                    </p>
+                  </div>
+                }
+              >
                 <Factory onStation={setStation} onReady={() => setReady(true)} />
               </Suspense>
-            ) : (
-              <div className="lab-poster-caldera">
-                <div className="flex items-center gap-3 font-mono text-[13px] mb-6 flex-wrap justify-center">
-                  <span className="px-3 py-1.5 border border-white/20 rounded-[800px] bg-white/5">
-                    DADOS
-                  </span>
-                  <span className="text-[#fc5000]">→</span>
-                  <span className="px-3 py-1.5 border border-white/20 rounded-[800px] bg-white/5">
-                    INTELIGÊNCIA ARTIFICIAL
-                  </span>
-                  <span className="text-[#fc5000]">→</span>
-                  <span className="px-3 py-1.5 border border-white/20 rounded-[800px] bg-white/5">
-                    SISTEMAS
-                  </span>
-                  <span className="text-[#fc5000]">→</span>
-                  <span className="px-3 py-1.5 border border-[#fc5000] text-[#fc5000] rounded-[800px] bg-[#fc5000]/10 font-semibold">
-                    RESULTADOS
-                  </span>
-                </div>
-                <Button onClick={() => setMachine(true)} variant="default" size="lg">
-                  Explorar a máquina 3D <span>↗</span>
-                </Button>
-                <p className="text-[12px] text-white/60 mt-3">Interativa · gire a cena e explore as estações</p>
-              </div>
-            )}
+            </div>
 
             <div className="lab-pills-row" role="group" aria-label="Etapas da operação">
               {steps.map((s, i) => (
