@@ -775,3 +775,41 @@ button.btn-dark:hover {
     text-align: center;
   }
 }
+
+/* Portrait supplied by the founder; keep the original colors and face visible. */
+.about-photo-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  aspect-ratio: 3 / 4;
+  min-height: 0;
+  padding: clamp(24px, 3.5vw, 48px);
+  background: #a94308;
+}
+.about-portrait {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 32%;
+}
+.about-photo-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(7,6,7,.35) 0%, transparent 24%, transparent 58%, rgba(7,6,7,.85) 100%);
+}
+.about-photo-card > span,
+.about-photo-card > p {
+  position: relative;
+  color: #fff;
+}
+.about-photo-card > p { max-width: 32ch; line-height: 1.6; }
+@media (max-width: 980px) {
+  .about-photo-card { width: 100%; aspect-ratio: 3 / 4; }
+}

@@ -555,13 +555,19 @@ export default function App() {
 
           {/* About Section (Otalogia Brand & Background) */}
           <section id="sobre" className="about-caldera">
-            <div className="about-mark-card">
+            <div className="about-mark-card about-photo-card">
+              <img
+                className="about-portrait"
+                src="/images/otalogia-portrait.jpg"
+                alt="Retrato do fundador da Otalogia, sorrindo diante de um fundo laranja"
+                width={960}
+                height={1280}
+                loading="lazy"
+                decoding="async"
+              />
               <span className="text-[12px] font-mono tracking-widest text-white/80 uppercase font-medium">
                 ENGENHARIA & IA
               </span>
-              <div className="about-big-o">
-                O<span>↗</span>
-              </div>
               <p className="text-[15px] text-white/90">
                 A tecnologia só faz sentido quando resolve um problema real para quem opera o negócio.
               </p>
