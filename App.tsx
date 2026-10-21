@@ -43,9 +43,9 @@ const services: {
     tag: 'DA INFORMAÇÃO À DECISÃO.',
     desc: 'Transforme dados dispersos em uma visão clara do negócio. Dashboards, análises e modelos preditivos, quando houver dados suficientes, ajudam a investigar padrões e planejar próximos passos.',
     items: ['Dashboards e indicadores', 'Análise exploratória de dados', 'Modelos preditivos e validação'],
-    folderArt: 'verdant',
+    folderArt: 'aurora',
     folderFiles: [
-      { name: 'Dashboards e indicadores', meta: 'Módulo 01', art: 'verdant' },
+      { name: 'Dashboards e indicadores', meta: 'Módulo 01', art: 'aurora' },
       { name: 'Análise exploratória de dados', meta: 'Módulo 02', art: 'glacier' },
       { name: 'Modelos preditivos e validação', meta: 'Módulo 03', art: 'ember' },
     ],
@@ -72,7 +72,7 @@ const services: {
     folderArt: 'dusk',
     folderFiles: [
       { name: 'Edição de vídeos', meta: 'Módulo 01', art: 'dusk' },
-      { name: 'Tutoriais e demonstrações', meta: 'Módulo 02', art: 'verdant' },
+      { name: 'Tutoriais e demonstrações', meta: 'Módulo 02', art: 'aurora' },
       { name: 'Conteúdo sobre tecnologia e IA', meta: 'Módulo 03', art: 'aurora' },
     ],
   },
@@ -486,10 +486,10 @@ export default function App() {
               </span>
             </div>
 
-            <div className="my-6 rounded-[28px] overflow-hidden border border-white/15 shadow-2xl bg-[#10150f]">
+            <div className="my-6 rounded-[28px] overflow-hidden border border-white/15 shadow-2xl bg-[#09090e]">
               <Suspense
                 fallback={
-                  <div className="min-h-[540px] flex flex-col items-center justify-center p-8 text-center bg-[#10150f]">
+                  <div className="min-h-[540px] flex flex-col items-center justify-center p-8 text-center bg-[#09090e]">
                     <div className="w-8 h-8 border-2 border-[#fc5000] border-t-transparent rounded-full animate-spin mb-4" />
                     <p className="font-mono text-[13px] text-white/70 uppercase tracking-wider">
                       Carregando laboratório 3D interativo…
@@ -506,6 +506,7 @@ export default function App() {
                 <button
                   key={s.id}
                   className={`lab-step-btn ${station === s.id ? 'active' : ''}`}
+                  aria-pressed={station === s.id}
                   onClick={() => {
                     setStation(s.id)
                     if (ready) (window as unknown as { __machine?: { focusStation: (id: string) => void } }).__machine?.focusStation(s.id)
@@ -718,3 +719,4 @@ export default function App() {
     </MotionConfig>
   )
 }
+
