@@ -138,72 +138,6 @@ function ServiceVisual({ kind }: { kind: string }) {
   )
 }
 
-function Dashboard() {
-  const [period, setPeriod] = useState('semestre')
-  const values = period === 'semestre' ? [22, 31, 27, 48, 55, 72] : [38, 26, 62, 49, 78, 66]
-
-  return (
-    <div className="caldera-dashboard" data-reveal>
-      <div className="flex justify-between items-center gap-4 flex-wrap">
-        <div>
-          <span className="text-[12px] font-mono tracking-widest text-[#f4f1fa]/70 uppercase font-medium">
-            LAB / BUSINESS INTELLIGENCE
-          </span>
-          <h3 className="mt-2">DO DADO À PERSPECTIVA.</h3>
-        </div>
-        <select
-          className="dashboard-select"
-          aria-label="Período da demonstração"
-          value={period}
-          onChange={(e) => setPeriod(e.target.value)}
-        >
-          <option value="semestre">1º semestre</option>
-          <option value="semestre2">2º semestre</option>
-        </select>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-        <div className="p-4 border-t-[1.5px] border-dotted border-white/30">
-          <span className="text-[12px] uppercase opacity-75">Oportunidades</span>
-          <div className="font-display text-[48px] mt-1 text-[#f4f1fa]">
-            {values.reduce((a, b) => a + b, 0)}
-          </div>
-        </div>
-        <div className="p-4 border-t-[1.5px] border-dotted border-white/30">
-          <span className="text-[12px] uppercase opacity-75">Maior volume mensal</span>
-          <div className="font-display text-[48px] mt-1 text-[#fc5000]">
-            {Math.max(...values)}
-          </div>
-        </div>
-        <div className="p-4 border-t-[1.5px] border-dotted border-white/30">
-          <span className="text-[12px] uppercase opacity-75">Fonte</span>
-          <div className="text-[18px] font-medium mt-3 text-[#f4f1fa]">Dados operacionais</div>
-        </div>
-      </div>
-
-      <div className="caldera-chart" role="img" aria-label={`Valores: ${values.join(', ')}`}>
-        {values.map((v, i) => (
-          <div key={i}>
-            <span className="text-[12px] font-mono">{v}</span>
-            <motion.i
-              animate={{ height: v * 2 }}
-              transition={{ duration: 0.55, ease: 'easeOut' }}
-            />
-            <small className="text-[11px] font-mono">
-              {(period === 'semestre'
-                ? ['JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN']
-                : ['JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'])[i]}
-            </small>
-          </div>
-        ))}
-      </div>
-      <p className="text-[12px] opacity-70 mt-4">
-        Demonstração interativa de Business Intelligence para acompanhamento de rotinas e conversões.
-      </p>
-    </div>
-  )
-}
-
 export default function App() {
   const root = useRef<HTMLDivElement>(null)
   usePageMotion(root)
@@ -452,7 +386,7 @@ export default function App() {
           </section>
 
           {/* Laboratory & Interactive 3D Machine (Caldera Dark Card, 40px radius) */}
-          <section id="laboratorio" className="lab-caldera">
+          <section id="laboratorio" className="lab-caldera lab-open">
             <div className="flex flex-col md:flex-row justify-between items-start gap-6">
               <div>
                 <span className="text-[13px] font-mono tracking-widest text-[#fc5000] uppercase font-medium">
@@ -486,10 +420,10 @@ export default function App() {
               </span>
             </div>
 
-            <div className="my-6 rounded-[28px] overflow-hidden border border-white/15 shadow-2xl bg-[#09090e]">
+            <div className="lab-scene my-6">
               <Suspense
                 fallback={
-                  <div className="min-h-[540px] flex flex-col items-center justify-center p-8 text-center bg-[#09090e]">
+                  <div className="min-h-[540px] flex flex-col items-center justify-center p-8 text-center">
                     <div className="w-8 h-8 border-2 border-[#fc5000] border-t-transparent rounded-full animate-spin mb-4" />
                     <p className="font-mono text-[13px] text-white/70 uppercase tracking-wider">
                       Carregando laboratório 3D interativo…
@@ -517,12 +451,11 @@ export default function App() {
               ))}
             </div>
 
-            <div className="mt-6 p-6 rounded-[20px] bg-white/5 border border-white/10">
+            <div className="mt-6 py-6 border-t border-white/15">
               <strong className="text-[18px] text-white">{current.name}</strong>
               <p className="text-[14px] text-white/80 mt-1">{current.desc}</p>
             </div>
 
-            <Dashboard />
           </section>
 
           {/* Process Section (Caldera Step Cards) */}

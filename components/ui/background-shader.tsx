@@ -9,10 +9,10 @@ export const BackgroundShader = memo(function BackgroundShader() {
     <div className="otalogia-grain" aria-hidden="true">
       <GrainGradient
         style={{ width: '100%', height: '100%' }}
-        colors={['#fc5000', '#7300ff', '#3285ff', '#524ae9']}
+        colors={['#fc5000', '#ff7a28', '#f7f6f2', '#251918']}
         colorBack="#070607"
-        softness={0.65}
-        intensity={0.45}
+        softness={0.75}
+        intensity={0.38}
         noise={0.28}
         shape="corners"
         speed={reduced ? 0 : 0.35}

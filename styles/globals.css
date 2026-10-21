@@ -816,7 +816,7 @@ button.btn-dark:hover {
 
 /* Grain remains visible without putting the canvas behind the document background. */
 .otalogia-page { isolation: isolate; padding-top: 20px; }
-.otalogia-grain { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; background: radial-gradient(ellipse at 5% 15%, #772a0f, transparent 55%), radial-gradient(ellipse at 95% 75%, #38216e, transparent 60%), #070607; }
+.otalogia-grain { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; background: radial-gradient(ellipse at 5% 15%, #772a0f, transparent 55%), radial-gradient(ellipse at 95% 75%, #6b3d2a, transparent 60%), #070607; }
 .otalogia-grain canvas { display: block; }
 .hero-wave-backdrop { opacity: .28; mask-image: linear-gradient(90deg, transparent, #000 90%); }
 .hero-caldera-single { background: rgba(7,6,7,.15); border-color: #ffffff18; }
@@ -872,4 +872,14 @@ button.btn-dark:hover {
 }
 @media (max-width: 400px) {
   .solution-card-caldera .gf-root { zoom: .76; }
+}
+
+/* Open laboratory: the scene shares the page grain instead of nested cards. */
+.lab-caldera.lab-open { background: transparent; border: 0; border-radius: 0; padding: 32px 0; }
+.lab-open .process-machine { background: transparent; border: 0; border-radius: 0; }
+.lab-open .process-loading, .lab-open .process-error { background: rgba(7,6,7,.88); }
+.lab-open .process-machine-header { padding-inline: 0; }
+@media (max-width: 680px) {
+  .lab-caldera.lab-open { padding: 20px 0; }
+  .lab-open .process-controls button { min-height: 44px; }
 }

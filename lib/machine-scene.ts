@@ -18,7 +18,7 @@ export function initMachineScene(root:HTMLElement, _font:string, options:Options
   const scene=new THREE.Scene()
   let renderer:THREE.WebGLRenderer
   try{renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:'high-performance'})}catch{loading.hidden=true;error.hidden=false;return()=>{}}
-  renderer.setClearColor('#09090e',1);renderer.setPixelRatio(Math.min(devicePixelRatio,innerWidth<700?1.25:1.5));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping
+  renderer.setClearColor('#09090e',0);renderer.setPixelRatio(Math.min(devicePixelRatio,innerWidth<700?1.25:1.5));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping
   host.appendChild(renderer.domElement)
   const camera=new THREE.PerspectiveCamera(38,1,.1,120)
   const controls=new OrbitControls(camera,renderer.domElement)
