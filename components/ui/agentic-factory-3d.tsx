@@ -63,13 +63,9 @@ export default function AgenticFactory3D({height='min(78vh, 760px)',className=''
         <div className="status" id="status">
           <i />
           <span id="status-text">Fluxo em execução</span>
-          <span>DEMONSTRAÇÃO</span>
+          <span>INTERATIVO</span>
         </div>
       </header>
-      <div className="scene-heading debug-ui">
-        Da informação à ação <span className="index">5 ETAPAS / 1 FLUXO</span>
-      </div>
-      <div className="coordinates debug-ui">SIMULAÇÃO CONCEITUAL — DADOS ATÉ RESULTADOS</div>
       <div id="journey" className="debug-ui">
         <div className="journey-icon">
           <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
@@ -155,19 +151,6 @@ export default function AgenticFactory3D({height='min(78vh, 760px)',className=''
           </button>
         </nav>
       </div>
-      <footer className="footer">
-        <a className="wordmark" href="https://vibecoding.tech" target="_blank" rel="noopener">
-          made with AI agents · <span>vibecoding.tech</span>
-        </a>
-        <span className="footer-center debug-ui">TECNOLOGIA APLICADA</span>
-        <span className="hint debug-ui">
-          <svg width="13" height="16" viewBox="0 0 13 16" fill="none">
-            <rect x="2" y="1" width="9" height="14" rx="4.5" stroke="currentColor" />
-            <path d="M6.5 4v3" stroke="currentColor" strokeLinecap="round" />
-          </svg>
-          Arraste para explorar.
-        </span>
-      </footer>
       <div id="loading">
         <i />
         <span>Preparando a demonstração</span>

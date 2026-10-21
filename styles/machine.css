@@ -98,55 +98,26 @@ a:focus-visible {
   margin-left: 12px;
 }
 .scene-heading {
-  position: absolute;
-  top: 110px;
-  left: 24%;
-  right: 24%;
-  pointer-events: none;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 9px;
-  letter-spacing: 1.8px;
-  color: #959790;
-  text-transform: uppercase;
-}
-.scene-heading:before {
-  content: '';
-  width: 22px;
-  height: 1px;
-  background: var(--amber);
-}
-.scene-heading .index {
-  margin-left: auto;
-  color: #4e535b;
-  font-size: 9px;
-  letter-spacing: 1px;
+  display: none !important;
 }
 .coordinates {
-  position: absolute;
-  top: 150px;
-  right: 33px;
-  color: #52575f;
-  writing-mode: vertical-rl;
-  font:
-    9px ui-monospace,
-    Menlo,
-    SFMono-Regular,
-    monospace;
-  letter-spacing: 1.5px;
-  pointer-events: none;
+  display: none !important;
 }
 .controls {
   position: absolute;
-  bottom: 79px;
-  left: 26px;
-  right: 26px;
+  bottom: 16px;
+  left: 16px;
+  right: 16px;
   display: flex;
   align-items: center;
   flex-direction: column;
-  gap: 16px;
-  z-index: 5;
+  gap: 10px;
+  z-index: 25;
+  pointer-events: none;
+}
+.mode-bar,
+.camera-row {
+  pointer-events: auto;
 }
 .mode-bar {
   display: flex;
@@ -199,6 +170,11 @@ svg {
   align-items: center;
   justify-content: center;
   gap: 4px;
+  background: rgba(20, 25, 22, 0.88);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 4px 12px;
 }
 .camera-row .caption {
   font-size: 9px;
@@ -241,15 +217,7 @@ svg {
   place-items: center;
 }
 .footer {
-  position: absolute;
-  bottom: 25px;
-  left: 32px;
-  right: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  pointer-events: none;
+  display: none !important;
 }
 .wordmark {
   font-size: 11px;
@@ -294,16 +262,25 @@ svg {
   left: 0;
   top: 0;
   opacity: 0;
-  transition: opacity 0.3s;
+  transition: opacity 0.3s, transform 0.15s ease-out;
   will-change: transform;
-  pointer-events: none;
-  min-width: 138px;
+  pointer-events: auto;
+  cursor: pointer;
+  user-select: none;
+  min-width: 128px;
+  z-index: 22;
 }
 .station-label.visible {
   opacity: 1;
 }
+.station-label:hover .label-card {
+  border-color: var(--amber);
+  background: rgba(25, 30, 36, 0.96);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(239, 81, 43, 0.25);
+}
 .station-label .stem {
-  height: 26px;
+  height: 24px;
   width: 1px;
   background: linear-gradient(#ff7a1a00, #ff7a1a70);
   margin: 0 0 0 10px;
@@ -312,9 +289,10 @@ svg {
   background: #14171bee;
   backdrop-filter: blur(10px);
   border: 1px solid #ff7a1a40;
-  border-radius: 6px;
-  padding: 10px 13px;
+  border-radius: 8px;
+  padding: 8px 12px;
   box-shadow: 0 4px 20px #0003;
+  transition: border-color 0.2s, background 0.2s, transform 0.2s, box-shadow 0.2s;
 }
 .station-label .label-title {
   font-weight: 550;
@@ -334,13 +312,13 @@ svg {
 .station-label .label-meta {
   font-size: 9px;
   color: #8e939c;
-  margin: 6px 0 0 24px;
+  margin: 4px 0 0 20px;
   white-space: nowrap;
 }
 #tooltip {
   position: absolute;
   pointer-events: none;
-  z-index: 10;
+  z-index: 50;
   opacity: 0;
   transition: opacity 0.15s;
   padding: 11px 14px;
@@ -371,16 +349,23 @@ svg {
 }
 #journey {
   position: absolute;
-  left: 24%;
-  right: 24%;
-  top: 148px;
+  left: 32px;
+  top: 76px;
+  max-width: 340px;
+  background: rgba(20, 25, 22, 0.92);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 12px;
+  padding: 8px 14px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   opacity: 0;
   transform: translateY(-5px);
-  transition: 0.4s;
+  transition: 0.3s;
   pointer-events: none;
   display: flex;
   align-items: center;
-  gap: 13px;
+  gap: 12px;
+  z-index: 20;
 }
 #journey.visible {
   opacity: 1;
@@ -563,49 +548,45 @@ svg {
     display: none;
   }
   .controls {
-    left: 12px;
-    right: 12px;
-    bottom: 84px;
-    gap: 18px;
+    left: 8px;
+    right: 8px;
+    bottom: 12px;
+    gap: 8px;
   }
   .mode-bar {
-    gap: 1px;
-    padding: 4px;
+    gap: 2px;
+    padding: 3px;
     border-radius: 10px;
   }
   .mode-bar button {
-    padding: 11px 10px;
+    padding: 8px 10px;
     font-size: 10px;
-    gap: 6px;
+    gap: 5px;
   }
   .mode-bar svg {
     width: 12px;
     height: 12px;
   }
   .camera-row {
-    gap: 0;
+    gap: 2px;
+    padding: 3px 8px;
   }
   .camera-row .caption {
     font-size: 8px;
-    margin-right: 6px;
+    margin-right: 4px;
   }
   .camera-row button {
-    padding: 5px 8px;
+    padding: 4px 6px;
     font-size: 9px;
   }
   .camera-row .divider {
-    margin: 0 5px;
+    margin: 0 4px;
   }
   .footer {
-    bottom: 25px;
-    left: 22px;
-    right: 22px;
-    align-items: flex-end;
+    display: none !important;
   }
   .hint {
-    font-size: 9px;
-    max-width: 175px;
-    line-height: 1.6;
+    display: none !important;
   }
   .footer-center {
     display: none;
@@ -622,9 +603,10 @@ svg {
     top: 35%;
   }
   #journey {
-    left: 24px;
-    right: 24px;
-    top: 143px;
+    left: 16px;
+    right: 16px;
+    top: 68px;
+    max-width: none;
   }
   .station-label {
     min-width: 100px;
@@ -695,4 +677,39 @@ svg {
 
 }
 .machine.factory-scope{position:relative;width:100%;min-height:540px;overflow:hidden;background:#10150f;border:1px solid #ffffff20;border-radius:8px}.factory-scope #scene canvas{touch-action:pan-y!important}.factory-scope .footer{font-size:10px}.factory-scope .topbar{pointer-events:none}
-@media(max-width:600px){.machine.factory-scope{min-height:570px}.factory-scope .scene-heading,.factory-scope .coordinates{display:none}.factory-scope .mode-bar{flex-wrap:wrap}.factory-scope .camera-row{flex-wrap:wrap}.factory-scope .footer-center,.factory-scope .hint{display:none}}
+@media (max-width: 600px) {
+  .machine.factory-scope {
+    min-height: 520px;
+  }
+  .factory-scope .scene-heading,
+  .factory-scope .coordinates {
+    display: none !important;
+  }
+  .factory-scope .controls {
+    bottom: 10px;
+    gap: 6px;
+  }
+  .factory-scope .mode-bar {
+    max-width: 96%;
+    overflow-x: auto;
+    scrollbar-width: none;
+    justify-content: flex-start;
+  }
+  .factory-scope .mode-bar::-webkit-scrollbar {
+    display: none;
+  }
+  .factory-scope .camera-row {
+    max-width: 96%;
+    overflow-x: auto;
+    scrollbar-width: none;
+    justify-content: flex-start;
+  }
+  .factory-scope .camera-row::-webkit-scrollbar {
+    display: none;
+  }
+  .factory-scope .footer-center,
+  .factory-scope .hint,
+  .factory-scope .footer {
+    display: none !important;
+  }
+}

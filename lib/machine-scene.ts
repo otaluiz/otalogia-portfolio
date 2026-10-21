@@ -392,6 +392,14 @@ export function initMachineScene(root: HTMLElement, fontFamily: string, options:
     }
     const definitions: StationDef[] = [
       {
+        id: 'cabinet',
+        name: 'Dados',
+        step: 1,
+        output: 'entrada',
+        pos: [4.03, 0.29, 0.12],
+        desc: 'Entradas de formulários, sistemas e fontes autorizadas.',
+      },
+      {
         id: 'engine',
         name: 'IA aplicada',
         step: 2,
@@ -414,14 +422,6 @@ export function initMachineScene(root: HTMLElement, fontFamily: string, options:
         output: 'ação',
         pos: [1.5, 0.29, -2.08],
         desc: 'Sites e ferramentas conectados ao fluxo do negócio.',
-      },
-      {
-        id: 'cabinet',
-        name: 'Dados',
-        step: 1,
-        output: 'entrada',
-        pos: [4.03, 0.29, 0.12],
-        desc: 'Entradas de formulários, sistemas e fontes autorizadas.',
       },
       {
         id: 'cashdesk',
@@ -511,6 +511,10 @@ export function initMachineScene(root: HTMLElement, fontFamily: string, options:
       const label = document.createElement('div')
       label.className = 'station-label'
       label.innerHTML = `<div class="stem"></div><div class="label-card"><div class="label-title"><span>${String(i + 1).padStart(2, '0')}</span>${d.name}</div><div class="label-meta">Etapa ${d.step} · ${d.output}</div></div>`
+      listen(label, 'click', () => {
+        focusStation(d.id)
+        options.onStation?.(d.id)
+      })
       $('labels').appendChild(label)
       cleanups.push(() => label.remove())
 
@@ -524,7 +528,8 @@ export function initMachineScene(root: HTMLElement, fontFamily: string, options:
         anchor: new THREE.Vector3(0, 2.5, 0),
       })
     })
-    const engine = stations[0].group
+    const getStation = (id: StationId) => stations.find((s) => s.id === id)!
+    const engine = getStation('engine').group
     box(engine, 1.74, 0.62, 1.33, 0, 0.65, -0.05, S.ivory, 0.13)
     box(engine, 1.5, 0.1, 1.16, 0, 0.99, -0.04, S.body, 0.025)
     for (const x of [-0.68, 0.68]) {
@@ -641,7 +646,7 @@ export function initMachineScene(root: HTMLElement, fontFamily: string, options:
     for (let i = 0; i < 5; i++)
       box(engine, 0.08, 0.03, 0.22, -0.38 + i * 0.19, 1.011, -0.02, M.edge, 0.005)
 
-    const admin = stations[1].group
+    const admin = getStation('admin').group
     box(admin, 1.9, 0.66, 1.36, 0, 0.67, -0.04, S.body, 0.11)
     const consoleTop = new THREE.Group()
     consoleTop.position.set(0, 1.01, -0.08)
@@ -695,7 +700,7 @@ export function initMachineScene(root: HTMLElement, fontFamily: string, options:
     for (let i = 0; i < 7; i++)
       box(admin, 0.55, 0.027, 0.02, 0, 0.46 + i * 0.05, 0.655, M.dark, 0.003)
 
-    const storefront = stations[2].group
+    const storefront = getStation('storefront').group
     box(storefront, 1.35, 0.18, 0.88, 0, 0.44, 0, S.ivory, 0.045)
     cyl(storefront, 0.095, 1.04, 0, 0.93, -0.31, M.chrome)
     box(storefront, 0.56, 0.91, 0.14, 0, 0.99, -0.34, S.body, 0.04)
@@ -768,7 +773,7 @@ export function initMachineScene(root: HTMLElement, fontFamily: string, options:
     })
     screen(flyPost, 0.55, 0.72, 0.94, 0.81, 0.575, postTex)
 
-    const cabinet = stations[3].group
+    const cabinet = getStation('cabinet').group
     box(cabinet, 1.75, 1.77, 1.02, 0, 1.24, -0.13, S.body, 0.12)
     box(cabinet, 1.58, 0.13, 1.09, 0, 2.16, -0.13, S.amber, 0.04)
     box(cabinet, 1.47, 1.38, 0.055, 0, 1.31, 0.405, M.dark, 0.025)
@@ -825,7 +830,7 @@ export function initMachineScene(root: HTMLElement, fontFamily: string, options:
     })
     screen(incoming, 0.82, 0.39, 0, 0, 0.026, nameTex)
 
-    const cashdesk = stations[4].group
+    const cashdesk = getStation('cashdesk').group
     box(cashdesk, 1.91, 0.63, 1.32, 0, 0.65, -0.06, S.ivory, 0.12)
     box(cashdesk, 1.96, 0.19, 1.38, 0, 0.42, -0.04, S.body, 0.04)
     box(cashdesk, 1.37, 0.09, 0.038, 0, 0.44, 0.66, M.dark, 0.01)
@@ -968,27 +973,25 @@ export function initMachineScene(root: HTMLElement, fontFamily: string, options:
     // Copper pneumatic lines link the station footings independently from the conveyor.
     const pipes = new THREE.Group()
     machine.add(pipes)
-    const connectors = []
-    for (let i = 0; i < 4; i++) {
-      const a = stations[i].base,
-        b = stations[i + 1].base
+    const pipePairs: [StationId, StationId][] = [
+      ['engine', 'admin'],
+      ['admin', 'storefront'],
+      ['storefront', 'cabinet'],
+      ['cabinet', 'cashdesk'],
+    ]
+    pipePairs.forEach(([idA, idB]) => {
+      const a = getStation(idA).base,
+        b = getStation(idB).base
       const points = [
         a.clone().add(new THREE.Vector3(0.4, 0.12, 0)),
-        a
-          .clone()
-          .lerp(b, 0.35)
-          .add(new THREE.Vector3(0, 0.1, -0.6)),
-        a
-          .clone()
-          .lerp(b, 0.65)
-          .add(new THREE.Vector3(0, 0.1, -0.6)),
+        a.clone().lerp(b, 0.35).add(new THREE.Vector3(0, 0.1, -0.6)),
+        a.clone().lerp(b, 0.65).add(new THREE.Vector3(0, 0.1, -0.6)),
         b.clone().add(new THREE.Vector3(-0.4, 0.12, 0)),
       ]
       const curve = new THREE.CatmullRomCurve3(points)
       const mesh = new THREE.Mesh(new THREE.TubeGeometry(curve, 30, 0.054, 8, false), M.copper)
       pipes.add(mesh)
-      connectors.push({ mesh, a: i, b: i + 1 })
-    }
+    })
     const scriptTex = canvasTexture(256, 352, (c, w, h) => {
       c.fillStyle = '#eeeae0'
       c.fillRect(0, 0, w, h)
@@ -1120,7 +1123,7 @@ export function initMachineScene(root: HTMLElement, fontFamily: string, options:
       playing = !reduceMotion,
       simTime = 0,
       spread = 0,
-      selected: string = 'engine',
+      selected: string = 'cabinet',
       hovered: string | null = null
 
     let width = root.clientWidth,
@@ -1482,8 +1485,8 @@ export function initMachineScene(root: HTMLElement, fontFamily: string, options:
         if (phase < 0.15) {
           stage = 0
           const f = phase / 0.15
-          packet.group.position.copy(stations[3].group.position).add(new THREE.Vector3(0, 1.6, 0.6))
-          scratch.copy(stations[0].group.position).add(new THREE.Vector3(0, 1.3, 0.65))
+          packet.group.position.copy(getStation('cabinet').group.position).add(new THREE.Vector3(0, 1.6, 0.6))
+          scratch.copy(getStation('engine').group.position).add(new THREE.Vector3(0, 1.3, 0.65))
           packet.group.position.lerp(scratch, f)
           packet.group.position.y += Math.sin(f * Math.PI) * 2
           packet.group.rotation.set(0, Math.sin(f * Math.PI) * 0.28, Math.sin(f * Math.PI) * -0.1)
@@ -1554,38 +1557,82 @@ export function initMachineScene(root: HTMLElement, fontFamily: string, options:
         now - lastInteraction > 6500
       controls.autoRotateSpeed = 0.24
       controls.update(dt)
-      // Project station callouts after the camera update, clamping them inside the iframe.
-      stations.forEach((s, i) => {
-        const show = mode === 'stations'
-        s.label.classList.toggle('visible', show)
-        if (!show) return
-        anchor.copy(s.group.position).add(s.anchor).project(camera)
-        const offsets = mobile
-          ? [
-              [-30, 25],
-              [-27, -50],
-              [15, -65],
-              [16, -1],
-              [-5, 52],
-            ]
-          : [
-              [-48, -14],
-              [-8, -64],
-              [30, -12],
-              [30, 20],
-              [-12, 40],
-            ]
-        let x = (anchor.x * 0.5 + 0.5) * width - 40 + offsets[i][0],
-          y = (-anchor.y * 0.5 + 0.5) * height - 52 + offsets[i][1]
-        // Embedded in a wide hero the callouts stay out of the headline side (the left 42.5%).
-        x = THREE.MathUtils.clamp(
-          x,
-          mobile || !embedded ? 9 : width * 0.425,
-          width - (mobile ? 123 : 165)
-        )
-        y = THREE.MathUtils.clamp(y, 130, height - 200)
-        s.label.style.transform = `translate(${x}px,${y}px)`
-      })
+      // Project station callouts after the camera update, with anti-collision relaxation
+      if (mode === 'stations') {
+        type ProjectedLabel = {
+          station: Station
+          x: number
+          y: number
+          w: number
+          h: number
+        }
+        const projected: ProjectedLabel[] = []
+        const cardW = mobile ? 118 : 144
+        const cardH = mobile ? 38 : 46
+
+        const offsetMap: Record<StationId, [number, number]> = mobile
+          ? {
+              cabinet: [22, 8],
+              engine: [-28, 10],
+              admin: [-18, -46],
+              storefront: [18, -46],
+              cashdesk: [-6, 34],
+            }
+          : {
+              cabinet: [36, 12],
+              engine: [-44, -10],
+              admin: [-16, -62],
+              storefront: [24, -62],
+              cashdesk: [-8, 44],
+            }
+
+        stations.forEach((s) => {
+          s.label.classList.add('visible')
+          anchor.copy(s.group.position).add(s.anchor).project(camera)
+          const off = offsetMap[s.id] || [0, 0]
+          let x = (anchor.x * 0.5 + 0.5) * width - 40 + off[0]
+          let y = (-anchor.y * 0.5 + 0.5) * height - 52 + off[1]
+
+          x = THREE.MathUtils.clamp(x, 16, width - cardW - 16)
+          y = THREE.MathUtils.clamp(y, 72, height - cardH - 85)
+
+          projected.push({ station: s, x, y, w: cardW, h: cardH })
+        })
+
+        // Anti-collision relaxation iterations: prevent overlapping labels
+        for (let iter = 0; iter < 5; iter++) {
+          for (let a = 0; a < projected.length; a++) {
+            for (let b = a + 1; b < projected.length; b++) {
+              const pA = projected[a]
+              const pB = projected[b]
+              const dx = (pA.x + pA.w / 2) - (pB.x + pB.w / 2)
+              const dy = (pA.y + pA.h / 2) - (pB.y + pB.h / 2)
+              const minDistX = (pA.w + pB.w) / 2 + 10
+              const minDistY = (pA.h + pB.h) / 2 + 8
+
+              if (Math.abs(dx) < minDistX && Math.abs(dy) < minDistY) {
+                const overlapY = minDistY - Math.abs(dy)
+                const shiftY = overlapY / 2
+                if (dy >= 0) {
+                  pA.y += shiftY
+                  pB.y -= shiftY
+                } else {
+                  pA.y -= shiftY
+                  pB.y += shiftY
+                }
+                pA.y = THREE.MathUtils.clamp(pA.y, 72, height - cardH - 85)
+                pB.y = THREE.MathUtils.clamp(pB.y, 72, height - cardH - 85)
+              }
+            }
+          }
+        }
+
+        projected.forEach((p) => {
+          p.station.label.style.transform = `translate(${Math.round(p.x)}px,${Math.round(p.y)}px)`
+        })
+      } else {
+        stations.forEach((s) => s.label.classList.remove('visible'))
+      }
       renderer.render(scene, camera)
       // Embed: the first real frame is ready, so the host page can remove its poster from under the frame.
       if (!readySent && sized) {

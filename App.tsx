@@ -469,16 +469,20 @@ export default function App() {
             </div>
 
             <div className="flex items-center gap-2 font-mono text-[12px] mt-6 mb-4 flex-wrap text-white/70">
-              <span className="px-3 py-1 border border-white/15 rounded-[800px] bg-white/5">DADOS</span>
+              <span className="px-3 py-1 border border-white/15 rounded-[800px] bg-white/5 font-semibold">01 DADOS</span>
               <span className="text-[#fc5000]">→</span>
-              <span className="px-3 py-1 border border-white/15 rounded-[800px] bg-white/5">
-                INTELIGÊNCIA ARTIFICIAL
+              <span className="px-3 py-1 border border-white/15 rounded-[800px] bg-white/5 font-semibold">
+                02 IA APLICADA
               </span>
               <span className="text-[#fc5000]">→</span>
-              <span className="px-3 py-1 border border-white/15 rounded-[800px] bg-white/5">SISTEMAS</span>
+              <span className="px-3 py-1 border border-white/15 rounded-[800px] bg-white/5 font-semibold">03 SISTEMAS</span>
+              <span className="text-[#fc5000]">→</span>
+              <span className="px-3 py-1 border border-white/15 rounded-[800px] bg-white/5 font-semibold">
+                04 INTEGRAÇÕES & AUTOMAÇÃO
+              </span>
               <span className="text-[#fc5000]">→</span>
               <span className="px-3 py-1 border border-[#fc5000] text-[#fc5000] rounded-[800px] bg-[#fc5000]/10 font-semibold">
-                RESULTADOS
+                05 RESULTADOS
               </span>
             </div>
 

@@ -746,6 +746,17 @@ button.btn-dark:hover {
     padding: 28px;
     border-radius: 28px;
   }
+  .lab-caldera {
+    padding: 36px 20px;
+    border-radius: 28px;
+  }
+  .lab-pills-row {
+    gap: 8px;
+  }
+  .lab-step-btn {
+    padding: 8px 14px;
+    font-size: 13px;
+  }
   .hero-caldera-single {
     min-height: 540px;
     border-radius: 28px;
