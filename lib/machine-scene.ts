@@ -111,7 +111,17 @@ export function initMachineScene(root:HTMLElement, _font:string, options:Options
     if(cameraMoving){if(reduced.matches){camera.position.copy(targetPosition);controls.target.copy(targetLook);cameraMoving=false}else{dampVector(camera.position,cameraVelocity,targetPosition,dt);dampVector(controls.target,lookVelocity,targetLook,dt);if(camera.position.distanceTo(targetPosition)<.005)cameraMoving=false}}
     controls.update();renderer.render(scene,camera);if(!ready){ready=true;loading.hidden=true;options.onReady?.()}
   }
-  const debug={getState:()=>({mode,camera:view,playing,time,spread,activeStage,order:PROCESS.map(s=>s.id),payload:sampleProcess(time,spread),stations:stationGroups.map((g,i)=>({id:PROCESS[i].id,position:g.position.toArray()})))}
+  const debug = {
+    getState: () => ({
+      mode, camera: view, playing, time, spread, activeStage,
+      order: PROCESS.map(s => s.id),
+      payload: sampleProcess(time, spread),
+      stations: stationGroups.map((g, i) => ({
+        id: PROCESS[i].id,
+        position: g.position.toArray(),
+      })),
+    }),
+  }
   window.__machineDebug=debug
   raf=requestAnimationFrame(animate)
   return()=>{disposed=true;cancelAnimationFrame(raf);cleanups.forEach(fn=>fn());ro.disconnect();io.disconnect();controls.removeEventListener('start',onDrag);controls.dispose();geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());textures.forEach(t=>t.dispose());renderer.dispose();renderer.domElement.remove();if(window.__machine===api)delete window.__machine;if(window.__machineDebug===debug)delete window.__machineDebug}
