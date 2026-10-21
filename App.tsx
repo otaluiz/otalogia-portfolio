@@ -6,6 +6,7 @@ import type { StationId } from '@/lib/machine-scene'
 import BackgroundShader from '@/components/ui/background-shader'
 import HalftoneText from '@/components/ui/halftone-text'
 import GlassFolder, { type FolderFile, type ArtPreset } from '@/components/ui/glass-folder-cards'
+import CursorEdgeGlowButton from '@/components/ui/cursor-edge-glow-button'
 
 const WaveGrid = lazy(() => import('@/components/ui/wave-grid'))
 const Factory = lazy(() => import('@/components/ui/agentic-factory-3d'))
@@ -250,9 +251,9 @@ export default function App() {
             </nav>
 
             <div className="flex items-center gap-3">
-              <Button asChild variant="default" size="sm">
-                <a href="#contato">Vamos conversar ↗</a>
-              </Button>
+              <CursorEdgeGlowButton href="#contato" variant="ember" size="sm">
+                Vamos conversar ↗
+              </CursorEdgeGlowButton>
               <button
                 className="caldera-menu-btn"
                 aria-expanded={menu}
@@ -352,18 +353,18 @@ export default function App() {
                     whileHover={reduced ? {} : { scale: 1.03 }}
                     whileTap={{ scale: 0.98 }}
                   >
-                    <Button asChild variant="default" size="lg">
-                      <a href="#solucoes">Encontre sua solução ↗</a>
-                    </Button>
+                    <CursorEdgeGlowButton href="#solucoes" variant="ember" size="lg">
+                      Encontre sua solução ↗
+                    </CursorEdgeGlowButton>
                   </motion.div>
 
                   <motion.div
                     whileHover={reduced ? {} : { scale: 1.03 }}
                     whileTap={{ scale: 0.98 }}
                   >
-                    <Button asChild variant="secondary" size="lg">
-                      <a href="#laboratorio">Explorar laboratório ↓</a>
-                    </Button>
+                    <CursorEdgeGlowButton href="#laboratorio" variant="secondary" size="lg">
+                      Explorar laboratório ↓
+                    </CursorEdgeGlowButton>
                   </motion.div>
                 </div>
               </div>
@@ -652,37 +653,26 @@ export default function App() {
               </div>
 
               <div className="flex flex-wrap items-center gap-3">
-                <Button
-                  asChild
+                <CursorEdgeGlowButton
+                  href={whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   variant="dark"
                   size="lg"
-                  className="btn-dark !bg-[#070607] !text-white hover:!bg-[#222222]"
+                  className="!text-white font-semibold"
                 >
-                  <a
-                    href={whatsappUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="!text-white font-semibold flex items-center gap-2"
-                    style={{ color: '#ffffff' }}
-                  >
-                    Falar no WhatsApp ↗
-                  </a>
-                </Button>
-                <Button
-                  asChild
+                  Falar no WhatsApp ↗
+                </CursorEdgeGlowButton>
+                <CursorEdgeGlowButton
+                  href={instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   variant="secondary"
                   size="lg"
-                  className="border-[#070607] text-[#070607] hover:bg-[#070607]/10"
+                  className="font-semibold text-[#070607]"
                 >
-                  <a
-                    href={instagram}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-semibold text-[#070607]"
-                  >
-                    Instagram @otalogia ↗
-                  </a>
-                </Button>
+                  Instagram @otalogia ↗
+                </CursorEdgeGlowButton>
               </div>
             </div>
           </section>
