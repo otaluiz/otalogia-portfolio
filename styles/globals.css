@@ -443,6 +443,7 @@ button.btn-dark:hover {
   flex-direction: column;
   justify-content: space-between;
   min-height: 380px;
+  overflow: visible;
 }
 
 .solution-card-caldera h3 {

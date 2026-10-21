@@ -5,6 +5,7 @@ import { usePageMotion } from '@/lib/use-motion'
 import type { StationId } from '@/lib/machine-scene'
 import BackgroundShader from '@/components/ui/background-shader'
 import HalftoneText from '@/components/ui/halftone-text'
+import GlassFolder, { type FolderFile, type ArtPreset } from '@/components/ui/glass-folder-cards'
 
 const WaveGrid = lazy(() => import('@/components/ui/wave-grid'))
 const Factory = lazy(() => import('@/components/ui/agentic-factory-3d'))
@@ -13,14 +14,27 @@ const instagram = 'https://www.instagram.com/otalogia/'
 const phone = '+55 65 992791582'
 const whatsappUrl = 'https://wa.me/5565992791582?text=Ol%C3%A1!%20Vim%20pelo%20site%20da%20Otalogia.'
 
-const services = [
+const services: {
+  n: string
+  name: string
+  tag: string
+  desc: string
+  items: string[]
+  folderArt: ArtPreset
+  folderFiles: FolderFile[]
+}[] = [
   {
     n: '01',
     name: 'Sistemas & automações',
     tag: 'MENOS RETRABALHO. MAIS FLUIDEZ.',
     desc: 'Sistemas web construídos em torno da sua operação. Conecte ferramentas, organize informações e automatize tarefas que hoje dependem de trabalho manual.',
     items: ['Sistemas web sob medida', 'Integrações entre ferramentas', 'Fluxos e rotinas automatizadas'],
-    visual: 'system',
+    folderArt: 'ember',
+    folderFiles: [
+      { name: 'Sistemas web sob medida', meta: 'Módulo 01', art: 'ember' },
+      { name: 'Integrações entre ferramentas', meta: 'Módulo 02', art: 'aurora' },
+      { name: 'Fluxos e rotinas automatizadas', meta: 'Módulo 03', art: 'dusk' },
+    ],
   },
   {
     n: '02',
@@ -28,7 +42,12 @@ const services = [
     tag: 'DA INFORMAÇÃO À DECISÃO.',
     desc: 'Transforme dados dispersos em uma visão clara do negócio. Dashboards, análises e modelos preditivos, quando houver dados suficientes, ajudam a investigar padrões e planejar próximos passos.',
     items: ['Dashboards e indicadores', 'Análise exploratória de dados', 'Modelos preditivos e validação'],
-    visual: 'data',
+    folderArt: 'verdant',
+    folderFiles: [
+      { name: 'Dashboards e indicadores', meta: 'Módulo 01', art: 'verdant' },
+      { name: 'Análise exploratória de dados', meta: 'Módulo 02', art: 'glacier' },
+      { name: 'Modelos preditivos e validação', meta: 'Módulo 03', art: 'ember' },
+    ],
   },
   {
     n: '03',
@@ -36,7 +55,12 @@ const services = [
     tag: 'SEU DIGITAL, CONECTADO.',
     desc: 'Sites que fazem parte da operação. Integre recursos de IA para consultar informações, apoiar o atendimento e qualificar oportunidades, com escopo e supervisão definidos.',
     items: ['Sites e aplicações digitais', 'Assistentes com base de conhecimento', 'Captação integrada aos processos'],
-    visual: 'ai',
+    folderArt: 'aurora',
+    folderFiles: [
+      { name: 'Sites e aplicações digitais', meta: 'Módulo 01', art: 'aurora' },
+      { name: 'Assistentes com base de conhecimento', meta: 'Módulo 02', art: 'ember' },
+      { name: 'Captação integrada aos processos', meta: 'Módulo 03', art: 'dusk' },
+    ],
   },
   {
     n: '04',
@@ -44,7 +68,12 @@ const services = [
     tag: 'IDEIAS COMPLEXAS. COMUNICAÇÃO CLARA.',
     desc: 'Conteúdo que aproxima tecnologia e pessoas. Roteiro, edição de vídeos, tutoriais e demonstrações para explicar soluções e comunicar o valor do seu trabalho.',
     items: ['Edição de vídeos', 'Tutoriais e demonstrações', 'Conteúdo sobre tecnologia e IA'],
-    visual: 'video',
+    folderArt: 'dusk',
+    folderFiles: [
+      { name: 'Edição de vídeos', meta: 'Módulo 01', art: 'dusk' },
+      { name: 'Tutoriais e demonstrações', meta: 'Módulo 02', art: 'verdant' },
+      { name: 'Conteúdo sobre tecnologia e IA', meta: 'Módulo 03', art: 'aurora' },
+    ],
   },
 ]
 
@@ -387,7 +416,7 @@ export default function App() {
 
             <div className="solutions-grid-caldera">
               {services.map((s, i) => (
-                <div key={s.n} className="solution-card-caldera">
+                <div key={s.n} className="solution-card-caldera overflow-visible">
                   <div>
                     <div className="flex justify-between items-center">
                       <span className="text-[12px] font-mono tracking-wider text-[#070607]/60 uppercase font-semibold">
@@ -397,6 +426,24 @@ export default function App() {
                     </div>
                     <h3>{s.name}</h3>
                     <p className="text-[15px] text-[#070607]/80 leading-relaxed">{s.desc}</p>
+                  </div>
+
+                  {/* Interactive Frosted Glass Folder */}
+                  <div className="my-8 flex flex-col items-center justify-center overflow-visible">
+                    <GlassFolder
+                      label="My Files"
+                      meta={`${s.n} · ${s.name}`}
+                      tone="light"
+                      art={s.folderArt}
+                      seed={i * 97 + 13}
+                      width={280}
+                      files={s.folderFiles}
+                      action="none"
+                      appearDelay={i * 120}
+                    />
+                    <span className="text-[11px] font-mono tracking-wider text-[#070607]/50 uppercase mt-2 select-none">
+                      Clique na pasta para abrir os temas ↗
+                    </span>
                   </div>
 
                   <div>
