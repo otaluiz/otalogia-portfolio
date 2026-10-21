@@ -358,7 +358,7 @@ button.btn-dark:hover {
 
 .headline-line {
   display: block;
-  overflow: hidden;
+  overflow: visible;
   padding-bottom: 0.08em;
   margin-bottom: -0.08em;
 }

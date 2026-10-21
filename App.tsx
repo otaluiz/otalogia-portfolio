@@ -429,14 +429,14 @@ export default function App() {
                   </div>
 
                   {/* Interactive Frosted Glass Folder */}
-                  <div className="my-8 flex flex-col items-center justify-center overflow-visible">
+                  <div className="my-6 flex flex-col items-center justify-center overflow-visible">
                     <GlassFolder
-                      label="My Files"
+                      label="Serviços"
                       meta={`${s.n} · ${s.name}`}
                       tone="light"
                       art={s.folderArt}
                       seed={i * 97 + 13}
-                      width={280}
+                      width={290}
                       files={s.folderFiles}
                       action="none"
                       appearDelay={i * 120}
@@ -444,17 +444,6 @@ export default function App() {
                     <span className="text-[11px] font-mono tracking-wider text-[#070607]/50 uppercase mt-2 select-none">
                       Clique na pasta para abrir os temas ↗
                     </span>
-                  </div>
-
-                  <div>
-                    <div className="dotted-divider" />
-                    <ul>
-                      {s.items.map((item) => (
-                        <li key={item}>
-                          <span>↗</span> {item}
-                        </li>
-                      ))}
-                    </ul>
                   </div>
                 </div>
               ))}

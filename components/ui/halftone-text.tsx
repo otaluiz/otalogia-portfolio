@@ -61,6 +61,10 @@ export default function HalftoneText({
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches
     let w = 0
     let h = 0
+    let totalW = 0
+    let totalH = 0
+    let padX = 16
+    let padY = 28
     let dpr = 1
     let px = -1e5
     let py = -1e5
@@ -84,8 +88,18 @@ export default function HalftoneText({
       h = Math.max(1, Math.round(rect.height))
       dpr = Math.min(window.devicePixelRatio || 1, 2)
 
-      canvas.width = Math.round(w * dpr)
-      canvas.height = Math.round(h * dpr)
+      // Provide generous vertical & horizontal headroom so diacritics/accents (like Ó in NEGÓCIO) are never clipped
+      padX = 20
+      padY = Math.max(32, Math.round(h * 0.45))
+      totalW = w + padX * 2
+      totalH = h + padY * 2
+
+      canvas.width = Math.round(totalW * dpr)
+      canvas.height = Math.round(totalH * dpr)
+      canvas.style.top = `-${padY}px`
+      canvas.style.left = `-${padX}px`
+      canvas.style.width = `${totalW}px`
+      canvas.style.height = `${totalH}px`
 
       // Measure font parameters directly from the ghost DOM node to preserve exact typography
       const cs = window.getComputedStyle(ghost)
@@ -93,8 +107,8 @@ export default function HalftoneText({
 
       // Create offscreen mask canvas
       const mask = document.createElement("canvas")
-      mask.width = w
-      mask.height = h
+      mask.width = totalW
+      mask.height = totalH
       const m = mask.getContext("2d", { willReadFrequently: true })
       if (!m) return
 
@@ -103,12 +117,12 @@ export default function HalftoneText({
       m.textBaseline = "middle"
       m.textAlign = "left"
       m.fillStyle = "#000"
-      m.fillText(o.text, 0, h / 2)
+      m.fillText(o.text, padX, padY + h / 2)
 
-      const img = m.getImageData(0, 0, w, h).data
+      const img = m.getImageData(0, 0, totalW, totalH).data
       const gap = Math.max(3, o.dotGap)
-      const cols = Math.ceil(w / gap)
-      const rows = Math.ceil(h / gap)
+      const cols = Math.ceil(totalW / gap)
+      const rows = Math.ceil(totalH / gap)
       const tmp: number[] = []
 
       for (let gy = 0; gy < rows; gy++) {
@@ -116,9 +130,9 @@ export default function HalftoneText({
           let sum = 0
           for (let sy = 0; sy < 3; sy++) {
             for (let sx = 0; sx < 3; sx++) {
-              const x = Math.min(w - 1, Math.floor(gx * gap + ((sx + 0.5) * gap) / 3))
-              const y = Math.min(h - 1, Math.floor(gy * gap + ((sy + 0.5) * gap) / 3))
-              sum += img[(y * w + x) * 4 + 3]
+              const x = Math.min(totalW - 1, Math.floor(gx * gap + ((sx + 0.5) * gap) / 3))
+              const y = Math.min(totalH - 1, Math.floor(gy * gap + ((sy + 0.5) * gap) / 3))
+              sum += img[(y * totalW + x) * 4 + 3]
             }
           }
           const cov = sum / (9 * 255)
@@ -154,7 +168,7 @@ export default function HalftoneText({
     const draw = (now: number) => {
       const o = opts.current
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
-      ctx.clearRect(0, 0, w, h)
+      ctx.clearRect(0, 0, totalW, totalH)
 
       const r = o.interactive && !reduced ? Math.max(0, o.radius) : 0
       const ringAge = ring.t < 0 ? 1e9 : now - ring.t
@@ -223,7 +237,7 @@ export default function HalftoneText({
         const pattern = ctx.createPattern(grainTile, "repeat")
         if (pattern) {
           ctx.fillStyle = pattern
-          ctx.fillRect(0, 0, w, h)
+          ctx.fillRect(0, 0, totalW, totalH)
         }
         ctx.globalAlpha = 1
         ctx.globalCompositeOperation = "source-over"
@@ -332,7 +346,7 @@ export default function HalftoneText({
       <canvas
         ref={canvasRef}
         aria-hidden="true"
-        className="absolute inset-0 w-full h-full pointer-events-auto block"
+        className="absolute pointer-events-auto block max-w-none"
         style={{ touchAction: "none" }}
       />
     </span>
