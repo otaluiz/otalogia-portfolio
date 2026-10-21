@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js'
-import { PROCESS, LAYOUT, BELT, PRODUCTS, sampleBelt, sampleProduct, sampleProcess, spring, type StationId } from './process-layout'
+import { PROCESS, LAYOUT, BELT, BELT_LENGTH, stationPosition, PRODUCTS, sampleBelt, sampleProduct, sampleProcess, spring, type StationId } from './process-layout'
 export type { StationId } from './process-layout'
 export type MachineMode = 'assembled' | 'cutaway' | 'stations' | 'order'
 export type MachineCamera = 'overview' | 'side' | 'top' | 'station' | 'flight'
@@ -40,45 +40,42 @@ export function initMachineScene(root:HTMLElement, _font:string, options:Options
   const key=new THREE.DirectionalLight('#ffffff',3);key.position.set(-5,12,10);scene.add(key)
   const rim=new THREE.DirectionalLight('#697aff',2);rim.position.set(5,7,-6);scene.add(rim)
   const machine=new THREE.Group();scene.add(machine)
-  box(machine,21,.18,4.5,0,.1,.45,floorMat)
+  box(machine,21,.18,15,0,.1,0,floorMat)
   const track=new THREE.Group();machine.add(track)
-  // Mechanical conveyor with visible rollers, moving treads and a lower return.
-  for (const z of [LAYOUT.laneZ-.52, LAYOUT.laneZ+.52]) {
-    box(track,16.15,.17,.09,0,.55,z,edge)
-    box(track,16.1,.04,.035,0,.89,z,blue)
+  // The original horizontal rotary layout: stations sit outside the swept belt envelope.
+  class RailCurve extends THREE.Curve<THREE.Vector3> {
+    constructor(private offset:number,private elevation:number){super()}
+    getPoint(t:number,target=new THREE.Vector3()) {const p=sampleBelt(t*BELT_LENGTH);return target.set(p.x+p.nx*this.offset,this.elevation,p.z+p.nz*this.offset)}
   }
-  for (const x of [-7,-3.5,0,3.5,7]) {
-    for (const z of [LAYOUT.laneZ-.47,LAYOUT.laneZ+.47]) box(track,.12,.32,.12,x,.35,z,black)
+  for(const side of [-1,1]) {
+    mesh(track,new THREE.TubeGeometry(new RailCurve(side*.53,.68),240,.055,8,true),edge)
+    mesh(track,new THREE.TubeGeometry(new RailCurve(side*.53,.94),240,.022,8,true),blue)
   }
-  const rollers: THREE.Mesh[] = []
-  for (const x of [-BELT.halfLength, BELT.halfLength]) {
-    const roller=cylinder(track,BELT.radius-.04,.86,x,BELT.centerY,LAYOUT.laneZ,edge)
-    roller.rotation.x=Math.PI/2;rollers.push(roller)
-    for(const z of [LAYOUT.laneZ-.57,LAYOUT.laneZ+.57]) {
-      const cap=cylinder(track,.13,.07,x,BELT.centerY,z,orange);cap.rotation.x=Math.PI/2
-      const axle=cylinder(track,.045,.12,x,BELT.centerY,z,white);axle.rotation.x=Math.PI/2
-    }
+  for(let i=0;i<24;i++) {
+    const p=sampleBelt(i/24*BELT_LENGTH)
+    const roller=cylinder(track,.085,.86,p.x,.685,p.z,edge)
+    roller.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),new THREE.Vector3(p.nx,0,p.nz))
+    if(i%2===0)for(const side of [-1,1])box(track,.12,.43,.12,p.x+p.nx*.53,.405,p.z+p.nz*.53,black)
   }
-  const treadGeometry=new THREE.BoxGeometry(.15,BELT.slatThickness,BELT.width)
+  const treadGeometry=new THREE.BoxGeometry(BELT.treadLength,BELT.slatThickness,BELT.width)
   geometries.add(treadGeometry)
-  const treadCount=168, beltLength=4*BELT.halfLength+2*Math.PI*BELT.radius
+  const treadCount=BELT.treadCount, beltLength=BELT_LENGTH
   const treads=new THREE.InstancedMesh(treadGeometry,black,treadCount)
   treads.instanceMatrix.setUsage(THREE.DynamicDrawUsage);track.add(treads)
   const treadTransform=new THREE.Object3D()
   function updateConveyor(distance:number) {
     for(let i=0;i<treadCount;i++) {
       const p=sampleBelt(i/treadCount*beltLength+distance)
-      treadTransform.position.set(p.x,p.y,LAYOUT.laneZ)
-      treadTransform.rotation.set(0,0,p.angle);treadTransform.updateMatrix()
+      treadTransform.position.set(p.x,p.y,p.z)
+      treadTransform.rotation.set(0,p.angle,0);treadTransform.updateMatrix()
       treads.setMatrixAt(i,treadTransform.matrix)
     }
     treads.instanceMatrix.needsUpdate=true
-    rollers.forEach(r=>r.rotation.y=-distance/BELT.radius)
   }
   updateConveyor(0)
   const stationGroups:THREE.Group[]=[], indicators:THREE.MeshStandardMaterial[]=[], details:THREE.Object3D[]=[]
   PROCESS.forEach((s,i)=>{
-    const g=new THREE.Group();g.position.set(s.x,0,LAYOUT.stationZ);g.userData.station=s.id;machine.add(g);stationGroups.push(g)
+    const position=stationPosition(i);const g=new THREE.Group();g.position.set(position.x,0,position.z);g.userData.station=s.id;machine.add(g);stationGroups.push(g)
     const accent=material(s.color,true);indicators.push(accent)
     box(g,1.95,.18,1.8,0,.27,0,edge);box(g,1.8,.045,1.65,0,.38,0,accent)
     label(g,`0${i+1}  ${s.name.toUpperCase()}`,0,2.35,.1,2.25)
@@ -107,7 +104,7 @@ export function initMachineScene(root:HTMLElement, _font:string, options:Options
 
   })
   const cart=new THREE.Group();machine.add(cart)
-  const beltTop=BELT.centerY+BELT.radius+BELT.slatThickness/2
+  const beltTop=BELT.centerY+BELT.slatThickness/2
   box(cart,.7,.08,.7,0,beltTop+.04,0,edge)
   const productRoot=new THREE.Group();productRoot.position.y=beltTop+.08;cart.add(productRoot)
   const productShapes=PRODUCTS.map(()=>new THREE.Group())
@@ -142,7 +139,7 @@ export function initMachineScene(root:HTMLElement, _font:string, options:Options
   const cartMaterials:THREE.Material[]=[]
   cart.traverse(o=>{if(o instanceof THREE.Mesh){o.material=o.material.clone();o.material.transparent=true;materials.add(o.material);cartMaterials.push(o.material)}})
   function fit(immediate=false){if(!host.clientWidth||!host.clientHeight)return;const w=host.clientWidth,h=host.clientHeight;renderer.setSize(w,h);camera.aspect=w/h;camera.updateProjectionMatrix();setCameraGoal();if(immediate){camera.position.copy(targetPosition);controls.target.copy(targetLook);controls.update();cameraMoving=false}}
-  function setCameraGoal(){const span=19.4;const distance=Math.max(14,span/(2*Math.tan(THREE.MathUtils.degToRad(19))*camera.aspect)*1.15);targetLook.set(0,.75,.3);if(view==='station'){const idx=PROCESS.findIndex(s=>s.id===selected);targetLook.copy(stationGroups[idx].position).add(new THREE.Vector3(0,1,0));targetPosition.copy(targetLook).add(new THREE.Vector3(.8,3,6.5))}else if(view==='top')targetPosition.set(.01,distance,.31);else if(view==='side')targetPosition.set(1,distance*.22,distance);else targetPosition.set(.5,distance*.72,distance*.8);cameraMoving=true}
+  function setCameraGoal(){const span=19.4;const distance=Math.max(24,span/(2*Math.tan(THREE.MathUtils.degToRad(19))*camera.aspect)*1.15);targetLook.set(0,.75,.3);if(view==='station'){const idx=PROCESS.findIndex(s=>s.id===selected);targetLook.copy(stationGroups[idx].position).add(new THREE.Vector3(0,1,0));targetPosition.copy(targetLook).add(new THREE.Vector3(.8,3,6.5))}else if(view==='top')targetPosition.set(.01,distance,.31);else if(view==='side')targetPosition.set(1,distance*.22,distance);else targetPosition.set(.5,distance*.72,distance*.8);cameraMoving=true}
   function sync(){root.querySelectorAll<HTMLElement>('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode===mode)));root.querySelectorAll<HTMLElement>('[data-camera]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.camera===view)));const play=root.querySelector<HTMLButtonElement>('[data-play]')!;play.textContent=playing?'Pausar':'Reproduzir';play.setAttribute('aria-pressed',String(!playing));root.querySelector<HTMLElement>('[data-status]')!.textContent=playing?'Processo em movimento':'Processo pausado'}
   function focusStation(id:string){const index=PROCESS.findIndex(s=>s.id===id);if(index<0)return false;selected=PROCESS[index].id;view='station';setCameraGoal();sync();options.onStation?.(selected);return true}
   const api:MachineApi={setMode(name){if(!['assembled','cutaway','stations','order'].includes(name))return false;mode=name as MachineMode;view='overview';if(mode==='order'){time=0;activeStage=-1}details.forEach(x=>x.visible=mode==='cutaway'||mode==='stations');setCameraGoal();sync();return true},focusStation,setCamera(name){if(!['overview','side','top','station','flight'].includes(name))return false;view=name as MachineCamera;setCameraGoal();sync();return true},play(){playing=true;sync();return true},pause(){playing=false;sync();return true}}
@@ -163,11 +160,11 @@ export function initMachineScene(root:HTMLElement, _font:string, options:Options
   function dampVector(current:THREE.Vector3,velocity:THREE.Vector3,target:THREE.Vector3,dt:number){for(const axis of ['x','y','z'] as const){const s=spring(current[axis],velocity[axis],target[axis],dt,7);current[axis]=s.position;velocity[axis]=s.velocity}}
   function animate(now:number){if(disposed)return;raf=requestAnimationFrame(animate);const dt=Math.min(Math.max((now-last)/1000,0),.05);last=now;if(!inViewport||document.hidden||contextLost)return;if(playing)time+=dt
     const smooth=spring(spread,spreadV,mode==='stations'?1:0,dt,7);spread=smooth.position;spreadV=smooth.velocity
-    const scale=1+spread*(LAYOUT.spacingScale-1);stationGroups.forEach((g,i)=>g.position.x=PROCESS[i].x*scale);track.scale.x=scale
+    const scale=1+spread*(LAYOUT.spacingScale-1);stationGroups.forEach((g,i)=>{const p=stationPosition(i,spread);g.position.set(p.x,0,p.z)});track.scale.set(scale,1,scale)
     const state=sampleProcess(time,spread), product=sampleProduct(time)
-    const transportDistance=Math.floor(time/LAYOUT.cycle)*12.8+state.x/scale-PROCESS[0].x
+    const transportDistance=Math.floor(time/LAYOUT.cycle)*BELT_LENGTH+state.distance
     updateConveyor(transportDistance)
-    cart.position.set(state.x,0,state.z);cart.visible=state.opacity>.001
+    cart.position.set(state.x,0,state.z);cart.rotation.y=state.angle;cart.visible=state.opacity>.001
     cartMaterials.forEach(m=>m.opacity=state.opacity)
     productShapes.forEach((g,i)=>g.visible=i===product.shape)
     productRoot.scale.y=Math.max(.001,product.scaleY)

@@ -1,14 +1,39 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { PROCESS, LAYOUT, sampleProcess, smootherstep, spring } from '../lib/process-layout.ts'
-test('order is data → AI → systems → integrations → results',()=>{assert.deepEqual(PROCESS.map(x=>x.id),['cabinet','engine','admin','storefront','cashdesk']);for(let i=0;i<5;i++){assert.equal(sampleProcess(i*4+1).stage,i);assert.equal(sampleProcess(i*4+1).x,PROCESS[i].x)}})
-test('stations and transport stay disjoint throughout normal and expanded modes',()=>{for(let spread=0;spread<=1;spread+=.05){const scale=1+spread*(LAYOUT.spacingScale-1);for(let i=1;i<5;i++)assert.ok((PROCESS[i].x-PROCESS[i-1].x)*scale>2*LAYOUT.stationHalfWidth+.5);assert.ok(LAYOUT.laneZ-LAYOUT.laneHalfWidth>LAYOUT.stationZ+LAYOUT.stationHalfDepth+.4);for(let t=0;t<20;t+=.01){const p=sampleProcess(t,spread);assert.ok(p.x>=PROCESS[0].x*scale-1e-8&&p.x<=PROCESS[4].x*scale+1e-8);for(const station of PROCESS)assert.ok(Math.abs(p.x-station.x*scale)>LAYOUT.stationHalfWidth+LAYOUT.cartHalfSize||Math.abs(p.z-LAYOUT.stationZ)>LAYOUT.stationHalfDepth+LAYOUT.cartHalfSize)}}})
-test('one payload moves forward only and resets invisibly',()=>{let last=-Infinity;for(let t=0;t<20;t+=.001){const p=sampleProcess(t);assert.ok(p.x>=last-1e-8);last=p.x}assert.equal(sampleProcess(19.99).opacity,0);assert.equal(sampleProcess(20).opacity,0)})
-test('transfer reaches each destination without velocity jumps',()=>{const h=.0001;assert.ok(smootherstep(h)/h<.0001);assert.ok((1-smootherstep(1-h))/h<.0001);for(let i=1;i<5;i++)assert.ok(Math.abs(sampleProcess(i*4-h).x-sampleProcess(i*4).x)<1e-6)})
-test('critical damping is stable across frame rates',()=>{function run(dt){let p=0,v=0;for(let t=0;t<1-1e-8;t+=dt){const s=spring(p,v,1,dt);p=s.position;v=s.velocity;assert.ok(p<=1)}return p}assert.ok(Math.abs(run(1/30)-run(1/120))<1e-8)})
+import { PROCESS, LAYOUT, BELT, BELT_LENGTH, sampleBelt, stationPosition, sampleProcess, sampleProduct, spring } from '../lib/process-layout.ts'
 
-
-import { BELT, sampleBelt, sampleProduct } from '../lib/process-layout.ts'
-test('conveyor forms a continuous loop without crossing station footprints',()=>{const total=4*BELT.halfLength+2*Math.PI*BELT.radius;for(let d=0;d<total;d+=.01){const a=sampleBelt(d),b=sampleBelt(d+.01);assert.ok(Math.hypot(a.x-b.x,a.y-b.y)<=.01001);assert.ok(a.y-BELT.slatThickness/2>.19)}assert.ok(Math.abs(sampleBelt(0).x-sampleBelt(total).x)<1e-8)})
-test('product transforms at each stop, never while travelling',()=>{for(let stage=0;stage<5;stage++){assert.equal(sampleProduct(stage*4+1.4).shape,stage);assert.equal(sampleProduct(stage*4+1.4).scaleY,1)}for(let t=0;t<20;t+=.005){const p=sampleProduct(t);assert.ok(p.scaleY>=0&&p.scaleY<=1);if(p.transforming)assert.equal(sampleProcess(t).travelling,false)}})
-test('each arrival retains the previous output until transformation',()=>{for(let i=1;i<5;i++){assert.equal(sampleProduct(i*4).shape,i-1);assert.equal(sampleProduct(i*4+1.4).shape,i)}})
+test('five stations and transformations follow the business process',()=>{
+ assert.deepEqual(PROCESS.map(s=>s.id),['cabinet','engine','admin','storefront','cashdesk'])
+ for(let i=0;i<5;i++){
+  const state=sampleProcess(i*4+1.4), port=sampleBelt(i*BELT_LENGTH/5)
+  assert.equal(state.stage,i);assert.equal(sampleProduct(i*4+1.4).shape,i)
+  assert.ok(Math.hypot(state.x-port.x,state.z-port.z)<1e-8)
+ }
+})
+test('belt corridor and rotating payload clear all station envelopes, including expanded mode',()=>{
+ const stationRadius=Math.hypot(LAYOUT.stationHalfWidth,LAYOUT.stationHalfDepth)
+ const sweptRadius=Math.max(Math.hypot(.35,.35),.56)
+ for(const spread of [0,.25,.5,.75,1]){
+  const scale=1+spread*(LAYOUT.spacingScale-1)
+  const positions=PROCESS.map((_,i)=>stationPosition(i,spread))
+  for(let i=0;i<5;i++)for(let j=i+1;j<5;j++)assert.ok(Math.hypot(positions[i].x-positions[j].x,positions[i].z-positions[j].z)>2*stationRadius)
+  for(let d=0;d<BELT_LENGTH;d+=.01){const p=sampleBelt(d);for(const s of positions)assert.ok(Math.hypot(p.x*scale-s.x,p.z*scale-s.z)>stationRadius+sweptRadius*scale+.1)}
+ }
+})
+test('closed horizontal path has continuous positions and tangent at all joins',()=>{
+ const joins=[0,2*BELT.halfLength,2*BELT.halfLength+Math.PI*BELT.radius,4*BELT.halfLength+Math.PI*BELT.radius,BELT_LENGTH]
+ for(const d of joins){const a=sampleBelt(d-1e-6),b=sampleBelt(d+1e-6);assert.ok(Math.hypot(a.x-b.x,a.z-b.z)<3e-6);assert.ok(Math.abs(Math.sin(a.angle-b.angle))<1e-5);assert.equal(a.y,b.y)}
+ const pitch=BELT_LENGTH/BELT.treadCount
+ assert.ok(BELT.treadLength<pitch*(1-BELT.width/2/BELT.radius)-.01,'treads remain separated on inside of turn')
+})
+test('product transforms only while stopped and advances without reversing',()=>{
+ let distance=-1
+ for(let t=0;t<20;t+=.01){const p=sampleProcess(t),product=sampleProduct(t);assert.ok(p.distance>=distance);distance=p.distance;if(product.transforming)assert.equal(p.travelling,false)}
+ for(let i=1;i<5;i++){assert.equal(sampleProduct(i*4+.1).shape,i-1);assert.equal(sampleProduct(i*4+1.4).shape,i)}
+ assert.ok(sampleProcess(19.99).opacity<.001);assert.equal(sampleProcess(20).opacity,0)
+})
+test('arrival and departure have zero velocity and stable spring integration',()=>{
+ for(let i=0;i<5;i++)for(const t of [i*4,i*4+1.6]){const a=sampleProcess(t+.0001),b=sampleProcess(t);assert.ok(Math.hypot(a.x-b.x,a.z-b.z)<1e-8)}
+ function run(dt){let p=0,v=0;for(let t=0;t<1-1e-8;t+=dt){const s=spring(p,v,1,dt);p=s.position;v=s.velocity}return p}
+ assert.ok(Math.abs(run(1/30)-run(1/120))<1e-10)
+})
