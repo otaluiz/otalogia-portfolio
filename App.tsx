@@ -563,7 +563,7 @@ export default function App() {
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    WhatsApp {phone} ↗
+                    WhatsApp ↗
                   </a>
                 </div>
               </div>
@@ -628,7 +628,7 @@ export default function App() {
                     className="!text-white font-semibold flex items-center gap-2"
                     style={{ color: '#ffffff' }}
                   >
-                    Falar no WhatsApp {phone} ↗
+                    Falar no WhatsApp ↗
                   </a>
                 </Button>
                 <Button
@@ -663,9 +663,9 @@ export default function App() {
                 href={whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-mono font-medium hover:text-[#fc5000] text-[#070607]"
+                className="font-medium hover:text-[#fc5000] text-[#070607]"
               >
-                WhatsApp {phone} ↗
+                WhatsApp ↗
               </a>
               <span className="opacity-30">·</span>
               <a
