@@ -320,21 +320,6 @@ export default function App() {
                   </motion.div>
                 </div>
               </div>
-
-              <div className="hero-single-bottom hero-reveal">
-                <span className="text-[13px] font-mono text-[#070607]/75 uppercase tracking-wider">
-                  Da complexidade à clareza
-                </span>
-                <a
-                  href="#solucoes"
-                  className="text-[13px] font-semibold text-[#fc5000] tracking-wider hover:underline"
-                >
-                  ROLE PARA EXPLORAR ↓
-                </a>
-                <span className="text-[13px] font-mono text-[#070607]/75 uppercase tracking-wider">
-                  Sistemas conectados
-                </span>
-              </div>
             </div>
           </section>
 

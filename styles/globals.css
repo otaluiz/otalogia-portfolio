@@ -335,11 +335,11 @@ button.btn-dark:hover {
 .hero-single-content {
   position: relative;
   z-index: 2;
-  padding: 56px 48px;
+  padding: 64px 48px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  min-height: 640px;
+  justify-content: center;
+  min-height: 560px;
   pointer-events: none;
 }
 
@@ -371,15 +371,6 @@ button.btn-dark:hover {
   max-width: 540px;
   color: var(--color-obsidian);
   line-height: 1.6;
-}
-
-.hero-single-bottom {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-top: 32px;
-  border-top: 1.5px dotted rgba(7, 6, 7, 0.25);
-  margin-top: 32px;
 }
 
 /* Stat Feature Row (Caldera signature: 40px radius cards with huge display type) */
@@ -763,11 +754,6 @@ button.btn-dark:hover {
   }
   .hero-display-title {
     font-size: clamp(52px, 14vw, 76px);
-  }
-  .hero-single-bottom {
-    flex-direction: column;
-    gap: 12px;
-    text-align: center;
   }
   .caldera-footer-pill {
     flex-direction: column;
