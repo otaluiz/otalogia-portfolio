@@ -170,22 +170,24 @@ export function CursorEdgeGlowButton({
     dark:
       "bg-[#070607] text-white hover:bg-[#1a191a] border border-white/20 font-medium shadow-none",
     secondary:
-      "bg-transparent text-[#070607] border-[1.5px] border-[#070607] hover:bg-[#070607]/5 font-medium shadow-none",
+      "bg-[#171217] text-white border-[1.5px] border-white/35 hover:bg-[#241a20] font-medium shadow-none",
   }[variant];
 
-  const sharedClasses = `relative z-10 flex cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-full no-underline leading-none transition-colors duration-200 ease-[cubic-bezier(.4,0,.2,1)] focus-visible:outline-2 focus-visible:outline-offset-8 focus-visible:outline-[#fc5000] select-none ${sizeClasses} ${variantClasses} ${className}`;
+  const sharedClasses = `relative isolate z-10 flex cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-full no-underline leading-none transition-colors duration-200 ease-[cubic-bezier(.4,0,.2,1)] focus-visible:outline-2 focus-visible:outline-offset-8 focus-visible:outline-[#fc5000] select-none ${sizeClasses} ${variantClasses} ${className}`;
 
   const content = (
     <>
       <span
         ref={lightTrackRef}
         aria-hidden="true"
-        className="pointer-events-none absolute left-1/2 top-0 z-[-10] ml-[-102px] flex h-full w-[204px] items-center justify-center [--light-x:120px] [transform:translateX(var(--light-x))_translateZ(0)]"
+        className="pointer-events-none absolute left-1/2 top-0 z-0 opacity-20 ml-[-102px] flex h-full w-[204px] items-center justify-center [--light-x:120px] [transform:translateX(var(--light-x))_translateZ(0)]"
       >
-        <span className="absolute top-1/2 h-[121px] w-[121px] -translate-y-1/2 [background:radial-gradient(50%_50%_at_50%_50%,#fffff5_3.5%,#ffaa81_26.5%,#ffda9f_37.5%,rgba(255,170,129,.5)_49%,rgba(210,106,58,0)_92.5%)]" />
-        <span className="absolute top-1/2 h-[103px] w-[204px] -translate-y-1/2 blur-[5px] [background:radial-gradient(43.3%_44.23%_at_50%_49.51%,#fffff7_29%,#fffacd_48.5%,#f4d2bf_60.71%,rgba(214,211,210,0)_100%)]" />
+        <span className="absolute top-1/2 h-[121px] w-[121px] -translate-y-1/2 [background:radial-gradient(50%_50%_at_50%_50%,#fc5000_0%,rgba(252,80,0,.4)_45%,rgba(252,80,0,0)_100%)]" />
+        <span className="absolute top-1/2 h-[103px] w-[204px] -translate-y-1/2 blur-[5px] [background:radial-gradient(43.3%_44.23%_at_50%_49.51%,rgba(252,80,0,.35)_0%,rgba(252,80,0,0)_100%)]" />
       </span>
-      {children}
+      <span className="relative z-10 inline-flex items-center justify-center gap-2 font-semibold" style={{ color: variant === "ember" ? "#070607" : "#ffffff" }}>
+        {children}
+      </span>
     </>
   );
 
@@ -202,7 +204,7 @@ export function CursorEdgeGlowButton({
       >
         <span className="absolute left-[-3px] top-[-3px] z-20 box-content h-full w-full rounded-full border-[3px] border-transparent blur-[15px] [background:linear-gradient(transparent,transparent)_padding-box,linear-gradient(91.88deg,rgba(255,137,100,.2)_46.45%,#fc5000_98.59%)_border-box]" />
         <span className="absolute left-[-2px] top-[-2px] z-10 box-content h-full w-full rounded-full border-2 border-transparent blur-[2px] [background:linear-gradient(transparent,transparent)_padding-box,linear-gradient(97.68deg,rgba(255,177,153,0)_38.1%,rgba(255,177,153,.2)_82.47%,#ff7950_93.3%)_border-box]" />
-        <span className="relative block h-full w-full rounded-full border border-transparent [background:linear-gradient(transparent,transparent)_padding-box,linear-gradient(103.7deg,rgba(188,155,143,.1)_38.66%,rgba(233,132,99,.1)_68.55%,#fc5000_85.01%,#fff_92.12%)_border-box]">
+        <span className="relative block h-full w-full rounded-full border border-transparent [background:linear-gradient(transparent,transparent)_padding-box,linear-gradient(103.7deg,rgba(188,155,143,.1)_38.66%,rgba(233,132,99,.1)_68.55%,#fc5000_85.01%,#ff792f_92.12%)_border-box]">
           <span className="absolute left-[-2px] top-[-2px] z-30 box-content h-full w-full rounded-full border-2 border-transparent blur-[7px] [background:linear-gradient(transparent,transparent)_padding-box,linear-gradient(91.96deg,rgba(255,177,153,0)_6.11%,rgba(255,177,153,.2)_53.57%,#ff7950_93.6%)_border-box]" />
         </span>
       </span>
@@ -215,7 +217,7 @@ export function CursorEdgeGlowButton({
       >
         <span className="absolute left-[-3px] top-[-3px] z-20 box-content h-full w-full rounded-full border-[3px] border-transparent blur-[15px] [background:linear-gradient(transparent,transparent)_padding-box,linear-gradient(91.88deg,rgba(255,137,100,.2)_46.45%,#fc5000_98.59%)_border-box]" />
         <span className="absolute left-[-2px] top-[-2px] z-10 box-content h-full w-full rounded-full border-2 border-transparent blur-[2px] [background:linear-gradient(transparent,transparent)_padding-box,linear-gradient(97.68deg,rgba(255,177,153,0)_38.1%,rgba(255,177,153,.2)_82.47%,#ff7950_93.3%)_border-box]" />
-        <span className="relative block h-full w-full rounded-full border border-transparent [background:linear-gradient(transparent,transparent)_padding-box,linear-gradient(103.7deg,rgba(188,155,143,.1)_38.66%,rgba(233,132,99,.1)_68.55%,#fc5000_85.01%,#fff_92.12%)_border-box]">
+        <span className="relative block h-full w-full rounded-full border border-transparent [background:linear-gradient(transparent,transparent)_padding-box,linear-gradient(103.7deg,rgba(188,155,143,.1)_38.66%,rgba(233,132,99,.1)_68.55%,#fc5000_85.01%,#ff792f_92.12%)_border-box]">
           <span className="absolute left-[-2px] top-[-2px] z-30 box-content h-full w-full rounded-full border-2 border-transparent blur-[7px] [background:linear-gradient(transparent,transparent)_padding-box,linear-gradient(91.96deg,rgba(255,177,153,0)_6.11%,rgba(255,177,153,.2)_53.57%,#ff7950_93.6%)_border-box]" />
         </span>
       </span>
