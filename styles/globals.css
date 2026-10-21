@@ -344,7 +344,8 @@ button.btn-dark:hover {
 }
 
 .hero-single-content a,
-.hero-single-content button {
+.hero-single-content button,
+.hero-single-content .halftone-text-root {
   pointer-events: auto;
 }
 

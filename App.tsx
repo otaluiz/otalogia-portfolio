@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { usePageMotion } from '@/lib/use-motion'
 import type { StationId } from '@/lib/machine-scene'
 import BackgroundShader from '@/components/ui/background-shader'
+import HalftoneText from '@/components/ui/halftone-text'
 
 const WaveGrid = lazy(() => import('@/components/ui/wave-grid'))
 const Factory = lazy(() => import('@/components/ui/agentic-factory-3d'))
@@ -283,14 +284,31 @@ export default function App() {
 
                 <h1 className="hero-display-title">
                   <span className="headline-line">
-                    <span>TECNOLOGIA.</span>
+                    <span className="inline-block">
+                      <HalftoneText
+                        text="TECNOLOGIA."
+                        ink="#070607"
+                        warm="#fc5000"
+                        dotGap={4}
+                        radius={75}
+                      />
+                    </span>
                   </span>
                   <span className="headline-line">
                     <span>APLICADA AO</span>
                   </span>
                   <span className="headline-line">
-                    <span>
-                      SEU <em>NEGÓCIO.</em>
+                    <span className="inline-flex items-baseline flex-wrap">
+                      <span className="mr-[0.25em]">SEU</span>
+                      <em>
+                        <HalftoneText
+                          text="NEGÓCIO."
+                          ink="#fc5000"
+                          warm="#070607"
+                          dotGap={4}
+                          radius={75}
+                        />
+                      </em>
                     </span>
                   </span>
                 </h1>
