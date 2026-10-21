@@ -6,3 +6,9 @@ test('stations and transport stay disjoint throughout normal and expanded modes'
 test('one payload moves forward only and resets invisibly',()=>{let last=-Infinity;for(let t=0;t<20;t+=.001){const p=sampleProcess(t);assert.ok(p.x>=last-1e-8);last=p.x}assert.equal(sampleProcess(19.99).opacity,0);assert.equal(sampleProcess(20).opacity,0)})
 test('transfer reaches each destination without velocity jumps',()=>{const h=.0001;assert.ok(smootherstep(h)/h<.0001);assert.ok((1-smootherstep(1-h))/h<.0001);for(let i=1;i<5;i++)assert.ok(Math.abs(sampleProcess(i*4-h).x-sampleProcess(i*4).x)<1e-6)})
 test('critical damping is stable across frame rates',()=>{function run(dt){let p=0,v=0;for(let t=0;t<1-1e-8;t+=dt){const s=spring(p,v,1,dt);p=s.position;v=s.velocity;assert.ok(p<=1)}return p}assert.ok(Math.abs(run(1/30)-run(1/120))<1e-8)})
+
+
+import { BELT, sampleBelt, sampleProduct } from '../lib/process-layout.ts'
+test('conveyor forms a continuous loop without crossing station footprints',()=>{const total=4*BELT.halfLength+2*Math.PI*BELT.radius;for(let d=0;d<total;d+=.01){const a=sampleBelt(d),b=sampleBelt(d+.01);assert.ok(Math.hypot(a.x-b.x,a.y-b.y)<=.01001);assert.ok(a.y-BELT.slatThickness/2>.19)}assert.ok(Math.abs(sampleBelt(0).x-sampleBelt(total).x)<1e-8)})
+test('product transforms at each stop, never while travelling',()=>{for(let stage=0;stage<5;stage++){assert.equal(sampleProduct(stage*4+1.4).shape,stage);assert.equal(sampleProduct(stage*4+1.4).scaleY,1)}for(let t=0;t<20;t+=.005){const p=sampleProduct(t);assert.ok(p.scaleY>=0&&p.scaleY<=1);if(p.transforming)assert.equal(sampleProcess(t).travelling,false)}})
+test('each arrival retains the previous output until transformation',()=>{for(let i=1;i<5;i++){assert.equal(sampleProduct(i*4).shape,i-1);assert.equal(sampleProduct(i*4+1.4).shape,i)}})

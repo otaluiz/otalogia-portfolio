@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js'
-import { PROCESS, LAYOUT, sampleProcess, spring, type StationId } from './process-layout'
+import { PROCESS, LAYOUT, BELT, PRODUCTS, sampleBelt, sampleProduct, sampleProcess, spring, type StationId } from './process-layout'
 export type { StationId } from './process-layout'
 export type MachineMode = 'assembled' | 'cutaway' | 'stations' | 'order'
 export type MachineCamera = 'overview' | 'side' | 'top' | 'station' | 'flight'
@@ -42,9 +42,40 @@ export function initMachineScene(root:HTMLElement, _font:string, options:Options
   const machine=new THREE.Group();scene.add(machine)
   box(machine,21,.18,4.5,0,.1,.45,floorMat)
   const track=new THREE.Group();machine.add(track)
-  box(track,16.1,.12,.72,0,.39,LAYOUT.laneZ,black)
-  for(const z of [LAYOUT.laneZ-.48,LAYOUT.laneZ+.48])box(track,16.3,.06,.06,0,.5,z,edge)
-  for(let i=0;i<64;i++)box(track,.018,.008,.65,-7.9+i*.25,.455,LAYOUT.laneZ,edge)
+  // Mechanical conveyor with visible rollers, moving treads and a lower return.
+  for (const z of [LAYOUT.laneZ-.52, LAYOUT.laneZ+.52]) {
+    box(track,16.15,.17,.09,0,.55,z,edge)
+    box(track,16.1,.04,.035,0,.89,z,blue)
+  }
+  for (const x of [-7,-3.5,0,3.5,7]) {
+    for (const z of [LAYOUT.laneZ-.47,LAYOUT.laneZ+.47]) box(track,.12,.32,.12,x,.35,z,black)
+  }
+  const rollers: THREE.Mesh[] = []
+  for (const x of [-BELT.halfLength, BELT.halfLength]) {
+    const roller=cylinder(track,BELT.radius-.04,.86,x,BELT.centerY,LAYOUT.laneZ,edge)
+    roller.rotation.x=Math.PI/2;rollers.push(roller)
+    for(const z of [LAYOUT.laneZ-.57,LAYOUT.laneZ+.57]) {
+      const cap=cylinder(track,.13,.07,x,BELT.centerY,z,orange);cap.rotation.x=Math.PI/2
+      const axle=cylinder(track,.045,.12,x,BELT.centerY,z,white);axle.rotation.x=Math.PI/2
+    }
+  }
+  const treadGeometry=new THREE.BoxGeometry(.15,BELT.slatThickness,BELT.width)
+  geometries.add(treadGeometry)
+  const treadCount=168, beltLength=4*BELT.halfLength+2*Math.PI*BELT.radius
+  const treads=new THREE.InstancedMesh(treadGeometry,black,treadCount)
+  treads.instanceMatrix.setUsage(THREE.DynamicDrawUsage);track.add(treads)
+  const treadTransform=new THREE.Object3D()
+  function updateConveyor(distance:number) {
+    for(let i=0;i<treadCount;i++) {
+      const p=sampleBelt(i/treadCount*beltLength+distance)
+      treadTransform.position.set(p.x,p.y,LAYOUT.laneZ)
+      treadTransform.rotation.set(0,0,p.angle);treadTransform.updateMatrix()
+      treads.setMatrixAt(i,treadTransform.matrix)
+    }
+    treads.instanceMatrix.needsUpdate=true
+    rollers.forEach(r=>r.rotation.y=-distance/BELT.radius)
+  }
+  updateConveyor(0)
   const stationGroups:THREE.Group[]=[], indicators:THREE.MeshStandardMaterial[]=[], details:THREE.Object3D[]=[]
   PROCESS.forEach((s,i)=>{
     const g=new THREE.Group();g.position.set(s.x,0,LAYOUT.stationZ);g.userData.station=s.id;machine.add(g);stationGroups.push(g)
@@ -76,10 +107,40 @@ export function initMachineScene(root:HTMLElement, _font:string, options:Options
 
   })
   const cart=new THREE.Group();machine.add(cart)
-  box(cart,.54,.08,.54,0,.495,0,edge)
-  const cargoMat=material('#fc5000',true);cargoMat.transparent=true
-  box(cart,.36,.35,.36,0,.71,0,cargoMat)
-  const cartMaterials:THREE.Material[]=[];cart.traverse(o=>{if(o instanceof THREE.Mesh){o.material=o.material.clone();o.material.transparent=true;materials.add(o.material);cartMaterials.push(o.material)}})
+  const beltTop=BELT.centerY+BELT.radius+BELT.slatThickness/2
+  box(cart,.7,.08,.7,0,beltTop+.04,0,edge)
+  const productRoot=new THREE.Group();productRoot.position.y=beltTop+.08;cart.add(productRoot)
+  const productShapes=PRODUCTS.map(()=>new THREE.Group())
+  productShapes.forEach(g=>productRoot.add(g))
+  // 01: three raw-data sheets.
+  for(let i=0;i<3;i++) {
+    box(productShapes[0],.46,.045,.4,0,.0225+i*.052,0,white)
+    for(let j=0;j<3;j++)box(productShapes[0],.24-j*.04,.008,.025,-.04,.049+i*.052,-.1+j*.07,blue)
+  }
+  // 02: analyzed neural chip, distinct from the station itself.
+  box(productShapes[1],.44,.08,.44,0,.04,0,purple)
+  for(const [x,z] of [[-.13,-.13],[.13,-.13],[0,0],[-.13,.13],[.13,.13]]) {
+    cylinder(productShapes[1],.032,.025,x,.092,z,orange)
+  }
+  // 03: executable system module.
+  for(let i=0;i<3;i++) {
+    box(productShapes[2],.42,.105,.32,0,.0525+i*.12,0,black)
+    box(productShapes[2],.23,.02,.015,-.045,.065+i*.12,.17,blue)
+    box(productShapes[2],.035,.035,.015,.145,.065+i*.12,.17,orange)
+  }
+  // 04: connected hub with links and four endpoints.
+  cylinder(productShapes[3],.1,.16,0,.08,0,purple)
+  for(const [x,z] of [[-.22,0],[.22,0],[0,-.22],[0,.22]]) {
+    line(productShapes[3],new THREE.Vector3(0,.08,0),new THREE.Vector3(x,.08,z),.012,blue)
+    box(productShapes[3],.12,.12,.12,x,.06,z,orange)
+  }
+  // 05: final dashboard with readable bar silhouette.
+  box(productShapes[4],.5,.065,.32,0,.0325,0,edge)
+  box(productShapes[4],.055,.16,.055,0,.145,0,edge)
+  box(productShapes[4],.54,.38,.065,0,.35,0,black)
+  for(let i=0;i<4;i++)box(productShapes[4],.07,.065+i*.05,.012,-.17+i*.11,.21+(.065+i*.05)/2,.04,i===3?orange:blue)
+  const cartMaterials:THREE.Material[]=[]
+  cart.traverse(o=>{if(o instanceof THREE.Mesh){o.material=o.material.clone();o.material.transparent=true;materials.add(o.material);cartMaterials.push(o.material)}})
   function fit(immediate=false){if(!host.clientWidth||!host.clientHeight)return;const w=host.clientWidth,h=host.clientHeight;renderer.setSize(w,h);camera.aspect=w/h;camera.updateProjectionMatrix();setCameraGoal();if(immediate){camera.position.copy(targetPosition);controls.target.copy(targetLook);controls.update();cameraMoving=false}}
   function setCameraGoal(){const span=19.4;const distance=Math.max(14,span/(2*Math.tan(THREE.MathUtils.degToRad(19))*camera.aspect)*1.15);targetLook.set(0,.75,.3);if(view==='station'){const idx=PROCESS.findIndex(s=>s.id===selected);targetLook.copy(stationGroups[idx].position).add(new THREE.Vector3(0,1,0));targetPosition.copy(targetLook).add(new THREE.Vector3(.8,3,6.5))}else if(view==='top')targetPosition.set(.01,distance,.31);else if(view==='side')targetPosition.set(1,distance*.22,distance);else targetPosition.set(.5,distance*.72,distance*.8);cameraMoving=true}
   function sync(){root.querySelectorAll<HTMLElement>('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode===mode)));root.querySelectorAll<HTMLElement>('[data-camera]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.camera===view)));const play=root.querySelector<HTMLButtonElement>('[data-play]')!;play.textContent=playing?'Pausar':'Reproduzir';play.setAttribute('aria-pressed',String(!playing));root.querySelector<HTMLElement>('[data-status]')!.textContent=playing?'Processo em movimento':'Processo pausado'}
@@ -103,7 +164,16 @@ export function initMachineScene(root:HTMLElement, _font:string, options:Options
   function animate(now:number){if(disposed)return;raf=requestAnimationFrame(animate);const dt=Math.min(Math.max((now-last)/1000,0),.05);last=now;if(!inViewport||document.hidden||contextLost)return;if(playing)time+=dt
     const smooth=spring(spread,spreadV,mode==='stations'?1:0,dt,7);spread=smooth.position;spreadV=smooth.velocity
     const scale=1+spread*(LAYOUT.spacingScale-1);stationGroups.forEach((g,i)=>g.position.x=PROCESS[i].x*scale);track.scale.x=scale
-    const state=sampleProcess(time,spread);cart.position.set(state.x,0,state.z);cart.visible=state.opacity>.001;cartMaterials.forEach(m=>m.opacity=state.opacity)
+    const state=sampleProcess(time,spread), product=sampleProduct(time)
+    const transportDistance=Math.floor(time/LAYOUT.cycle)*12.8+state.x/scale-PROCESS[0].x
+    updateConveyor(transportDistance)
+    cart.position.set(state.x,0,state.z);cart.visible=state.opacity>.001
+    cartMaterials.forEach(m=>m.opacity=state.opacity)
+    productShapes.forEach((g,i)=>g.visible=i===product.shape)
+    productRoot.scale.y=Math.max(.001,product.scaleY)
+    const productLabel=root.querySelector<HTMLElement>('[data-product]')
+    if(productLabel)productLabel.textContent=product.transforming?'Transformando o produto…':product.name
+
     indicators.forEach((m,i)=>m.emissiveIntensity=i === state.stage ? .9 : .15)
     if(state.stage!==activeStage){activeStage=state.stage;root.querySelector<HTMLElement>('[data-step]')!.textContent=`0${state.stage+1} / ${PROCESS[state.stage].name}`;if(mode==='order')options.onStation?.(PROCESS[state.stage].id)}
     root.querySelector<HTMLElement>('[data-progress]')!.style.transform=`scaleX(${state.progress})`
@@ -116,6 +186,7 @@ export function initMachineScene(root:HTMLElement, _font:string, options:Options
       mode, camera: view, playing, time, spread, activeStage,
       order: PROCESS.map(s => s.id),
       payload: sampleProcess(time, spread),
+      product: sampleProduct(time),
       stations: stationGroups.map((g, i) => ({
         id: PROCESS[i].id,
         position: g.position.toArray(),
@@ -124,5 +195,6 @@ export function initMachineScene(root:HTMLElement, _font:string, options:Options
   }
   window.__machineDebug=debug
   raf=requestAnimationFrame(animate)
-  return()=>{disposed=true;cancelAnimationFrame(raf);cleanups.forEach(fn=>fn());ro.disconnect();io.disconnect();controls.removeEventListener('start',onDrag);controls.dispose();geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());textures.forEach(t=>t.dispose());renderer.dispose();renderer.domElement.remove();if(window.__machine===api)delete window.__machine;if(window.__machineDebug===debug)delete window.__machineDebug}
+  return()=>{disposed=true;cancelAnimationFrame(raf);cleanups.forEach(fn=>fn());ro.disconnect();io.disconnect();controls.removeEventListener('start',onDrag);controls.dispose();treads.dispose();geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());textures.forEach(t=>t.dispose());renderer.dispose();renderer.domElement.remove();if(window.__machine===api)delete window.__machine;if(window.__machineDebug===debug)delete window.__machineDebug}
 }
+
