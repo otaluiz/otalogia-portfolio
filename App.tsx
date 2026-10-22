@@ -6,6 +6,7 @@ import type { StationId } from '@/lib/machine-scene'
 import BackgroundShader from '@/components/ui/background-shader'
 import HalftoneText from '@/components/ui/halftone-text'
 import GlassFolder, { type FolderFile, type ArtPreset } from '@/components/ui/glass-folder-cards'
+import ProjectSpiral from '@/components/ui/project-spiral'
 import CursorEdgeGlowButton from '@/components/ui/cursor-edge-glow-button'
 
 const WaveGrid = lazy(() => import('@/components/ui/wave-grid'))
@@ -171,6 +172,8 @@ export default function App() {
                 Soluções
               </a>
               <span className="nav-divider-dot" />
+              <a href="#projetos" className="caldera-nav-link">Projetos</a>
+              <span className="nav-divider-dot" />
               <a href="#laboratorio" className="caldera-nav-link">
                 Laboratório
               </a>
@@ -210,6 +213,7 @@ export default function App() {
               >
                 {[
                   ['Soluções', '#solucoes'],
+                  ['Projetos', '#projetos'],
                   ['Laboratório', '#laboratorio'],
                   ['Processo', '#processo'],
                   ['Sobre', '#sobre'],
@@ -229,13 +233,13 @@ export default function App() {
           </AnimatePresence>
         </header>
 
-        <main id="conteudo" className="caldera-container">
+        <main id="conteudo" tabIndex={-1} className="caldera-container">
           {/* Caldera Unified Hero Section: 3D Wave Grid occupies the entire background */}
-          <section id="inicio" className="hero-caldera-single">
+          <section id="inicio" className="hero-caldera-single" data-st-01="parallax" data-st-y="300" data-st-opacity="0.5" data-st-overlay="black">
             {/* 3D Wave Grid background */}
             <div className="hero-wave-backdrop" aria-hidden="true">
               <Suspense fallback={<div className="w-full h-full bg-[#101018]/95" />}>
-                <WaveGrid colorBase="#171126" colorHigh="#fc5000" />
+                <WaveGrid colorBase="#ffffff" colorHigh="#ffffff" />
               </Suspense>
             </div>
 
@@ -385,6 +389,8 @@ export default function App() {
             </div>
           </section>
 
+          <ProjectSpiral />
+
           {/* Laboratory & Interactive 3D Machine (Caldera Dark Card, 40px radius) */}
           <section id="laboratorio" className="lab-caldera lab-open">
             <div className="flex flex-col md:flex-row justify-between items-start gap-6">
@@ -459,7 +465,7 @@ export default function App() {
           </section>
 
           {/* Process Section (Caldera Step Cards) */}
-          <section id="processo" className="mb-20">
+          <section id="processo" className="mb-20" data-st-01="pin">
             <div>
               <span className="text-[13px] font-mono tracking-widest text-[#f4f1fa]/70 uppercase font-medium">
                 03 / COMO TRABALHO
@@ -553,7 +559,7 @@ export default function App() {
           </section>
 
           {/* Contact Conversion Banner (Caldera Ember Card with 40px radius) */}
-          <section id="contato" className="contact-caldera">
+          <section id="contato" className="contact-caldera" data-st-01="reveal" data-st-y="240" data-st-opacity="0.5">
             <div className="flex justify-between items-center flex-wrap gap-4">
               <span className="text-[13px] font-mono font-semibold tracking-wider text-[#f4f1fa]/80 uppercase">
                 QUAL É O DESAFIO DO SEU NEGÓCIO?

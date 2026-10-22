@@ -30,7 +30,8 @@ export function initMachineScene(root:HTMLElement, _font:string, options:Options
   const listen=(target:EventTarget,type:string,fn:EventListener)=>{target.addEventListener(type,fn);cleanups.push(()=>target.removeEventListener(type,fn))}
   function material(color:string,emissive=false){const m=new THREE.MeshStandardMaterial({color,metalness:.45,roughness:.35,emissive:emissive?color:'#000',emissiveIntensity: emissive ? .7 : 0});materials.add(m);return m}
   const black=material('#171721'),edge=material('#333343'),blue=material('#3285ff',true),purple=material('#a168ff',true),orange=material('#fc5000',true),white=material('#e7e8ef')
-  const floorMat=material('#101018')
+  const floorMat=new THREE.MeshStandardMaterial({color:'#ffffff',metalness:0,roughness:.9});materials.add(floorMat)
+  const railWhite=material('#ffffff',true)
   function mesh(parent:THREE.Object3D,g:THREE.BufferGeometry,m:THREE.Material,x=0,y=0,z=0){geometries.add(g);const obj=new THREE.Mesh(g,m);obj.position.set(x,y,z);parent.add(obj);return obj}
   function box(parent:THREE.Object3D,w:number,h:number,d:number,x:number,y:number,z:number,m:THREE.Material){return mesh(parent,new RoundedBoxGeometry(w,h,d,2,Math.min(.055,w/4,h/4,d/4)),m,x,y,z)}
   function cylinder(parent:THREE.Object3D,r:number,h:number,x:number,y:number,z:number,m:THREE.Material){return mesh(parent,new THREE.CylinderGeometry(r,r,h,32),m,x,y,z)}
@@ -38,7 +39,7 @@ export function initMachineScene(root:HTMLElement, _font:string, options:Options
   function label(parent:THREE.Object3D,text:string,x:number,y:number,z:number,w=2.1){const c=document.createElement('canvas');c.width=640;c.height=96;const ctx=c.getContext('2d')!;ctx.fillStyle='#09090e';ctx.fillRect(0,0,640,96);ctx.font='500 34px sans-serif';ctx.textAlign='center';ctx.fillStyle='#eeeef6';ctx.fillText(text,320,60);const tex=new THREE.CanvasTexture(c);tex.colorSpace=THREE.SRGBColorSpace;textures.add(tex);const m=new THREE.MeshBasicMaterial({map:tex,side:THREE.DoubleSide});materials.add(m);return mesh(parent,new THREE.PlaneGeometry(w,.32),m,x,y,z)}
   scene.add(new THREE.HemisphereLight('#e8eaff','#171020',2.5))
   const key=new THREE.DirectionalLight('#ffffff',3);key.position.set(-5,12,10);scene.add(key)
-  const rim=new THREE.DirectionalLight('#697aff',2);rim.position.set(5,7,-6);scene.add(rim)
+  const rim=new THREE.DirectionalLight('#ffffff',2);rim.position.set(5,7,-6);scene.add(rim)
   const machine=new THREE.Group();scene.add(machine)
   box(machine,21,.18,15,0,.1,0,floorMat)
   const track=new THREE.Group();machine.add(track)
@@ -49,7 +50,7 @@ export function initMachineScene(root:HTMLElement, _font:string, options:Options
   }
   for(const side of [-1,1]) {
     mesh(track,new THREE.TubeGeometry(new RailCurve(side*.53,.68),240,.055,8,true),edge)
-    mesh(track,new THREE.TubeGeometry(new RailCurve(side*.53,.94),240,.022,8,true),blue)
+    mesh(track,new THREE.TubeGeometry(new RailCurve(side*.53,.94),240,.022,8,true),railWhite)
   }
   for(let i=0;i<24;i++) {
     const p=sampleBelt(i/24*BELT_LENGTH)

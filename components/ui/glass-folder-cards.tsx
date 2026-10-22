@@ -1059,7 +1059,7 @@ canvas.gf-sheet-art[data-ready] { opacity: 1; filter: none; }
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background: linear-gradient(180deg, rgba(0, 0, 0, .42) 0%, rgba(0, 0, 0, 0) 34%);
+  background: linear-gradient(180deg, rgba(0, 0, 0, .88) 0%, rgba(0, 0, 0, .55) 70%, rgba(0, 0, 0, 0) 100%);
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .2);
   pointer-events: none;
 }
@@ -1073,12 +1073,15 @@ canvas.gf-sheet-art[data-ready] { opacity: 1; filter: none; }
   align-items: baseline;
   justify-content: space-between;
   gap: 10px;
-  white-space: nowrap;
+  flex-direction: column;
+  align-items: flex-start;
+  white-space: normal;
 }
 .gf-sheet-name {
   overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: 12.5px;
+  overflow-wrap: anywhere;
+  line-height: 1.15;
+  font-size: 21px;
   font-weight: 560;
   letter-spacing: -.005em;
   color: #18181b;
@@ -1086,7 +1089,7 @@ canvas.gf-sheet-art[data-ready] { opacity: 1; filter: none; }
 .gf-sheet-meta {
   flex: none;
   font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 10px;
+  font-size: 13px;
   letter-spacing: .02em;
   color: rgba(24, 24, 27, .5);
 }
@@ -1096,7 +1099,7 @@ canvas.gf-sheet-art[data-ready] { opacity: 1; filter: none; }
   position: absolute;
   left: 14px;
   right: 14px;
-  top: 40px;
+  top: 104px;
   display: flex;
   flex-direction: column;
   gap: 9px;

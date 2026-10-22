@@ -883,3 +883,65 @@ button.btn-dark:hover {
   .lab-caldera.lab-open { padding: 20px 0; }
   .lab-open .process-controls button { min-height: 44px; }
 }
+
+/* Section transitions share the normal document flow. Do not clip the sticky ancestors. */
+body { overflow-x: clip; }
+.caldera-container { position: relative; }
+.caldera-container > section { position: relative; z-index: 1; }
+.caldera-container > section[data-st-01]:not([data-st-01="pin"]) { will-change: transform; }
+.caldera-container > section[data-st-01="reveal"] { background-color: #fc5000; }
+.hero-caldera-single {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  border: 0;
+  border-radius: 0;
+  min-height: calc(100svh - 110px);
+  background: #070607;
+}
+.hero-single-content {
+  width: min(100%, var(--page-max-width));
+  margin-inline: auto;
+  min-height: inherit;
+  padding: clamp(48px, 7vw, 100px) 24px;
+}
+.hero-wave-backdrop { opacity: .34; }
+.projects-section { margin-block: 80px; padding-block: 32px; background: #0b090e; }
+.projects-heading { display: flex; align-items: end; justify-content: space-between; gap: 32px; padding: 32px; }
+.projects-heading h2 { margin: 14px 0 0; font-size: clamp(42px, 5vw, 72px); }
+.projects-heading p { max-width: 300px; color: #c4bfc9; }
+.projects-eyebrow { font: 12px ui-monospace, monospace; letter-spacing: .14em; color: #fc5000; }
+.spiral-viewport { height: 720px; overflow: clip; perspective: 1100px; touch-action: pan-y; }
+.spiral-stage { position: relative; top: 50%; left: 50%; transform-style: preserve-3d; transform: rotateZ(-12deg); }
+.spiral-card { position: absolute; left: -200px; top: -145px; width: 400px; padding: 0; border: 1px solid #ffffff35; border-radius: 14px; overflow: hidden; background: #17121b; cursor: pointer; backface-visibility: hidden; transform-style: preserve-3d; }
+.spiral-card img { display: block; width: 100%; height: auto; pointer-events: none; }
+.spiral-card-caption { display: flex; justify-content: space-between; padding: 16px 20px; color: white; background: #141017; font-size: 16px; }
+.spiral-card:focus-visible, .spiral-controls button:focus-visible, .project-dialog button:focus-visible { outline: 3px solid #fc5000; outline-offset: 5px; }
+.spiral-controls { display: flex; justify-content: center; align-items: center; gap: 24px; position: relative; z-index: 20; }
+.spiral-controls button { width: 48px; height: 48px; border: 1px solid #ffffff40; border-radius: 50%; background: #201921; color: white; font-size: 23px; cursor: pointer; }
+.spiral-controls p { display: grid; min-width: 210px; text-align: center; gap: 6px; }
+.spiral-controls p span { color: #fc5000; font: 12px ui-monospace, monospace; }
+.project-dialog { position: fixed; inset: 0; width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; padding: 32px 20px; border: 0; background: #070607e8; color: white; overflow-y: auto; overscroll-behavior: contain; }
+.project-dialog[open] { display: grid; align-items: center; }
+.project-dialog::backdrop { background: #070607c0; backdrop-filter: blur(12px); }
+.project-dialog-content { position: relative; width: min(100%, 960px); margin: auto; background: #17121b; border: 1px solid #ffffff25; border-radius: 24px; overflow: hidden; }
+.project-close { position: absolute; right: 16px; top: 16px; z-index: 2; border: 1px solid #ffffff60; border-radius: 30px; padding: 12px 18px; background: #070607; color: white; cursor: pointer; }
+.project-dialog video, .project-media img { display: block; width: 100%; max-height: 65svh; object-fit: contain; background: #070607; }
+.project-media p { margin: 0; padding: 12px 24px; color: #c4bfc9; font-size: 13px; }
+.project-description { padding: clamp(24px, 4vw, 44px); }
+.project-description > span { font: 12px ui-monospace, monospace; color: #fc5000; }
+.project-description h3 { margin: 12px 0; font-size: clamp(32px, 5vw, 50px); }
+.project-description p { max-width: 75ch; color: #ddd6e2; line-height: 1.7; }
+.project-description a { display: inline-block; margin-top: 16px; color: #fc5000; }
+@media (max-width: 768px) {
+  .hero-caldera-single { min-height: calc(100svh - 100px); border-radius: 0; }
+  .hero-single-content { padding-inline: 20px; min-height: inherit; }
+  .projects-heading { flex-direction: column; align-items: start; padding: 24px 18px; gap: 12px; }
+  .spiral-viewport { height: 580px; perspective: 900px; }
+  .spiral-stage { scale: .68; }
+  .spiral-controls { gap: 12px; }
+  .spiral-controls p { min-width: 170px; font-size: 14px; }
+  .project-dialog { padding: 16px 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .caldera-container > section[data-st-01] { will-change: auto; }
+}
