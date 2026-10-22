@@ -4,11 +4,11 @@ export type Project = {
   category: string
   description: string
   cover: string
-  video?: string
+  coverAlt: string
   url?: string
 }
 
-// Add approved project recordings here. The attached carousel reference is not a project video.
+// Temporary editorial images. Replace cover and coverAlt when the project images are uploaded.
 export const projects: Project[] = [
   {
     id: 'portfolio',
@@ -16,6 +16,7 @@ export const projects: Project[] = [
     category: 'WEB · EXPERIÊNCIA 3D',
     description: 'Portfólio da Otalogia desenvolvido em React e TypeScript. Combina um laboratório 3D interativo, apresentação dos serviços e animações de navegação com GSAP e Lenis.',
     cover: '/images/projects/portfolio.svg',
+    coverAlt: 'Imagem provisória do projeto Otalogia Portfolio',
     url: 'https://github.com/otaluiz/otalogia-portfolio',
   },
   {
@@ -24,6 +25,7 @@ export const projects: Project[] = [
     category: 'DESIGN · AUTOMAÇÃO',
     description: 'Motor de composição e renderização de carrosséis com o design system da Otalogia. Organiza tema, conteúdo e metadados para transformar roteiros em peças visuais consistentes.',
     cover: '/images/projects/post.svg',
+    coverAlt: 'Imagem provisória do projeto Otalogia Post',
     url: 'https://github.com/otaluiz/otalogia-post',
   },
   {
@@ -32,5 +34,6 @@ export const projects: Project[] = [
     category: 'INTEGRAÇÕES · CONTEÚDO',
     description: 'Fluxo de publicação programada de conteúdo da Otalogia: organização da fila, preparação dos arquivos e integração com a API oficial do Instagram.',
     cover: '/images/projects/publisher.svg',
+    coverAlt: 'Imagem provisória do projeto Instagram Publisher',
   },
 ]

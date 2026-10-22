@@ -925,8 +925,7 @@ body { overflow-x: clip; }
 .project-dialog::backdrop { background: #070607c0; backdrop-filter: blur(12px); }
 .project-dialog-content { position: relative; width: min(100%, 960px); margin: auto; background: #17121b; border: 1px solid #ffffff25; border-radius: 24px; overflow: hidden; }
 .project-close { position: absolute; right: 16px; top: 16px; z-index: 2; border: 1px solid #ffffff60; border-radius: 30px; padding: 12px 18px; background: #070607; color: white; cursor: pointer; }
-.project-dialog video, .project-media img { display: block; width: 100%; max-height: 65svh; object-fit: contain; background: #070607; }
-.project-media p { margin: 0; padding: 12px 24px; color: #c4bfc9; font-size: 13px; }
+.project-media img { display: block; width: 100%; max-height: 65svh; object-fit: contain; background: #070607; }
 .project-description { padding: clamp(24px, 4vw, 44px); }
 .project-description > span { font: 12px ui-monospace, monospace; color: #fc5000; }
 .project-description h3 { margin: 12px 0; font-size: clamp(32px, 5vw, 50px); }

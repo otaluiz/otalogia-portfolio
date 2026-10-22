@@ -5,7 +5,6 @@ import { projects, type Project } from '@/lib/projects'
 
 function ProjectDialog({ project, onClose }: { project: Project; onClose: () => void }) {
   const dialog = useRef<HTMLDialogElement>(null)
-  const video = useRef<HTMLVideoElement>(null)
   const reduced = useReducedMotion()
   useEffect(() => {
     const el = dialog.current!
@@ -14,7 +13,6 @@ function ProjectDialog({ project, onClose }: { project: Project; onClose: () => 
     document.body.style.overflow = 'hidden'
     el.showModal()
     return () => {
-      video.current?.pause()
       el.close()
       document.body.style.overflow = overflow
       opener?.focus({ preventScroll: true })
@@ -30,8 +28,7 @@ function ProjectDialog({ project, onClose }: { project: Project; onClose: () => 
         animate={{ y: 0, scale: 1 }} exit={{ y: reduced ? 0 : 20, scale: reduced ? 1 : 0.98 }}
         transition={{ duration: reduced ? 0 : 0.35 }}>
         <button type="button" autoFocus className="project-close" onClick={onClose} aria-label="Fechar projeto">Fechar ×</button>
-        {project.video ? <video ref={video} src={project.video} poster={project.cover} controls playsInline preload="metadata" aria-label={`Vídeo de ${project.title}`} />
-          : <div className="project-media"><img src={project.cover} alt={`Apresentação de ${project.title}`} /><p>Vídeo deste projeto ainda não disponível.</p></div>}
+        <div className="project-media"><img src={project.cover} alt={project.coverAlt} width="800" height="500" /></div>
         <div className="project-description"><span>{project.category}</span><h3 id="project-title">{project.title}</h3><p>{project.description}</p>
           {project.url && <a href={project.url} target="_blank" rel="noopener noreferrer">Explorar projeto ↗</a>}
         </div>
@@ -77,7 +74,7 @@ export default function ProjectSpiral() {
             transition={{ duration: reduced ? 0 : 0.75, ease: [0.22, 1, 0.36, 1] }}
             style={{ zIndex: 10 - Math.abs(offset) }}
             onClick={() => { if (!swiped.current) setSelected(project) }}>
-            <img src={project.cover} alt="" draggable={false} loading="lazy" width="800" height="500" />
+            <img src={project.cover} alt={project.coverAlt} draggable={false} loading="lazy" width="800" height="500" />
             <span className="spiral-card-caption"><span>{project.title}</span><span aria-hidden="true">↗</span></span>
           </motion.button>
         })}

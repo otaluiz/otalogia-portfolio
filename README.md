@@ -49,9 +49,9 @@ Verificação: `node --experimental-strip-types --test tests/*.test.mjs` (Node 2
 
 ## Projetos e transições entre seções
 
-A seção `#projetos` usa um carrossel em hélice 3D, com navegação por botões, setas do teclado e gesto horizontal. Cada projeto abre um diálogo nativo com foco contido, fechamento por Escape e restauração do foco. `lib/projects.ts` concentra título, categoria, descrição, capa, link público opcional e `video` opcional. As capas SVG são composições editoriais da Otalogia. Os projetos iniciais são Portfolio, Post e Instagram Publisher; o publicador não expõe um link para seu repositório privado.
+A seção `#projetos` usa um carrossel em hélice 3D, com navegação por botões, setas do teclado e gesto horizontal. Cada projeto abre um diálogo nativo com foco contido, fechamento por Escape e restauração do foco. `lib/projects.ts` concentra título, categoria, descrição, capa, texto alternativo (`coverAlt`) e link público opcional. As capas SVG são composições editoriais da Otalogia. Os projetos iniciais são Portfolio, Post e Instagram Publisher; o publicador não expõe um link para seu repositório privado.
 
-Para disponibilizar uma gravação real, adicione o arquivo em `public/videos/` e configure `video: '/videos/nome-do-projeto.mp4'` no projeto correspondente. O player usa controles nativos, `playsInline` e `preload="metadata"`; interrompe a reprodução ao fechar. Enquanto não houver gravação, o diálogo informa a ausência do vídeo. O vídeo de referência do carrossel não é apresentado como trabalho da Otalogia.
+Até o envio das imagens dos projetos, o carrossel e os detalhes exibem capas provisórias com texto alternativo descritivo. Para substituir uma capa, adicione a imagem em `public/images/projects/` e atualize `cover` e `coverAlt` em `lib/projects.ts`. Os detalhes exibem apenas imagem e descrição, sem player de vídeo.
 
 `lib/section-transition.ts` implementa `sectionTransition01(scopeOrConfig?, config?)`, integrado ao lifecycle React em `usePageMotion`. O sistema reutiliza GSAP e Lenis já presentes no projeto. Os blocos precisam ser irmãos adjacentes no fluxo vertical:
 
