@@ -74,12 +74,19 @@ export function sectionTransition01(scopeOrConfig: Element | Document | Config =
       }
       if (mode === 'reveal') {
         gsap.set(previous!, { zIndex: 1 })
-        gsap.set(section, { position: 'sticky', bottom: 0, zIndex: 0 })
+        // Keep the reveal in flow: sticky bottom pulls it into every earlier viewport.
+        gsap.set(section, { position: 'relative', zIndex: 0 })
         if (opacity === null) resetOverlay()
         if (y === 0 && opacity === null) return
-        const timeline = gsap.timeline({ scrollTrigger: { trigger: previous, start: 'bottom bottom', end: () => `+=${section.offsetHeight}`, scrub: true, invalidateOnRefresh: true } })
-        // A sticky reveal has a visual rect near the viewport even before its turn.
-        // Anchors must seek the trigger end rather than that temporary rect.
+        const flowTop = () => {
+          // offsetTop is independent of the reveal transform during GSAP refresh.
+          let top = 0
+          let node: HTMLElement | null = section
+          while (node) { top += node.offsetTop; node = node.offsetParent as HTMLElement | null }
+          return top
+        }
+        const timeline = gsap.timeline({ scrollTrigger: { trigger: section, start: () => flowTop() - innerHeight, end: () => flowTop() - innerHeight * 0.25, scrub: true, invalidateOnRefresh: true } })
+        // Seek the completed reveal when following a section anchor.
         revealScrollTargets.set(section, () => timeline.scrollTrigger!.end)
         revealSections.push(section)
         if (y !== 0) timeline.fromTo(section, { y }, { y: 0, ease: 'none', force3D: true }, 0)

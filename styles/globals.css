@@ -905,13 +905,13 @@ body { overflow-x: clip; }
   padding: clamp(48px, 7vw, 100px) 24px;
 }
 .hero-wave-backdrop { opacity: .34; }
-.projects-section { margin-block: 80px; padding-block: 32px; background: #0b090e; }
+.projects-section { margin-block: 80px; padding-block: 20px; background: #0b090e; height: calc(100svh - 130px); min-height: 520px; display: flex; flex-direction: column; }
 .projects-heading { display: flex; align-items: end; justify-content: space-between; gap: 32px; padding: 32px; }
 .projects-heading h2 { margin: 14px 0 0; font-size: clamp(42px, 5vw, 72px); }
 .projects-heading p { max-width: 300px; color: #c4bfc9; }
 .projects-eyebrow { font: 12px ui-monospace, monospace; letter-spacing: .14em; color: #fc5000; }
-.spiral-viewport { height: 720px; overflow: clip; perspective: 1100px; touch-action: pan-y; }
-.spiral-stage { position: relative; top: 50%; left: 50%; transform-style: preserve-3d; transform: rotateZ(-12deg); }
+.spiral-viewport { flex: 1; min-height: 240px; overflow: clip; perspective: 1100px; touch-action: pan-y; }
+.spiral-stage { width: 0; height: 0; position: relative; top: 50%; left: 50%; transform-style: preserve-3d; transform: rotateZ(-12deg); }
 .spiral-card { position: absolute; left: -200px; top: -145px; width: 400px; padding: 0; border: 1px solid #ffffff35; border-radius: 14px; overflow: hidden; background: #17121b; cursor: pointer; backface-visibility: hidden; transform-style: preserve-3d; }
 .spiral-card img { display: block; width: 100%; height: auto; pointer-events: none; }
 .spiral-card-caption { display: flex; justify-content: space-between; padding: 16px 20px; color: white; background: #141017; font-size: 16px; }
@@ -935,12 +935,19 @@ body { overflow-x: clip; }
   .hero-caldera-single { min-height: calc(100svh - 100px); border-radius: 0; }
   .hero-single-content { padding-inline: 20px; min-height: inherit; }
   .projects-heading { flex-direction: column; align-items: start; padding: 24px 18px; gap: 12px; }
-  .spiral-viewport { height: 580px; perspective: 900px; }
+  .spiral-viewport { min-height: 240px; perspective: 900px; }
   .spiral-stage { scale: .68; }
   .spiral-controls { gap: 12px; }
   .spiral-controls p { min-width: 170px; font-size: 14px; }
   .project-dialog { padding: 16px 12px; }
 }
+@media (max-height: 649px) {
+  .projects-section { height: auto; }
+  .spiral-viewport { flex: none; height: 400px; }
+}
 @media (prefers-reduced-motion: reduce) {
   .caldera-container > section[data-st-01] { will-change: auto; }
 }
+
+/* Opaque entering surfaces prevent pinned content showing through card gaps. */
+.stat-row-caldera, .about-caldera { background: #070607; }

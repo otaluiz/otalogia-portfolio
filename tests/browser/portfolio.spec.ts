@@ -7,10 +7,14 @@ test.beforeEach(async ({ page }) => {
   await expect(page.locator('#inicio')).toBeVisible()
 })
 
-test('Lenis anchors reach the sticky contact in React Strict Mode', async ({ page }) => {
+test('contact stays below earlier sections and anchors reveal it in Strict Mode', async ({ page }) => {
+  await expect.poll(() => page.locator('#contato').evaluate(el => el.getBoundingClientRect().top)).toBeGreaterThan(1000)
+  await page.locator('a[href="#solucoes"]').first().click()
+  await expect.poll(() => page.evaluate(() => scrollY)).toBeGreaterThan(500)
+  await expect.poll(() => page.locator('#contato').evaluate(el => el.getBoundingClientRect().top)).toBeGreaterThan(1000)
   await page.locator('a[href="#contato"]').first().click()
   await expect.poll(() => page.evaluate(() => scrollY)).toBeGreaterThan(3000)
-  await expect.poll(() => page.locator('#contato').evaluate(el => Math.abs(el.getBoundingClientRect().bottom - innerHeight))).toBeLessThan(3)
+  await expect.poll(() => page.locator('#contato').evaluate(el => Math.abs(el.getBoundingClientRect().top - innerHeight * 0.25))).toBeLessThan(3)
   await page.locator('a[href="#inicio"]').first().click()
   await expect.poll(() => page.evaluate(() => scrollY)).toBeLessThan(2)
 })
@@ -71,4 +75,31 @@ test('transition boundary rules and mobile configuration preserve sibling flow',
     return checks
   })
   expect(results).toEqual([true, true, true, true, true, true])
+})
+
+
+test('scroll continuously rotates the project spiral while the section is pinned', async ({ page }) => {
+  const start = await page.locator('#projetos').evaluate(el => el.getBoundingClientRect().top + scrollY - 110)
+  await page.evaluate(y => window.scrollTo(0, y), start + 150)
+  const first = page.locator('.spiral-card').first()
+  await expect.poll(() => first.evaluate(el => el.style.transform)).not.toBe('')
+  await page.waitForTimeout(900)
+  const before = await first.evaluate(el => el.style.transform)
+  await page.evaluate(y => window.scrollTo(0, y), start + 850)
+  await expect.poll(() => first.evaluate(el => el.style.transform)).not.toBe(before)
+  await expect.poll(() => page.locator('#projetos').evaluate(el => Math.abs(el.getBoundingClientRect().top - 110))).toBeLessThan(3)
+  await expect.poll(() => page.locator('#contato').evaluate(el => el.getBoundingClientRect().top)).toBeGreaterThan(1000)
+})
+
+test('mobile projects fit the viewport and rotate without exposing the contact', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  const start = await page.locator('#projetos').evaluate(el => el.getBoundingClientRect().top + scrollY - 110)
+  await page.evaluate(y => window.scrollTo(0, y), start + 200)
+  await expect.poll(() => page.locator('#projetos').evaluate(el => Math.abs(el.getBoundingClientRect().top - 110))).toBeLessThan(3)
+  await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth)).toBe(390)
+  await expect.poll(() => page.locator('.spiral-controls').evaluate(el => el.getBoundingClientRect().bottom)).toBeLessThan(844)
+  await expect.poll(() => page.locator('#contato').evaluate(el => el.getBoundingClientRect().top)).toBeGreaterThan(844)
+  const before = await page.locator('.spiral-card').first().evaluate(el => el.style.transform)
+  await page.mouse.wheel(0, 600)
+  await expect.poll(() => page.locator('.spiral-card').first().evaluate(el => el.style.transform)).not.toBe(before)
 })

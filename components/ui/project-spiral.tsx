@@ -1,7 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { projects, type Project } from '@/lib/projects'
+
+gsap.registerPlugin(ScrollTrigger)
 
 function ProjectDialog({ project, onClose }: { project: Project; onClose: () => void }) {
   const dialog = useRef<HTMLDialogElement>(null)
@@ -38,14 +42,63 @@ function ProjectDialog({ project, onClose }: { project: Project; onClose: () => 
 }
 
 export default function ProjectSpiral() {
+  const root = useRef<HTMLElement>(null)
+  const navigate = useRef<(delta: number) => void>(() => {})
   const [active, setActive] = useState(0)
   const [selected, setSelected] = useState<Project | null>(null)
-  const reduced = useReducedMotion()
   const index = ((active % projects.length) + projects.length) % projects.length
   const pointer = useRef<{ x: number; y: number } | null>(null)
   const swiped = useRef(false)
-  const change = (delta: number) => setActive(value => value + delta)
-  return <section id="projetos" className="projects-section" aria-labelledby="projects-title">
+  const change = (delta: number) => navigate.current(delta)
+
+  useEffect(() => {
+    const section = root.current
+    if (!section) return
+    const cards = Array.from(section.querySelectorAll<HTMLButtonElement>('.spiral-card'))
+    const media = gsap.matchMedia()
+    media.add({ all: 'all', motion: '(prefers-reduced-motion: no-preference)', tall: '(min-height: 650px)' }, context => {
+      const animated = context.conditions!.motion
+      const pinned = animated && context.conditions!.tall
+      const phase = { scroll: 0, manual: 0 }
+      let lastIndex = -1
+      let manualTween: gsap.core.Tween | undefined
+      gsap.set(cards, { x: 0, y: 0, z: 0, rotationY: 0, rotationZ: 0, opacity: 1 })
+      const setters = cards.map(card => gsap.quickSetter(card, 'css'))
+      const draw = () => {
+        const value = phase.scroll + phase.manual
+        const current = ((Math.round(value) % projects.length) + projects.length) % projects.length
+        if (current !== lastIndex) { lastIndex = current; setActive(current) }
+        cards.forEach((card, i) => {
+          const offset = gsap.utils.wrap(-4.5, 4.5, i - 4 - value)
+          const angle = offset * 0.95
+          const distance = Math.abs(offset)
+          setters[i]({ x: Math.sin(angle) * 330, y: offset * 150, z: Math.cos(angle) * 330 - 330,
+            rotationY: offset * 38, rotationZ: -offset * 5,
+            opacity: gsap.utils.clamp(0, 1, 3.5 - distance), zIndex: Math.round(100 - distance * 10) })
+          card.inert = distance > 1.6
+          card.tabIndex = distance < 0.5 ? 0 : -1
+          if (distance < 0.5) card.setAttribute('aria-current', 'true')
+          else card.removeAttribute('aria-current')
+        })
+      }
+      draw()
+      navigate.current = delta => {
+        manualTween?.kill()
+        manualTween = gsap.to(phase, { manual: Math.round(phase.scroll + phase.manual) + delta - phase.scroll,
+          duration: animated ? 0.65 : 0, ease: 'power3.out', onUpdate: draw })
+      }
+      if (animated) {
+        gsap.to(phase, { scroll: projects.length * 2, ease: 'none', onUpdate: draw,
+          scrollTrigger: { id: 'project-spiral', trigger: section, start: pinned ? 'top 110px' : 'top 80%',
+            end: pinned ? () => `+=${Math.max(innerHeight * 2, 1400)}` : 'bottom 20%',
+            pin: pinned, pinSpacing: true, scrub: 0.65, anticipatePin: 1, invalidateOnRefresh: true } })
+      }
+      return () => { manualTween?.kill() }
+    })
+    return () => { media.revert(); navigate.current = () => {} }
+  }, [])
+
+  return <section ref={root} id="projetos" className="projects-section" aria-labelledby="projects-title">
     <div className="projects-heading"><div><span className="projects-eyebrow">PROJETOS / EM MOVIMENTO</span><h2 id="projects-title">IDEIAS QUE GANHAM <em>FORMA.</em></h2></div>
       <p>Explore os projetos. Selecione um deles para conhecer os detalhes.</p></div>
     <div className="spiral-viewport" role="region" aria-roledescription="carrossel" aria-label="Projetos da Otalogia"
@@ -63,20 +116,14 @@ export default function ProjectSpiral() {
         pointer.current = null
       }} onPointerCancel={() => { pointer.current = null }}>
       <div className="spiral-stage">
-        {Array.from({ length: 7 }, (_, i) => i - 3).map(offset => {
-          const projectIndex = ((active + offset) % projects.length + projects.length) % projects.length
-          const project = projects[projectIndex]
-          const angle = offset * 0.95
-          return <motion.button key={active + offset} type="button" className="spiral-card"
-            inert={Math.abs(offset) > 1} tabIndex={offset === 0 ? 0 : -1} aria-hidden={Math.abs(offset) > 1 ? true : undefined}
-            aria-label={`Abrir projeto ${project.title}`} aria-current={offset === 0 ? 'true' : undefined}
-            initial={false} animate={{ x: Math.sin(angle) * 330, y: offset * 150, z: Math.cos(angle) * 330 - 330, rotateY: offset * 38, rotateZ: -offset * 5, opacity: Math.abs(offset) > 2 ? 0.2 : 1 }}
-            transition={{ duration: reduced ? 0 : 0.75, ease: [0.22, 1, 0.36, 1] }}
-            style={{ zIndex: 10 - Math.abs(offset) }}
+        {Array.from({ length: 9 }, (_, i) => i - 4).map(slot => {
+          const project = projects[((slot % projects.length) + projects.length) % projects.length]
+          return <button key={slot} type="button" className="spiral-card" tabIndex={-1}
+            aria-label={`Abrir projeto ${project.title}`}
             onClick={() => { if (!swiped.current) setSelected(project) }}>
             <img src={project.cover} alt={project.coverAlt} draggable={false} loading="lazy" width="800" height="500" />
             <span className="spiral-card-caption"><span>{project.title}</span><span aria-hidden="true">↗</span></span>
-          </motion.button>
+          </button>
         })}
       </div>
     </div>
