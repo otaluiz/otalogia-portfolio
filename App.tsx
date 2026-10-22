@@ -313,25 +313,25 @@ export default function App() {
           <section className="stat-row-caldera" aria-label="Indicadores da operação">
             <div className="stat-card-caldera">
               <span className="stat-label">Construção</span>
-              <div className="stat-number">100%</div>
+              <div className="stat-number" aria-label="100 por cento"><span aria-hidden="true" data-count-to="100" data-count-suffix="%">100%</span></div>
               <p className="stat-desc">Sistemas e fluxos construídos sob medida para a sua rotina.</p>
             </div>
 
             <div className="stat-card-caldera limestone">
               <span className="stat-label">Pilares</span>
-              <div className="stat-number">04</div>
+              <div className="stat-number" aria-label="4 pilares"><span aria-hidden="true" data-count-to="4" data-count-pad="2">04</span></div>
               <p className="stat-desc">Sistemas, Business Intelligence, IA aplicada e Conteúdo.</p>
             </div>
 
             <div className="stat-card-caldera">
               <span className="stat-label">Disponibilidade</span>
-              <div className="stat-number">24/7</div>
+              <div className="stat-number" aria-label="24 horas por dia, 7 dias por semana"><span aria-hidden="true" data-count-to="24" data-count-suffix="/">24/</span><span aria-hidden="true" data-count-to="7">7</span></div>
               <p className="stat-desc">Automações ativas conectando CRM, APIs e banco de dados.</p>
             </div>
 
             <div className="stat-card-caldera limestone">
               <span className="stat-label">Propósito</span>
-              <div className="stat-number">01</div>
+              <div className="stat-number" aria-label="1 propósito"><span aria-hidden="true" data-count-to="1" data-count-pad="2">01</span></div>
               <p className="stat-desc">Da complexidade operacional à clareza e controle do negócio.</p>
             </div>
           </section>

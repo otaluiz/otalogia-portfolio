@@ -49,7 +49,7 @@ Verificação: `node --experimental-strip-types --test tests/*.test.mjs` (Node 2
 
 ## Projetos e transições entre seções
 
-A seção `#projetos` usa um carrossel em hélice 3D com rotação contínua sincronizada ao ScrollTrigger, além de navegação por botões, setas do teclado e gesto horizontal. Em telas com altura suficiente, fixa a seção durante duas voltas pelos projetos; em telas baixas, anima durante a passagem sem fixação. Cada projeto abre um diálogo nativo com foco contido, fechamento por Escape e restauração do foco. `lib/projects.ts` concentra título, categoria, descrição, capa, texto alternativo (`coverAlt`) e link público opcional. As capas SVG são composições editoriais da Otalogia. Os projetos iniciais são Portfolio, Post e Instagram Publisher; o publicador não expõe um link para seu repositório privado.
+A seção `#projetos` usa uma hélice 3D no desktop e uma faixa horizontal com cards separados até 768px, com movimento contínuo sincronizado ao ScrollTrigger, além de navegação por botões, setas do teclado e gesto horizontal. Em telas a partir de 760px de altura, fixa a seção durante duas voltas pelos projetos; em telas baixas, anima durante a passagem sem fixação. Cada projeto abre um diálogo nativo com foco contido, fechamento por Escape e restauração do foco. `lib/projects.ts` concentra título, categoria, descrição, capa, texto alternativo (`coverAlt`) e link público opcional. As capas SVG são composições editoriais transparentes da Otalogia. Os projetos iniciais são Portfolio, Post e Instagram Publisher; o publicador não expõe um link para seu repositório privado.
 
 Até o envio das imagens dos projetos, o carrossel e os detalhes exibem capas provisórias com texto alternativo descritivo. Para substituir uma capa, adicione a imagem em `public/images/projects/` e atualize `cover` e `coverAlt` em `lib/projects.ts`. Os detalhes exibem apenas imagem e descrição, sem player de vídeo.
 
@@ -73,3 +73,6 @@ CHROMIUM_PATH=/usr/bin/chromium npm run test:browser
 ```
 
 Esses testes verificam âncoras Lenis em Strict Mode, abertura e fechamento do diálogo, restauração de foco, resize, movimento reduzido e regras de borda/configuração das transições, contato fora das seções anteriores e rotação contínua dos projetos durante o scroll. Desativam WebGL para isolar asserções de layout do desempenho da GPU; a aparência das cenas 3D deve ser revisada separadamente com WebGL habilitado.
+
+
+Indicadores, serviços e projetos usam superfícies glass com gradiente translúcido, borda e backdrop blur. A linha dos indicadores não tem fundo sólido. Os indicadores animam de zero aos valores publicados ao entrar na tela; rótulos acessíveis mantêm os valores finais sem anúncios a cada quadro, e movimento reduzido mostra diretamente os valores finais. No mobile, os projetos mantêm 32px entre cards, sem rotações nem sobreposição; botões, swipe, teclado e ScrollTrigger continuam funcionando.

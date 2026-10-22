@@ -133,6 +133,18 @@ export function usePageMotion(root: RefObject<HTMLDivElement | null>) {
           })
         })
 
+        const counters = gsap.utils.toArray<HTMLElement>('[data-count-to]').map(el => ({ el, original: el.textContent }))
+        counters.forEach(({ el }, i) => {
+          const target = Number(el.dataset.countTo)
+          const state = { value: 0 }
+          const render = () => {
+            el.textContent = String(Math.round(state.value)).padStart(Number(el.dataset.countPad || 0), '0') + (el.dataset.countSuffix || '')
+          }
+          render()
+          gsap.to(state, { value: target, duration: 1.6, delay: i * 0.06, ease: 'power2.out', onUpdate: render,
+            scrollTrigger: { trigger: '.stat-row-caldera', start: 'top 85%', once: true } })
+        })
+
         // Stat cards stagger entrance
         gsap.from('.stat-card-caldera', {
           y: 35,
@@ -182,6 +194,7 @@ export function usePageMotion(root: RefObject<HTMLDivElement | null>) {
             scrub: true,
           },
         })
+        return () => counters.forEach(({ el, original }) => { el.textContent = original })
       }, element)
 
       return () => {

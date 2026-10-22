@@ -103,3 +103,37 @@ test('mobile projects fit the viewport and rotate without exposing the contact',
   await page.mouse.wheel(0, 600)
   await expect.poll(() => page.locator('.spiral-card').first().evaluate(el => el.style.transform)).not.toBe(before)
 })
+
+test('indicators count up and finish at the published values', async ({ page }) => {
+  const counter = page.locator('[data-count-to="100"]')
+  await expect(counter).toHaveText('0%')
+  await page.locator('.stat-row-caldera').evaluate(el => window.scrollTo(0, el.getBoundingClientRect().top + scrollY - 250))
+  await expect.poll(() => counter.textContent()).not.toBe('0%')
+  await expect(counter).toHaveText('100%')
+  await expect(page.locator('.stat-number')).toHaveText(['100%', '04', '24/7', '01'])
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await expect(page.locator('.stat-number')).toHaveText(['100%', '04', '24/7', '01'])
+  expect(await page.locator('.stat-row-caldera').evaluate(el => getComputedStyle(el).backgroundColor)).toBe('rgba(0, 0, 0, 0)')
+  expect(await page.locator('.stat-card-caldera').first().evaluate(el => getComputedStyle(el).backdropFilter)).toContain('blur')
+})
+
+test('mobile project cards remain separated throughout scroll and manual navigation', async ({ page }) => {
+  for (const width of [360, 390, 430]) {
+    await page.setViewportSize({ width, height: 844 })
+    const start = await page.locator('#projetos').evaluate(el => el.getBoundingClientRect().top + scrollY - 110)
+    for (const distance of [0, 170, 440, 830]) {
+      await page.evaluate(y => window.scrollTo(0, y), start + distance)
+      await page.waitForTimeout(180)
+      const overlap = await page.locator('.spiral-card').evaluateAll(cards => {
+        const boxes = cards.map(el => el.getBoundingClientRect())
+        return boxes.some((a, i) => boxes.slice(i + 1).some(b =>
+          Math.min(a.right, b.right) - Math.max(a.left, b.left) > 1 &&
+          Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top) > 1))
+      })
+      expect(overlap).toBe(false)
+    }
+    await page.getByRole('button', { name: 'Próximo projeto' }).click()
+    await expect.poll(() => page.locator('.spiral-card[aria-current="true"]').count()).toBe(1)
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(width)
+  }
+})

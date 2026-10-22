@@ -56,8 +56,9 @@ export default function ProjectSpiral() {
     if (!section) return
     const cards = Array.from(section.querySelectorAll<HTMLButtonElement>('.spiral-card'))
     const media = gsap.matchMedia()
-    media.add({ all: 'all', motion: '(prefers-reduced-motion: no-preference)', tall: '(min-height: 650px)' }, context => {
+    media.add({ all: 'all', motion: '(prefers-reduced-motion: no-preference)', tall: '(min-height: 760px)', mobile: '(max-width: 768px)' }, context => {
       const animated = context.conditions!.motion
+      const mobile = context.conditions!.mobile
       const pinned = animated && context.conditions!.tall
       const phase = { scroll: 0, manual: 0 }
       let lastIndex = -1
@@ -68,14 +69,16 @@ export default function ProjectSpiral() {
         const value = phase.scroll + phase.manual
         const current = ((Math.round(value) % projects.length) + projects.length) % projects.length
         if (current !== lastIndex) { lastIndex = current; setActive(current) }
+        const step = cards[0].offsetWidth + 32
         cards.forEach((card, i) => {
           const offset = gsap.utils.wrap(-4.5, 4.5, i - 4 - value)
           const angle = offset * 0.95
           const distance = Math.abs(offset)
-          setters[i]({ x: Math.sin(angle) * 330, y: offset * 150, z: Math.cos(angle) * 330 - 330,
-            rotationY: offset * 38, rotationZ: -offset * 5,
-            opacity: gsap.utils.clamp(0, 1, 3.5 - distance), zIndex: Math.round(100 - distance * 10) })
-          card.inert = distance > 1.6
+          setters[i]({ x: mobile ? offset * step : Math.sin(angle) * 330,
+            y: mobile ? 0 : offset * 150, z: mobile ? 0 : Math.cos(angle) * 330 - 330,
+            rotationY: mobile ? 0 : offset * 38, rotationZ: mobile ? 0 : -offset * 5,
+            opacity: mobile ? 1 : gsap.utils.clamp(0, 1, 3.5 - distance), zIndex: Math.round(100 - distance * 10) })
+          card.inert = distance > (mobile ? 0.6 : 1.6)
           card.tabIndex = distance < 0.5 ? 0 : -1
           if (distance < 0.5) card.setAttribute('aria-current', 'true')
           else card.removeAttribute('aria-current')
