@@ -217,7 +217,7 @@ export default function WaveGrid({
     composer.addPass(renderPass)
 
     const vignettePass = new ShaderPass(VignetteRGBShiftShader)
-    vignettePass.uniforms.shiftAmount.value = 0 // Keep the requested white grid free of blue/red fringes.
+    vignettePass.uniforms.shiftAmount.value = 0.005
     vignettePass.uniforms.vignetteRadius.value = 0.3
     vignettePass.uniforms.vignetteSoftness.value = 0.35
     composer.addPass(vignettePass)

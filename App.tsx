@@ -235,11 +235,11 @@ export default function App() {
 
         <main id="conteudo" tabIndex={-1} className="caldera-container">
           {/* Caldera Unified Hero Section: 3D Wave Grid occupies the entire background */}
-          <section id="inicio" className="hero-caldera-single" data-st-01="parallax" data-st-y="300" data-st-opacity="0.5" data-st-overlay="black">
+          <section id="inicio" className="hero-caldera-single">
             {/* 3D Wave Grid background */}
             <div className="hero-wave-backdrop" aria-hidden="true">
               <Suspense fallback={<div className="w-full h-full bg-[#101018]/95" />}>
-                <WaveGrid colorBase="#ffffff" colorHigh="#ffffff" />
+                <WaveGrid colorBase="#171126" colorHigh="#fc5000" />
               </Suspense>
             </div>
 

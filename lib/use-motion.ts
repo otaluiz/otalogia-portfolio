@@ -171,6 +171,17 @@ export function usePageMotion(root: RefObject<HTMLDivElement | null>) {
             start: 'top 85%',
           },
         })
+        // Subtle depth parallax on hero wave backdrop
+        gsap.to('.hero-wave-backdrop', {
+          yPercent: 12,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: '.hero-caldera-single',
+            start: 'top top',
+            end: 'bottom top',
+            scrub: true,
+          },
+        })
       }, element)
 
       return () => {

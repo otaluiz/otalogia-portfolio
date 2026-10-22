@@ -33,15 +33,15 @@ test('carousel opens project details, traps focus and restores its opener', asyn
 })
 
 test('mobile resize and reduced motion restore flow without duplicate overlays', async ({ page }) => {
-  await expect(page.locator('[data-st-overlay-el]')).toHaveCount(2)
+  await expect(page.locator('[data-st-overlay-el]')).toHaveCount(1)
   await page.setViewportSize({ width: 390, height: 844 })
   await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth)).toBe(390)
-  await expect(page.locator('[data-st-overlay-el]')).toHaveCount(2)
+  await expect(page.locator('[data-st-overlay-el]')).toHaveCount(1)
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await expect(page.locator('[data-st-overlay-el]')).toHaveCount(0)
   await expect(page.locator('.pin-spacer')).toHaveCount(0)
   await page.emulateMedia({ reducedMotion: 'no-preference' })
-  await expect(page.locator('[data-st-overlay-el]')).toHaveCount(2)
+  await expect(page.locator('[data-st-overlay-el]')).toHaveCount(1)
 })
 
 test('transition boundary rules and mobile configuration preserve sibling flow', async ({ page }) => {

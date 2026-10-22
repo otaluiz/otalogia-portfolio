@@ -55,13 +55,13 @@ Até o envio das imagens dos projetos, o carrossel e os detalhes exibem capas pr
 
 `lib/section-transition.ts` implementa `sectionTransition01(scopeOrConfig?, config?)`, integrado ao lifecycle React em `usePageMotion`. O sistema reutiliza GSAP e Lenis já presentes no projeto. Os blocos precisam ser irmãos adjacentes no fluxo vertical:
 
-- `#inicio`: `data-st-01="parallax"`, distância 300 e overlay preto até 0.5, para dar profundidade à entrada dos indicadores.
+- `#inicio`: visual original em card, grade roxa/laranja e parallax sutil apenas no fundo. Sem overlay de transição sobre a hero.
 - `#processo`: `data-st-01="pin"`, para manter as etapas enquanto a apresentação entra.
 - `#contato`: `data-st-01="reveal"`, distância 240 e overlay até 0.5, para revelar a chamada final no fluxo normal, sem sticky.
 
 Os modos foram escolhidos a partir da estrutura existente. `data-st-y`, `data-st-opacity` (limitado a 0–1) e `data-st-overlay` podem ser ajustados nos elementos. `pin` ignora a distância. O primeiro bloco não pode revelar; o último não pode fixar nem fazer parallax. Defaults globais ficam em `DEFAULT_CONFIG` na função. O modo móvel padrão `simplify`, até 768px, converte parallax em pin e remove deslocamento de reveal. `same` preserva os movimentos e `disable` desativa as transições com movimento vertical. Movimento reduzido desativa a coreografia e o Lenis, preservando a navegação nativa. Overlays, estilos, triggers, ticker e observadores são limpos ao desmontar ou mudar as media queries. O reveal mantém a posição relativa e anima apenas durante a entrada da seção; isso evita que o contato apareça atrás do restante da página.
 
-Revisão visual: verificar hero sem bordas arredondadas em toda a largura, ondas e piso brancos, títulos completos nas folhas abertas, profundidade da hélice e transições Processo → Sobre → Contato. Conferir também 390px, navegação por teclado, Escape e preferência de movimento reduzido.
+Revisão visual: verificar hero com o formato e as cores originais, piso do laboratório branco, títulos completos nas folhas abertas, profundidade da hélice e transições Processo → Sobre → Contato. Conferir também 390px, navegação por teclado, Escape e preferência de movimento reduzido.
 
 Testes de navegação e lifecycle (Playwright, dependência de desenvolvimento):
 
