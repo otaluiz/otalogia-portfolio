@@ -22,3 +22,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
+
+# Atelier UI — Codrops Demo
+
+Sphere Gallery, WebGL provider, portal and scene adapted from
+https://github.com/whatisjery/atelier-ui-codrops by Jérémie Nallet (2026).
+The upstream README declares the MIT license. The MIT permission and warranty
+terms reproduced above apply to these components as well.

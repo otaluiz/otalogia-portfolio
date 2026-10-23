@@ -890,65 +890,6 @@ body { overflow-x: clip; }
 .caldera-container > section { position: relative; z-index: 1; }
 .caldera-container > section[data-st-01]:not([data-st-01="pin"]) { will-change: transform; }
 .caldera-container > section[data-st-01="reveal"] { background-color: #fc5000; }
-.projects-section { --helix-exit: 0; position: relative; isolation: isolate; width: 100vw; margin-inline: calc(50% - 50vw); margin-block: 80px; padding: 0; border: 0; border-radius: 0; height: 100svh; min-height: 680px; background: transparent; }
-.projects-heading { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
-.projects-eyebrow { font: 12px ui-monospace, monospace; letter-spacing: .14em; color: #fc5000; }
-.spiral-background-title { position: absolute; inset: 0; display: grid; place-items: center; font: italic clamp(72px, 10vw, 180px) Georgia, serif; color: white; pointer-events: none; }
-.projects-section[data-helix-ready] .spiral-background-title { visibility: hidden; }
-.spiral-viewport { position: absolute; inset: 0; overflow: hidden; perspective: none; touch-action: pan-y; z-index: 1; }
-.spiral-canvas { position: absolute; inset: 0; width: 100%; height: 100%; cursor: default; }
-.spiral-stage { width: 0; height: 0; position: relative; top: 50%; left: 50%; transform-style: preserve-3d; transform: rotateZ(25deg); }
-.projects-section[data-helix-ready] .spiral-stage { opacity: 0; visibility: hidden; pointer-events: none; }
-.spiral-card { --project-card-width: clamp(260px, 24vw, 420px); position: absolute; left: calc(var(--project-card-width) * -.5); top: 0; width: var(--project-card-width); padding: 0; border: 1px solid #ffffff50; border-radius: 12px; overflow: hidden; background: #080c12; cursor: pointer; backface-visibility: hidden; transform-style: preserve-3d; }
-.spiral-card img { display: block; width: 100%; height: auto; aspect-ratio: 5 / 4; object-fit: cover; pointer-events: none; }
-.spiral-card-caption { display: none; }
-.project-external-icon { display: inline-block; width: 20px; height: 20px; vertical-align: middle; flex-shrink: 0; }
-.spiral-card:focus-visible, .spiral-controls button:focus-visible, .project-dialog button:focus-visible, .spiral-all:focus-visible, .spiral-catalogue-trigger:focus-visible { outline: 3px solid #fc5000; outline-offset: 5px; }
-.spiral-controls { display: flex; justify-content: center; align-items: center; gap: 12px; position: absolute; right: 32px; bottom: 28px; z-index: 4; opacity: 0; transition: opacity .2s; }
-.spiral-controls:hover, .projects-section:focus-within .spiral-controls { opacity: 1; }
-.spiral-controls button { width: 36px; height: 36px; border: 1px solid #ffffff40; border-radius: 50%; background: #020b1580; color: white; font-size: 20px; cursor: pointer; }
-.spiral-controls p { display: grid; min-width: 190px; text-align: center; gap: 5px; color: white; font-size: 12px; }
-.spiral-controls p span { color: #9abace; font: 10px ui-monospace, monospace; }
-.spiral-controls .spiral-current { width: auto; height: auto; border: 0; border-radius: 0; background: transparent; font-size: 12px; }
-.spiral-all { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 3; opacity: var(--helix-exit); background: none; border: 0; white-space: nowrap; color: white; font: italic clamp(64px, 8vw, 140px) Georgia, serif; cursor: pointer; }
-.spiral-current .project-external-icon, .spiral-catalogue-trigger .project-external-icon { width: 12px; height: 12px; }
-.spiral-catalogue-trigger { opacity: 0; transition: opacity .2s; position: absolute; bottom: 34px; left: 32px; z-index: 4; border: 0; background: transparent; color: #d3e3ef; font-size: 11px; letter-spacing: .06em; cursor: pointer; }
-.spiral-catalogue-trigger:hover, .projects-section:focus-within .spiral-catalogue-trigger { opacity: 1; }
-.project-catalogue-content { width: min(100%, 1200px); margin: 32px auto; }
-.project-catalogue-content h3 { margin: 20px 0 36px; font-size: clamp(32px, 5vw, 64px); }
-.project-catalogue-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
-.project-catalogue-grid button { position: relative; display: grid; text-align: left; gap: 10px; padding: 16px; background: #121723; color: white; border: 1px solid #ffffff30; border-radius: 16px; cursor: pointer; }
-.project-catalogue-grid img { width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: contain; background: #080c12; border-radius: 8px; }
-.project-catalogue-grid small { color: #a5bbce; font: 10px ui-monospace, monospace; letter-spacing: .08em; }
-.project-catalogue-grid strong { padding-right: 20px; font-size: 19px; }
-.project-catalogue-grid button > span { position: absolute; right: 16px; bottom: 16px; }
-.project-dialog { position: fixed; inset: 0; width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; padding: 72px 20px 32px; border: 0; background: #070607e8; color: white; overflow-y: auto; overscroll-behavior: contain; }
-.project-dialog[open] { display: block; }
-.project-dialog::backdrop { background: #070607c0; backdrop-filter: blur(12px); }
-.project-dialog-content { position: relative; width: min(100%, 960px); margin: 0 auto; min-height: calc(100svh + 120px); background: #17121b; border: 1px solid #ffffff25; border-radius: 24px; overflow: hidden; }
-.project-close { position: fixed; right: 24px; top: 20px; z-index: 2; border: 1px solid #ffffff60; border-radius: 30px; padding: 12px 18px; background: #070607; color: white; cursor: pointer; }
-.project-media img { display: block; width: 100%; height: auto; max-height: 65svh; object-fit: contain; background: #070607; }
-.project-description { min-height: 400px; padding: clamp(24px, 4vw, 44px); padding-bottom: max(80px, 15svh); }
-.project-description > span { font: 12px ui-monospace, monospace; color: #fc5000; }
-.project-description h3 { margin: 12px 0; font-size: clamp(32px, 5vw, 50px); }
-.project-description p { max-width: 75ch; color: #ddd6e2; line-height: 1.7; }
-.project-description a { display: inline-block; margin-top: 16px; color: #fc5000; }
-@media (max-width: 768px) {
-  .projects-section { height: calc(100svh - 130px); min-height: 520px; }
-  .spiral-viewport { inset: 64px 0 110px; perspective: none; }
-  .spiral-stage { transform: none; }
-  .spiral-card { --project-card-width: min(320px, calc(100vw - 64px)); }
-  .spiral-card img { aspect-ratio: 16 / 9; object-fit: contain; }
-  .spiral-background-title { font-size: 64px; opacity: .35; }
-  .spiral-controls { right: auto; left: 50%; bottom: 54px; transform: translateX(-50%); opacity: 1; gap: 8px; }
-  .spiral-controls p { min-width: 170px; font-size: 12px; }
-  .spiral-catalogue-trigger { opacity: 1; left: 50%; bottom: 22px; transform: translateX(-50%); white-space: nowrap; }
-  .project-dialog { padding: 72px 12px 24px; }
-  .project-catalogue-grid { grid-template-columns: 1fr; }
-}
-@media (max-height: 759px) and (min-width: 769px) {
-  .projects-section { min-height: 600px; }
-}
 @media (prefers-reduced-motion: reduce) {
   .caldera-container > section[data-st-01] { will-change: auto; }
 }
@@ -961,7 +902,7 @@ body { overflow-x: clip; }
 .stat-row-caldera { background: transparent; }
 .stat-card-caldera, .stat-card-caldera.limestone,
 .solution-card-caldera, .process-card-caldera, .about-content-card,
-.caldera-dashboard, .caldera-footer-pill, .project-dialog-content {
+.caldera-dashboard, .caldera-footer-pill {
   background: linear-gradient(135deg, rgba(255,255,255,.13), rgba(255,255,255,.025)), rgba(25,16,32,.28);
   border: 1px solid rgba(255,255,255,.27);
   -webkit-backdrop-filter: blur(20px) saturate(1.25);
@@ -972,18 +913,52 @@ body { overflow-x: clip; }
   background: linear-gradient(135deg, rgba(252,80,0,.2), rgba(255,255,255,.04)), rgba(25,16,32,.18);
 }
 .stat-number { font-variant-numeric: tabular-nums; }
-.stat-number, .stat-desc, .spiral-card-caption { text-shadow: 0 1px 12px rgba(0,0,0,.55); }
+.stat-number, .stat-desc { text-shadow: 0 1px 12px rgba(0,0,0,.55); }
 
-.spiral-controls button, .project-close { background: rgba(255,255,255,.1); backdrop-filter: blur(16px); }
-.project-dialog { background: transparent; }
-.project-dialog::backdrop { background: rgba(7,6,7,.45); }
-.project-media img { background: transparent; }
-@media (max-width: 768px) {
-  .spiral-card { transform-style: flat; }
-  .spiral-viewport { perspective: none; }
-}
 @media (max-width: 400px) {
   .caldera-logo { font-size: 24px; letter-spacing: .02em; }
   .caldera-menu-btn { padding-inline: 7px; min-width: 44px; }
   .caldera-nav > .flex { gap: 6px; min-width: 0; }
 }
+
+/* Atelier UI sphere gallery: DOM descriptions stay readable alongside WebGL. */
+.atelier-projects { padding-block: 40px; margin-bottom: 80px; }
+.projects-eyebrow { font: 12px ui-monospace, monospace; letter-spacing: .12em; color: #ff9566; }
+.atelier-heading h2 { margin-block: 16px; font-size: clamp(42px, 6vw, 82px); }
+.atelier-heading > p { color: #f0edf5; }
+.atelier-layout { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 40px; align-items: center; margin-block: 24px 40px; }
+.atelier-visual { position: relative; min-width: 0; }
+.atelier-canvas { width: 100%; height: clamp(440px, 47vw, 680px); }
+.atelier-sphere { position: absolute; inset: 0; touch-action: pan-y; }
+.atelier-fallback { display: block; width: 100%; height: clamp(300px, 38vw, 540px); object-fit: contain; }
+.atelier-hint { position: absolute; bottom: 8px; left: 0; right: 0; text-align: center; color: #f4f1fa; font: 12px ui-monospace, monospace; pointer-events: none; }
+.atelier-details { min-width: 0; }
+.atelier-selection > span { color: #ffad87; font: 11px/1.8 ui-monospace, monospace; letter-spacing: .05em; }
+.atelier-selection h3 { font-size: clamp(32px, 3.6vw, 54px); margin: 18px 0; overflow-wrap: anywhere; }
+.atelier-selection p { color: #f4f1fa; font-size: 16px; line-height: 1.8; }
+.atelier-selection a { display: inline-flex; padding-block: 16px; margin-top: 14px; color: #ffad87; text-decoration: underline; text-underline-offset: 6px; }
+.atelier-navigation { display: flex; gap: 12px; margin-top: 16px; }
+.atelier-navigation button { min-width: 48px; min-height: 48px; padding: 10px 16px; border: 1px solid #ffffff80; border-radius: 40px; color: white; background: #ffffff10; cursor: pointer; }
+.atelier-index { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border-top: 1px solid #ffffff50; }
+.atelier-index button { display: flex; gap: 12px; align-items: center; text-align: left; padding: 20px 12px; min-height: 64px; border: 0; border-bottom: 1px solid #ffffff40; background: transparent; color: #f4f1fa; cursor: pointer; font-size: 14px; }
+.atelier-index button > span:first-child { color: #ffad87; font: 11px ui-monospace, monospace; }
+.atelier-index button > span:last-child { margin-left: auto; }
+.atelier-index button[aria-pressed=true], .atelier-index button:hover { background: #ffffff14; }
+.atelier-projects :is(button, a):focus-visible { outline: 2px solid #ffad87; outline-offset: 4px; }
+@media (max-width: 768px) {
+  .atelier-layout { grid-template-columns: 1fr; gap: 24px; }
+  .atelier-canvas { height: 440px; }
+  .atelier-index { grid-template-columns: 1fr; }
+  .atelier-index button { padding-inline: 0; }
+}
+/* Keep the laboratory on the section's open surface. */
+.lab-open, .lab-open .lab-scene, .lab-open .process-machine, .lab-open .process-viewport { overflow: visible; border-radius: 0; }
+.lab-open .process-machine { isolation: auto; box-shadow: none; }
+.lab-open .process-machine-header { border-bottom: 0; }
+.lab-open .process-live, .lab-open .process-controls, .lab-open .process-caption { padding-inline: 0; }
+/* Secondary copy remains bright over the animated grain. */
+.otalogia-page :is([class*="text-[#f4f1fa]/"], [class*="text-white/"]) { color: #f0edf5; }
+.stat-label, .stat-desc, .hero-single-desc, .process-caption, .process-machine-header div > span,
+.process-live > span:nth-child(2) { color: #eeeaf5; }
+.process-controls button { color: #f4f1fa; }
+.contact-caldera [class*="text-[#f4f1fa]"] { color: #070607; }

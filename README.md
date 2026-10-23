@@ -49,10 +49,9 @@ Verificação: `node --experimental-strip-types --test tests/*.test.mjs` (Node 2
 
 ## Projetos e transições entre seções
 
-A seção `#projetos` vem depois do laboratório e reproduz a composição da referência: cena de tela inteira, fundo original do site visível através da cena transparente, título serifado atrás dos painéis, hélice contínua com imagens curvadas e encerramento “Ver todos”. `lib/project-helix.ts` renderiza vinte painéis cilíndricos com as cinco imagens repetidas ao longo da hélice. A geometria mantém espaço angular entre os painéis e distância vertical entre voltas. A posição acompanha o scroll com GSAP/Lenis; setas, teclado e gesto horizontal também navegam. As superfícies curvas usam WebGL, carregado sob demanda. Em movimento reduzido a composição permanece estática, com navegação manual; sem WebGL há uma alternativa CSS, e até 768px os projetos usam um carrossel horizontal acessível.
+A seção `#projetos` usa a galeria esférica do Atelier UI / Codrops, adaptada em `components/atelier/`. Arrastar gira a esfera; selecionar aproxima uma imagem. A descrição e o link do projeto aparecem ao lado, com navegação pelos cinco projetos em botões acessíveis. A cena carrega sob demanda ao se aproximar da seção. Sem WebGL ou com movimento reduzido, a imagem original substitui a esfera e os mesmos controles continuam disponíveis.
 
-As capas PNG em `public/images/projects/` são capturas fornecidas pelo usuário. As miniaturas preenchem os painéis; o diálogo exibe a imagem original inteira, descrição e link público, com revelação suave por Lenis, fechamento por Escape e restauração do foco. “Ver todos” abre um catálogo dos cinco projetos. `lib/projects.ts` concentra título, categoria, descrição, capa, texto alternativo, dimensões e ponto focal do enquadramento. A captura adicional do Instagram permanece no anexo.
-
+`lib/projects.ts` preserva as cinco capturas fornecidas pelo usuário, títulos, descrições, textos alternativos e links públicos. A seção mantém o fluxo normal da página em todas as larguras.
 
 `lib/section-transition.ts` implementa `sectionTransition01(scopeOrConfig?, config?)`, integrado ao lifecycle React em `usePageMotion`. O sistema reutiliza GSAP e Lenis já presentes no projeto. Os blocos precisam ser irmãos adjacentes no fluxo vertical:
 
@@ -62,7 +61,7 @@ As capas PNG em `public/images/projects/` são capturas fornecidas pelo usuário
 
 Os modos foram escolhidos a partir da estrutura existente. `data-st-y`, `data-st-opacity` (limitado a 0–1) e `data-st-overlay` podem ser ajustados nos elementos. `pin` ignora a distância. O primeiro bloco não pode revelar; o último não pode fixar nem fazer parallax. Defaults globais ficam em `DEFAULT_CONFIG` na função. O modo móvel padrão `simplify`, até 768px, converte parallax em pin e remove deslocamento de reveal. `same` preserva os movimentos e `disable` desativa as transições com movimento vertical. Movimento reduzido desativa a coreografia e o Lenis, preservando a navegação nativa. Overlays, estilos, triggers, ticker e observadores são limpos ao desmontar ou mudar as media queries. O reveal mantém a posição relativa e anima apenas durante a entrada da seção; isso evita que o contato apareça atrás do restante da página.
 
-Revisão visual: verificar hero com o formato e as cores originais, piso do laboratório translúcido com bordas de vidro, títulos completos nas folhas abertas, profundidade da hélice e transições Processo → Sobre → Contato. Conferir também 390px, navegação por teclado, Escape e preferência de movimento reduzido.
+Revisão visual: verificar hero com o formato e as cores originais, piso do laboratório translúcido com bordas de vidro, títulos completos nas folhas abertas, galeria esférica e descrições e transições Processo → Sobre → Contato. Conferir também 390px, navegação por teclado, Escape e preferência de movimento reduzido.
 
 Testes de navegação e lifecycle (Playwright, dependência de desenvolvimento):
 
@@ -73,10 +72,10 @@ npm run test:browser
 CHROMIUM_PATH=/usr/bin/chromium npm run test:browser
 ```
 
-Esses testes verificam âncoras Lenis em Strict Mode, abertura e fechamento do diálogo, restauração de foco, resize, movimento reduzido e regras de borda/configuração das transições, contato fora das seções anteriores e rotação contínua dos projetos durante o scroll. Também verificam a alternativa CSS durante uma volta completa, os cinco links e imagens e a rolagem Lenis dos detalhes. `project-helix.spec.ts` usa WebGL por software para verificar a cena curva, o clique nos painéis e a transição ao catálogo. Os testes de geometria verificam a curvatura e a separação entre painéis durante voltas completas. Desativam WebGL para isolar asserções de layout do desempenho da GPU; a aparência das cenas 3D deve ser revisada separadamente com WebGL habilitado.
+Os testes verificam âncoras, resize, movimento reduzido, transições, indicadores e ordem das seções. `visual-fixes.spec.ts` verifica que os três títulos das pastas estão expostos, que todos os projetos têm imagem, descrição e link no desktop e no celular, e que o laboratório não tem contêiner com corte. `atelier-gallery.spec.ts` exercita a galeria real com WebGL por software.
 
 
-Indicadores, serviços e projetos usam superfícies glass com gradiente translúcido, borda e backdrop blur. A linha dos indicadores não tem fundo sólido. Os indicadores animam de zero aos valores publicados ao entrar na tela; rótulos acessíveis mantêm os valores finais sem anúncios a cada quadro, e movimento reduzido mostra diretamente os valores finais. No mobile, os projetos mantêm 32px entre cards, sem rotações nem sobreposição; botões, swipe, teclado e ScrollTrigger continuam funcionando.
+Indicadores, serviços e projetos usam superfícies glass com gradiente translúcido, borda e backdrop blur. A linha dos indicadores não tem fundo sólido. Os indicadores animam de zero aos valores publicados ao entrar na tela; rótulos acessíveis mantêm os valores finais sem anúncios a cada quadro, e movimento reduzido mostra diretamente os valores finais. No mobile, a galeria fica acima da descrição, com botões para selecionar todos os projetos e sem rolagem horizontal da página.
 
 
 O laboratório inicia em **Acompanhar processo**, com órbita suave em torno do produto em movimento. Clicar em uma etapa posiciona o produto naquele ponto e continua o ciclo, atualizando as funções e a etapa selecionada. As legendas 3D usam sprites voltados à câmera e as funções também permanecem em texto abaixo da cena. O piso usa material físico translúcido com contorno de vidro; apenas os controles de acompanhamento e pausa permanecem. A preferência por movimento reduzido mantém o processo inicialmente pausado. `tests/browser/laboratory.spec.ts` valida a cena com WebGL por software, separado dos testes de layout que desativam WebGL.
