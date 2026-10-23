@@ -19,6 +19,7 @@ type WebglProviderProps = Omit<CanvasProps, "children" | "eventSource"> & {
     children: ReactNode
     className?: string
     contained?: boolean
+    paused?: boolean
 }
 
 type WebglReadyOptions = {
@@ -82,17 +83,18 @@ function tick(data: FrameData) {
     }
 }
 
-function MotionFrameloop() {
+function MotionFrameloop({ paused }: { paused: boolean }) {
     const store = useStore()
 
     useEffect(() => {
+        if (paused) return
         canvasStores.add(store)
         if (canvasStores.size === 1) frame.postRender(tick, true)
         return () => {
             canvasStores.delete(store)
             if (canvasStores.size === 0) cancelFrame(tick)
         }
-    }, [store])
+    }, [store, paused])
 
     return null
 }
@@ -151,6 +153,7 @@ export function WebglProvider({
     className,
     style,
     contained = false,
+    paused = false,
     ...canvasProps
 }: WebglProviderProps) {
     const [eventSource, setEventSource] = useState<ComponentRef<"div"> | null>(null)
@@ -175,7 +178,7 @@ export function WebglProvider({
                     ...style,
                 }}
             >
-                <MotionFrameloop />
+                <MotionFrameloop paused={paused} />
                 <WebglPortal />
                 <Effects />
                 <OverlayRender />

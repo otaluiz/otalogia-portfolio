@@ -966,3 +966,17 @@ body { overflow-x: clip; }
 #sobre .about-content-card { -webkit-backdrop-filter: none; backdrop-filter: none; box-shadow: none !important; }
 
 .atelier-video { display: block; width: min(100%, 420px); height: auto; max-height: 75svh; object-fit: contain; margin: 24px auto 0; background: transparent; }
+
+/* Only a selected project uses columns; the idle globe stays centered. */
+.atelier-view.is-selected { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); align-items: center; gap: clamp(24px, 4vw, 56px); margin-block: 24px 36px; }
+.atelier-view.is-selected .atelier-stage { width: 100%; margin-inline: 0; min-width: 0; }
+.atelier-view.is-selected .atelier-canvas { height: clamp(420px, 62svh, 680px); }
+.atelier-view.is-selected .atelier-details { width: 100%; min-width: 0; margin: 0; text-align: left; }
+.atelier-view.is-selected .atelier-details .atelier-navigation { justify-content: flex-start; flex-wrap: wrap; }
+.atelier-scene.is-hidden { opacity: 0; pointer-events: none; }
+.atelier-selected-video { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+.atelier-selected-video .atelier-video { margin: 0; width: auto; max-width: 100%; height: 100%; max-height: 100%; }
+@media (max-width: 768px) {
+  .atelier-view.is-selected { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  .atelier-view.is-selected .atelier-canvas { height: min(460px, 65svh); }
+}
