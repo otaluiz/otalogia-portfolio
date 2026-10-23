@@ -500,7 +500,7 @@ function ArtCanvas({
 
 const W = 340
 const H = 272
-const HEADROOM = 54 // room above the back panel for the files to rise into
+const HEADROOM = 174 // room above the back panel for the files to rise into
 const FRONT_TOP = 74
 const FRONT_H = H - FRONT_TOP
 const SHEET_W = 272
@@ -921,9 +921,9 @@ const GF_CSS = `
   -webkit-tap-highlight-color: transparent;
   isolation: isolate;
 }
-.gf-root[data-tone="dark"] { --gf-ink: #f5f5f7; --gf-ink-soft: rgba(245, 245, 247, .58); }
-.gf-root:hover, .gf-root:focus-within { --gf-hinge: -11deg; --gf-lift: -34px; --gf-spread: 8px; --gf-fan: 1.4deg; --gf-stack: 10px; }
-.gf-root[data-open] { --gf-hinge: -24deg; --gf-lift: -96px; --gf-spread: 40px; --gf-fan: 5deg; --gf-stack: 30px; }
+.gf-root[data-tone="dark"] { --gf-ink: #f5f5f7; --gf-ink-soft: rgba(245, 245, 247, .88); }
+.gf-root:hover, .gf-root:focus-within { --gf-hinge: -11deg; --gf-lift: -34px; --gf-spread: 8px; --gf-fan: 1.4deg; --gf-stack: 88px; }
+.gf-root[data-open] { --gf-hinge: -24deg; --gf-lift: -96px; --gf-spread: 40px; --gf-fan: 5deg; --gf-stack: 100px; }
 
 .gf-stage {
   position: absolute;
@@ -1094,7 +1094,7 @@ canvas.gf-sheet-art[data-ready] { opacity: 1; filter: none; }
   color: rgba(24, 24, 27, .5);
 }
 .gf-root[data-tone="dark"] .gf-sheet-name, .gf-sheet--art .gf-sheet-name { color: #fafafa; }
-.gf-root[data-tone="dark"] .gf-sheet-meta, .gf-sheet--art .gf-sheet-meta { color: rgba(250, 250, 250, .66); }
+.gf-root[data-tone="dark"] .gf-sheet-meta, .gf-sheet--art .gf-sheet-meta { color: rgba(250, 250, 250, .9); }
 .gf-lines {
   position: absolute;
   left: 14px;

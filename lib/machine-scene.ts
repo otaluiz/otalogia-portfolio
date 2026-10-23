@@ -152,10 +152,13 @@ export function initMachineScene(root:HTMLElement, _font:string, options:Options
   cart.traverse(o=>{if(o instanceof THREE.Mesh){o.material=o.material.clone();o.material.transparent=true;materials.add(o.material);cartMaterials.push(o.material)}})
   function fit(immediate=false){if(!host.clientWidth||!host.clientHeight)return;const w=host.clientWidth,h=host.clientHeight;renderer.setSize(w,h);camera.aspect=w/h;camera.updateProjectionMatrix();setCameraGoal();if(immediate){camera.position.copy(targetPosition);controls.target.copy(targetLook);controls.update();cameraMoving=false}}
   function followProduct(){
-    const state=sampleProcess(time,spread),station=stationGroups[state.stage].position
-    const distance=Math.max(9,7/camera.aspect),angle=.8+time*.1
-    targetLook.set(state.x*.8+station.x*.2,1,state.z*.8+station.z*.2)
-    targetPosition.set(targetLook.x+Math.cos(angle)*distance,targetLook.y+distance*.72,targetLook.z+Math.sin(angle)*distance)
+    // Frame the complete operation throughout the orbit, including labels.
+    // A bounding sphere stays within both the horizontal and vertical frustum.
+    const radius=12,halfFov=THREE.MathUtils.degToRad(camera.fov/2)
+    const limitingFov=Math.min(halfFov,Math.atan(Math.tan(halfFov)*camera.aspect))
+    const distance=radius/Math.sin(limitingFov)*1.08,angle=.8+time*.055
+    targetLook.set(0,1,0)
+    targetPosition.set(Math.cos(angle)*distance*.78,1+distance*.63,Math.sin(angle)*distance*.78)
     cameraMoving=true
   }
   function setCameraGoal(){

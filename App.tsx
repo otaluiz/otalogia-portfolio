@@ -6,7 +6,7 @@ import type { StationId } from '@/lib/machine-scene'
 import BackgroundShader from '@/components/ui/background-shader'
 import HalftoneText from '@/components/ui/halftone-text'
 import GlassFolder, { type FolderFile, type ArtPreset } from '@/components/ui/glass-folder-cards'
-import ProjectSpiral from '@/components/ui/project-spiral'
+import ProjectGallery from '@/components/ui/project-gallery'
 import CursorEdgeGlowButton from '@/components/ui/cursor-edge-glow-button'
 
 const WaveGrid = lazy(() => import('@/components/ui/wave-grid'))
@@ -462,7 +462,7 @@ export default function App() {
 
           </section>
 
-          <ProjectSpiral />
+          <ProjectGallery />
 
           {/* Process Section (Caldera Step Cards) */}
           <section id="processo" className="mb-20">
