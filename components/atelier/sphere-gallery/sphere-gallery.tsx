@@ -39,7 +39,7 @@ const DEFAULT_PROPS = {
     lensBlur: 0.4,
     fov: 70,
     tileColor: "#F8F8F8" as string | null,
-    sphereColor: "#ffffff" as string,
+    sphereColor: "#ffffff" as string | null,
     reveal: true,
     revealDuration: 2,
     focusDuration: 1,
@@ -944,7 +944,7 @@ function SphereScene({
                 ],
                 [
                     sphereMaterial,
-                    { opacity: 0.5 },
+                    { opacity: sphereColor === null ? 0 : 0.5 },
                     { duration: revealDuration, ease: REVEAL_EASING, at: 0 },
                 ],
                 [
@@ -979,7 +979,7 @@ function SphereScene({
         }
 
         return revealSequenceAnimation()
-    }, [camera, fov, reveal, ready, revealDuration])
+    }, [camera, fov, reveal, ready, revealDuration, sphereColor])
 
     useEffect(() => {
         function focusOnTileSequence() {
@@ -1083,7 +1083,7 @@ function SphereScene({
 
     return (
         <group rotation-x={1} rotation-y={3} scale={0.5} ref={groupRef} onPointerMissed={onDismiss}>
-            <mesh onClick={(event) => {
+            <mesh renderOrder={sphereColor === null ? -1 : 0} onClick={(event) => {
                 if (!immersive) { event.stopPropagation(); select(0) }
             }}>
                 <sphereGeometry args={[0.99, 64, 64]} />
@@ -1092,7 +1092,8 @@ function SphereScene({
                     ref={sphereMaterialRef}
                     transparent={true}
                     opacity={0}
-                    color={sphereColor}
+                    color={sphereColor ?? "#ffffff"}
+                    colorWrite={sphereColor !== null}
                 />
             </mesh>
 

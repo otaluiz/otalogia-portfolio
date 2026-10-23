@@ -78,14 +78,13 @@ test('indicators count up and finish at the published values', async ({ page }) 
   expect(await page.locator('.stat-card-caldera').first().evaluate(el => getComputedStyle(el).backdropFilter)).toContain('blur')
 })
 
-test('projects follow the laboratory and process never overlaps about while scrolling', async ({ page }) => {
+test('process precedes the laboratory and sections remain separated while scrolling', async ({ page }) => {
   test.setTimeout(60000)
   expect(await page.evaluate(() => {
     const lab = document.getElementById('laboratorio')!
     const projects = document.getElementById('projetos')!
     const process = document.getElementById('processo')!
-    return !!(lab.compareDocumentPosition(projects) & Node.DOCUMENT_POSITION_FOLLOWING) &&
-      !!(projects.compareDocumentPosition(process) & Node.DOCUMENT_POSITION_FOLLOWING)
+    return process.nextElementSibling === lab && lab.nextElementSibling === projects && projects.nextElementSibling?.id === 'sobre'
   })).toBe(true)
   for (const width of [1440, 390]) {
     await page.setViewportSize({ width, height: 1000 })
@@ -95,10 +94,10 @@ test('projects follow the laboratory and process never overlaps about while scro
       await page.waitForTimeout(180)
       const gap = await page.evaluate(() => {
         const process = document.getElementById('processo')!.getBoundingClientRect()
-        const about = document.getElementById('sobre')!.getBoundingClientRect()
-        return about.top - process.bottom
+        const lab = document.getElementById('laboratorio')!.getBoundingClientRect()
+        return lab.top - process.bottom
       })
-      expect(gap, `Processo overlaps Sobre at ${width}px, scroll offset ${offset}`).toBeGreaterThanOrEqual(0)
+      expect(gap, `Processo overlaps Laboratório at ${width}px, scroll offset ${offset}`).toBeGreaterThanOrEqual(0)
     }
   }
 })
