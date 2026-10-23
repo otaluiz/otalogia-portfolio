@@ -41,6 +41,12 @@ test('Atelier gallery keeps every description and link accessible without WebGL'
       await expect(page.locator('.atelier-selection p')).not.toBeEmpty()
       await expect(page.getByRole('link', { name: 'Explorar projeto' })).toHaveAttribute('href', url)
       expect(await page.locator('.atelier-fallback').evaluate(img => (img as HTMLImageElement).naturalWidth)).toBeGreaterThan(0)
+      const layout = await page.locator('.atelier-view').evaluate(el => {
+        const media = el.querySelector('.atelier-stage')!.getBoundingClientRect()
+        const description = el.querySelector('.atelier-details')!.getBoundingClientRect()
+        return { sideBySide: media.right <= description.left && Math.min(media.bottom, description.bottom) > Math.max(media.top, description.top), stacked: media.bottom <= description.top }
+      })
+      expect(width > 768 ? layout.sideBySide : layout.stacked).toBe(true)
     }
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(width)
   }
@@ -70,6 +76,12 @@ test('three Instagram video projects use original covers and play locally on sel
     await page.locator('.atelier-index').getByRole('button', { name: new RegExp(`${title}$`) }).click()
     await expect(page.locator('.atelier-selection h3')).toHaveText(title)
     await expect(page.getByRole('link', { name: 'Ver publicação no Instagram' })).toHaveAttribute('href', `https://www.instagram.com/reel/${code}/`)
+    const layout = await page.locator('.atelier-view').evaluate(el => {
+      const media = el.querySelector('.atelier-stage')!.getBoundingClientRect()
+      const description = el.querySelector('.atelier-details')!.getBoundingClientRect()
+      return media.right <= description.left && Math.min(media.bottom, description.bottom) > Math.max(media.top, description.top)
+    })
+    expect(layout).toBe(true)
     const player = page.locator('.atelier-video')
     await expect(player).toHaveAttribute('poster', `/images/projects/reel-${code}.jpg`)
     await expect(player).toHaveAttribute('preload', 'none')
