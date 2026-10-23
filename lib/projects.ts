@@ -9,9 +9,10 @@ export type Project = {
   coverHeight: number
   coverFocus?: number
   url: string
+  video?: { src: string; width: number; height: number }
 }
 
-// Screenshots supplied by the user; original pixels preserved in the local PNG assets.
+// Website screenshots and original Reel covers are stored locally for the gallery.
 export const projects: Project[] = [
   {
     id: 'aidea-lab',
@@ -72,5 +73,41 @@ export const projects: Project[] = [
     coverWidth: 1920,
     coverHeight: 893,
     url: 'https://horadachipa.com.br/',
+  },
+  {
+    id: 'reel-soled-cuiaba',
+    title: 'Soled Cuiabá — Campanha em vídeo',
+    category: 'EDIÇÃO DE VÍDEO · CAMPANHA',
+    description: 'Edição de vídeo para a campanha da Soled Cuiabá, em parceria com a agência Idea Lab. Trabalho editado por Otalogia e publicado no Instagram, reunindo comunicação de marca e motion graphics.',
+    cover: '/images/projects/reel-Db4Jz4Jg20H.jpg',
+    coverAlt: 'Capa do vídeo da Soled Cuiabá com painel de LED, céu azul e elementos gráficos',
+    coverWidth: 361,
+    coverHeight: 640,
+    url: 'https://www.instagram.com/reel/Db4Jz4Jg20H/',
+    video: { src: '/videos/projects/Db4Jz4Jg20H.mp4', width: 720, height: 1280 },
+  },
+  {
+    id: 'reel-shape-mt',
+    title: 'Shape MT — Edição de Reel',
+    category: 'EDIÇÃO DE VÍDEO · REEL',
+    description: 'Edição de vídeo vertical para a Shape MT, publicada por Otalogia no Instagram. O trabalho combina cortes estratégicos, motion, legendas dinâmicas e efeitos sonoros para apresentar o conteúdo com ritmo e clareza.',
+    cover: '/images/projects/reel-DdJYirDqJOc.jpg',
+    coverAlt: 'Capa do Reel da Shape MT com apresentador ao ar livre e legendas sobrepostas',
+    coverWidth: 361,
+    coverHeight: 640,
+    url: 'https://www.instagram.com/reel/DdJYirDqJOc/',
+    video: { src: '/videos/projects/DdJYirDqJOc.mp4', width: 720, height: 1280 },
+  },
+  {
+    id: 'reel-motion-sound-design',
+    title: 'Edição dinâmica — Motion e sound design',
+    category: 'EDIÇÃO DE VÍDEO · MOTION DESIGN',
+    description: 'Vídeo editado e publicado por Otalogia no Instagram, com cortes precisos, motion, sound design e transições. Uma edição construída em torno do ritmo e da atenção em cada momento do conteúdo.',
+    cover: '/images/projects/reel-DeJ6i5ACMsm.jpg',
+    coverAlt: 'Capa de vídeo com apresentador à mesa, imagens sobrepostas e legendas',
+    coverWidth: 360,
+    coverHeight: 640,
+    url: 'https://www.instagram.com/reel/DeJ6i5ACMsm/',
+    video: { src: '/videos/projects/DeJ6i5ACMsm.mp4', width: 720, height: 1280 },
   },
 ]

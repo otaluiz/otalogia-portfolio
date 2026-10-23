@@ -72,7 +72,13 @@ export default function ProjectGallery() {
             <span>{String(selectedIndex + 1).padStart(2, '0')} / {String(projects.length).padStart(2, '0')} — {current.category}</span>
             <h3>{current.title}</h3>
             <p>{current.description}</p>
-            <a href={current.url} target="_blank" rel="noopener noreferrer">Explorar projeto ↗</a>
+            {current.video && <video className="atelier-video" controls playsInline preload="none"
+              poster={current.cover} width={current.video.width} height={current.video.height}
+              aria-label={`Assistir a ${current.title}`}>
+              <source src={current.video.src} type="video/mp4" />
+              Seu navegador não reproduz este vídeo. Acesse a publicação pelo link abaixo.
+            </video>}
+            <a href={current.url} target="_blank" rel="noopener noreferrer">{current.video ? 'Ver publicação no Instagram ↗' : 'Explorar projeto ↗'}</a>
           </div>
           <div className="atelier-navigation" role="group" aria-label="Navegar pelos projetos">
             <button type="button" aria-label="Projeto anterior" onClick={() => setActive((selectedIndex - 1 + projects.length) % projects.length)}>←</button>
