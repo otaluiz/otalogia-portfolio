@@ -14,6 +14,7 @@ test('Atelier sphere renders and selection updates visible descriptions', async 
     await page.route(`**/components/ui/${module}.tsx*`, route => route.fulfill({ contentType: 'application/javascript', body: 'export default function Stub(){return null}' }))
   }
   await page.goto('/')
+  await expect(page.locator('.atelier-selection')).toHaveCount(0)
   await page.locator('#projetos').scrollIntoViewIfNeeded()
   await expect(page.locator('.atelier-canvas canvas')).toBeVisible({ timeout: 30000 })
   await page.waitForTimeout(4500)
@@ -25,6 +26,7 @@ test('Atelier sphere renders and selection updates visible descriptions', async 
   await page.locator('#projetos').evaluate(el => window.scrollTo(0, el.getBoundingClientRect().top + scrollY - 40))
   await page.screenshot({ path: test.info().outputPath('atelier-desktop.png') })
   await page.getByRole('button', { name: 'Ver galeria', exact: true }).click()
+  await expect(page.locator('.atelier-selection')).toHaveCount(0)
   await page.setViewportSize({ width: 390, height: 844 })
   await expect(page.locator('.atelier-canvas canvas')).toBeVisible()
   await page.locator('.atelier-index').getByRole('button', { name: 'Hora da Chipa' }).click()

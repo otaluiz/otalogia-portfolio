@@ -1,5 +1,5 @@
 import { Component, lazy, Suspense, useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
-import { useReducedMotion } from 'framer-motion'
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { projects } from '@/lib/projects'
 
 const AtelierGallery = lazy(async () => {
@@ -10,9 +10,9 @@ const AtelierGallery = lazy(async () => {
   return { default: ({ active, onChange }: { active: number | null; onChange: (index: number | null) => void }) => (
     <WebglProvider contained dpr={[1, 1.5]} className="atelier-canvas" gl={{ alpha: true, antialias: true }}>
       <SphereGallery items={projects.map(p => ({ src: p.cover, alt: p.coverAlt }))}
-        className="atelier-sphere" rows={5} columns={10} latitudeRange={70}
-        tileColor="#17121b" sphereColor="#17121b" padding={0.015} gap={0.012}
-        lensBlur={0.45} activeIndex={active} onActiveChange={onChange} />
+        className="atelier-sphere"
+        tileColor="#17121b" sphereColor="#17121b"
+        lensBlur={0} activeIndex={active} onActiveChange={onChange} />
     </WebglProvider>
   ) }
 })
@@ -51,14 +51,16 @@ export default function ProjectGallery() {
         <h2 id="projects-title">IDEIAS EM <em>MOVIMENTO.</em></h2>
         <p>Explore a galeria. Selecione um projeto para conhecer os detalhes.</p>
       </header>
-      <div className="atelier-layout">
-        <div className="atelier-visual">
-          {webgl && !reduced && near ? <GalleryBoundary fallback={fallback}>
-            <Suspense fallback={fallback}><AtelierGallery active={active} onChange={onChange} /></Suspense>
-          </GalleryBoundary> : fallback}
-          {webgl && !reduced && <p className="atelier-hint">Arraste para girar · clique para aproximar</p>}
-        </div>
-        <div className="atelier-details">
+      <div className="atelier-stage">
+        {webgl && !reduced && near ? <GalleryBoundary fallback={fallback}>
+          <Suspense fallback={fallback}><AtelierGallery active={active} onChange={onChange} /></Suspense>
+        </GalleryBoundary> : fallback}
+        {webgl && !reduced && <p className="atelier-hint">Arraste para girar · clique em um projeto</p>}
+      </div>
+      <AnimatePresence mode="wait" initial={false}>
+        {active !== null && <motion.div key={projects[selectedIndex].id} className="atelier-details"
+          initial={{ opacity: 0, y: reduced ? 0 : 20 }} animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: reduced ? 0 : -12 }} transition={{ duration: reduced ? 0 : .3 }}>
           <div className="atelier-selection" aria-live="polite" aria-atomic="true">
             <span>{String(selectedIndex + 1).padStart(2, '0')} / {String(projects.length).padStart(2, '0')} — {current.category}</span>
             <h3>{current.title}</h3>
@@ -68,12 +70,12 @@ export default function ProjectGallery() {
           <div className="atelier-navigation" role="group" aria-label="Navegar pelos projetos">
             <button type="button" aria-label="Projeto anterior" onClick={() => setActive((selectedIndex - 1 + projects.length) % projects.length)}>←</button>
             <button type="button" aria-label="Próximo projeto" onClick={() => setActive((selectedIndex + 1) % projects.length)}>→</button>
-            {active !== null && webgl && !reduced && <button type="button" onClick={() => setActive(null)}>Ver galeria</button>}
+            <button type="button" onClick={() => setActive(null)}>Ver galeria</button>
           </div>
-        </div>
-      </div>
+        </motion.div>}
+      </AnimatePresence>
       <nav className="atelier-index" aria-label="Selecionar projeto">
-        {projects.map((project, index) => <button key={project.id} type="button" aria-pressed={selectedIndex === index} onClick={() => setActive(index)}>
+        {projects.map((project, index) => <button key={project.id} type="button" aria-pressed={active !== null && selectedIndex === index} onClick={() => setActive(index)}>
           <span>{String(index + 1).padStart(2, '0')}</span> {project.title} <span aria-hidden="true">↗</span>
         </button>)}
       </nav>

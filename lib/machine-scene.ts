@@ -22,8 +22,14 @@ export function initMachineScene(root:HTMLElement, _font:string, options:Options
   host.appendChild(renderer.domElement)
   const camera=new THREE.PerspectiveCamera(38,1,.1,120)
   const controls=new OrbitControls(camera,renderer.domElement)
-  controls.enablePan=false;controls.enableZoom=false;controls.enableDamping=true;controls.dampingFactor=.08;controls.minPolarAngle=.1;controls.maxPolarAngle=Math.PI*.43
-  controls.enableRotate=false // The guided orbit owns the camera; stage buttons select the stop.
+  controls.enablePan=true;controls.enableZoom=true;controls.minDistance=8;controls.maxDistance=100;controls.enableDamping=true;controls.dampingFactor=.08;controls.minPolarAngle=.1;controls.maxPolarAngle=Math.PI*.43
+  controls.enableRotate=true
+  renderer.domElement.setAttribute('data-lenis-prevent', '')
+  renderer.domElement.style.touchAction='none'
+  let manualCamera=false
+  const beginManual=()=>{manualCamera=true;cameraMoving=false;cameraVelocity.set(0,0,0);lookVelocity.set(0,0,0)}
+  controls.addEventListener('start',beginManual)
+  cleanups.push(()=>controls.removeEventListener('start',beginManual))
   const reduced=matchMedia('(prefers-reduced-motion: reduce)')
   let mode:MachineMode='order',view:MachineCamera='flight',playing=!reduced.matches,selected:StationId='cabinet',time=0,spread=0,spreadV=0,activeStage=-1,inViewport=true,contextLost=false,last=performance.now(),cameraMoving=true,ready=false
   const targetPosition=new THREE.Vector3(),targetLook=new THREE.Vector3(),cameraVelocity=new THREE.Vector3(),lookVelocity=new THREE.Vector3()
@@ -150,7 +156,7 @@ export function initMachineScene(root:HTMLElement, _font:string, options:Options
   for(let i=0;i<4;i++)box(productShapes[4],.07,.065+i*.05,.012,-.17+i*.11,.21+(.065+i*.05)/2,.04,i===3?orange:blue)
   const cartMaterials:THREE.Material[]=[]
   cart.traverse(o=>{if(o instanceof THREE.Mesh){o.material=o.material.clone();o.material.transparent=true;materials.add(o.material);cartMaterials.push(o.material)}})
-  function fit(immediate=false){if(!host.clientWidth||!host.clientHeight)return;const w=host.clientWidth,h=host.clientHeight;renderer.setSize(w,h);camera.aspect=w/h;camera.updateProjectionMatrix();setCameraGoal();if(immediate){camera.position.copy(targetPosition);controls.target.copy(targetLook);controls.update();cameraMoving=false}}
+  function fit(immediate=false){if(!host.clientWidth||!host.clientHeight)return;const w=host.clientWidth,h=host.clientHeight;renderer.setSize(w,h);camera.aspect=w/h;camera.updateProjectionMatrix();if(!manualCamera)setCameraGoal();if(immediate){camera.position.copy(targetPosition);controls.target.copy(targetLook);controls.update();cameraMoving=false}}
   function followProduct(){
     // Frame the complete operation throughout the orbit, including labels.
     // A bounding sphere stays within both the horizontal and vertical frustum.
@@ -177,13 +183,13 @@ export function initMachineScene(root:HTMLElement, _font:string, options:Options
     selected=PROCESS[index].id;mode='order';view='flight'
     // Seek to the selected stop after its transformation, then continue in order.
     time=Math.floor(time/LAYOUT.cycle)*LAYOUT.cycle+index*LAYOUT.stationSeconds+1.4
-    activeStage=-1;playing=!reduced.matches;setCameraGoal();sync();options.onStation?.(selected);return true
+    activeStage=-1;playing=!reduced.matches;if(!manualCamera)setCameraGoal();sync();options.onStation?.(selected);return true
   }
   const api:MachineApi={
-    setMode(name){if(!['assembled','cutaway','stations','order'].includes(name))return false;mode=name as MachineMode;view=mode==='order'?'flight':'overview';if(mode==='order'&&!reduced.matches)playing=true;details.forEach(x=>x.visible=true);setCameraGoal();sync();return true},
+    setMode(name){if(!['assembled','cutaway','stations','order'].includes(name))return false;mode=name as MachineMode;view=mode==='order'?'flight':'overview';manualCamera=false;if(mode==='order'&&!reduced.matches)playing=true;details.forEach(x=>x.visible=true);setCameraGoal();sync();return true},
     focusStation,
-    setCamera(name){if(!['overview','side','top','station','flight'].includes(name))return false;view=name as MachineCamera;setCameraGoal();sync();return true},
-    play(){mode='order';view='flight';playing=true;setCameraGoal();sync();return true},
+    setCamera(name){if(!['overview','side','top','station','flight'].includes(name))return false;view=name as MachineCamera;manualCamera=false;setCameraGoal();sync();return true},
+    play(){mode='order';view='flight';playing=true;if(!manualCamera)setCameraGoal();sync();return true},
     pause(){playing=false;sync();return true},
   }
   window.__machine=api
@@ -216,13 +222,13 @@ export function initMachineScene(root:HTMLElement, _font:string, options:Options
     indicators.forEach((m,i)=>m.emissiveIntensity=i === state.stage ? .9 : .15)
     if(state.stage!==activeStage){activeStage=state.stage;selected=PROCESS[state.stage].id;root.querySelector<HTMLElement>('[data-function]')!.textContent=PROCESS[state.stage].function;root.querySelector<HTMLElement>('[data-step]')!.textContent=`0${state.stage+1} / ${PROCESS[state.stage].name}`;if(mode==='order')options.onStation?.(PROCESS[state.stage].id)}
     root.querySelector<HTMLElement>('[data-progress]')!.style.transform=`scaleX(${state.progress})`
-    if(view==='flight')followProduct()
+    if(view==='flight'&&!manualCamera)followProduct()
     if(cameraMoving){if(reduced.matches){camera.position.copy(targetPosition);controls.target.copy(targetLook);cameraMoving=false}else{dampVector(camera.position,cameraVelocity,targetPosition,dt);dampVector(controls.target,lookVelocity,targetLook,dt);if(camera.position.distanceTo(targetPosition)<.005)cameraMoving=false}}
     controls.update();renderer.render(scene,camera);if(!ready){ready=true;loading.hidden=true;options.onReady?.()}
   }
   const debug = {
     getState: () => ({
-      mode, camera: view, playing, time, spread, activeStage,
+      mode, camera: view, manualCamera, cameraDistance: camera.position.distanceTo(controls.target), playing, time, spread, activeStage,
       floor: { transparent: floorMat.transparent, opacity: floorMat.opacity, depthWrite: floorMat.depthWrite },
       functionsVisible: details.every(x=>x.visible), cameraPosition: camera.position.toArray(), cameraTarget: controls.target.toArray(),
       order: PROCESS.map(s => s.id),

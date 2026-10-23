@@ -894,8 +894,8 @@ body { overflow-x: clip; }
   .caldera-container > section[data-st-01] { will-change: auto; }
 }
 
-/* Opaque entering surfaces prevent pinned content showing through card gaps. */
-.about-caldera { background: #070607; }
+/* The about section shares the page background. */
+.about-caldera { background: transparent; }
 
 
 /* Translucent surfaces share the page grain; no solid panel behind the indicators. */
@@ -926,18 +926,18 @@ body { overflow-x: clip; }
 .projects-eyebrow { font: 12px ui-monospace, monospace; letter-spacing: .12em; color: #ff9566; }
 .atelier-heading h2 { margin-block: 16px; font-size: clamp(42px, 6vw, 82px); }
 .atelier-heading > p { color: #f0edf5; }
-.atelier-layout { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 40px; align-items: center; margin-block: 24px 40px; }
-.atelier-visual { position: relative; min-width: 0; }
-.atelier-canvas { width: 100%; height: clamp(440px, 47vw, 680px); }
+.atelier-heading { text-align: center; }
+.atelier-stage { position: relative; width: 100vw; margin-inline: calc(50% - 50vw); background: transparent; border: 0; overflow: visible; }
+.atelier-canvas { width: 100%; height: clamp(520px, 82svh, 900px); }
 .atelier-sphere { position: absolute; inset: 0; touch-action: pan-y; }
 .atelier-fallback { display: block; width: 100%; height: clamp(300px, 38vw, 540px); object-fit: contain; }
 .atelier-hint { position: absolute; bottom: 8px; left: 0; right: 0; text-align: center; color: #f4f1fa; font: 12px ui-monospace, monospace; pointer-events: none; }
-.atelier-details { min-width: 0; }
+.atelier-details { width: min(100%, 780px); margin: 24px auto 48px; text-align: center; }
 .atelier-selection > span { color: #ffad87; font: 11px/1.8 ui-monospace, monospace; letter-spacing: .05em; }
 .atelier-selection h3 { font-size: clamp(32px, 3.6vw, 54px); margin: 18px 0; overflow-wrap: anywhere; }
 .atelier-selection p { color: #f4f1fa; font-size: 16px; line-height: 1.8; }
 .atelier-selection a { display: inline-flex; padding-block: 16px; margin-top: 14px; color: #ffad87; text-decoration: underline; text-underline-offset: 6px; }
-.atelier-navigation { display: flex; gap: 12px; margin-top: 16px; }
+.atelier-navigation { display: flex; justify-content: center; gap: 12px; margin-top: 16px; }
 .atelier-navigation button { min-width: 48px; min-height: 48px; padding: 10px 16px; border: 1px solid #ffffff80; border-radius: 40px; color: white; background: #ffffff10; cursor: pointer; }
 .atelier-index { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border-top: 1px solid #ffffff50; }
 .atelier-index button { display: flex; gap: 12px; align-items: center; text-align: left; padding: 20px 12px; min-height: 64px; border: 0; border-bottom: 1px solid #ffffff40; background: transparent; color: #f4f1fa; cursor: pointer; font-size: 14px; }
@@ -946,8 +946,7 @@ body { overflow-x: clip; }
 .atelier-index button[aria-pressed=true], .atelier-index button:hover { background: #ffffff14; }
 .atelier-projects :is(button, a):focus-visible { outline: 2px solid #ffad87; outline-offset: 4px; }
 @media (max-width: 768px) {
-  .atelier-layout { grid-template-columns: 1fr; gap: 24px; }
-  .atelier-canvas { height: 440px; }
+  .atelier-canvas { height: min(560px, 75svh); }
   .atelier-index { grid-template-columns: 1fr; }
   .atelier-index button { padding-inline: 0; }
 }
@@ -962,3 +961,6 @@ body { overflow-x: clip; }
 .process-live > span:nth-child(2) { color: #eeeaf5; }
 .process-controls button { color: #f4f1fa; }
 .contact-caldera [class*="text-[#f4f1fa]"] { color: #070607; }
+
+#sobre, #sobre .about-content-card { background: transparent; background-image: none; }
+#sobre .about-content-card { -webkit-backdrop-filter: none; backdrop-filter: none; box-shadow: none !important; }

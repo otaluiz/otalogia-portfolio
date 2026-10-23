@@ -23,6 +23,9 @@ test('service file names remain exposed when folders open', async ({ page }) => 
 
 test('Atelier gallery keeps every description and link accessible without WebGL', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
+  await expect(page.locator('.atelier-selection')).toHaveCount(0)
+  expect(await page.locator('#sobre').evaluate(el => getComputedStyle(el).backgroundColor)).toBe('rgba(0, 0, 0, 0)')
+  expect(await page.locator('.about-content-card').evaluate(el => getComputedStyle(el).backgroundColor)).toBe('rgba(0, 0, 0, 0)')
   const projects = [
     ['Aidea Lab', 'https://aidealab.com.br/#hero'],
     ['CRM WhatsApp', 'https://crm-api-tfa2.vercel.app/dashboard'],

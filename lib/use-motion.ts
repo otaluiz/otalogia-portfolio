@@ -27,7 +27,7 @@ export function usePageMotion(root: RefObject<HTMLDivElement | null>) {
         orientation: 'vertical',
         gestureOrientation: 'vertical',
         smoothWheel: true,
-        prevent: (node) => node.closest('[data-project-dialog]') !== null,
+        prevent: (node) => node.closest('[data-project-dialog], [data-lenis-prevent]') !== null,
         wheelMultiplier: 1,
         touchMultiplier: 1.5,
       })
