@@ -98,6 +98,7 @@ type SphereSceneProps = {
     sources: string[]
     surface: RefObject<HTMLElement | null>
     activeTile: number | null
+    immersive: boolean
     onSelect: (index: number) => void
     onNavigate: (index: number) => void
     onDismiss: () => void
@@ -113,6 +114,8 @@ export type SphereGalleryProps = {
     items: SphereGalleryItem[]
     className?: string
     activeIndex?: number | null
+    immersive?: boolean
+    onEnter?: () => void
     onActiveChange?: (index: number | null) => void
     onReady?: () => void
 } & Partial<typeof DEFAULT_PROPS> &
@@ -700,6 +703,7 @@ function SphereScene({
     sources,
     surface,
     activeTile,
+    immersive,
     onSelect,
     onNavigate,
     onDismiss,
@@ -802,12 +806,12 @@ function SphereScene({
     }, [rows, columns, latitudeRange])
 
     const select = (index: number) => {
-        if (dragMoved.current) return
+        if (dragMoved.current || animating.current) return
         onSelect(index)
     }
 
     const navigate = (index: number) => {
-        if (dragMoved.current) return
+        if (dragMoved.current || animating.current) return
         onNavigate(index)
     }
 
@@ -989,7 +993,7 @@ function SphereScene({
 
             let spinAngle = group.rotation.y
             let tiltAngle = 0
-            let zDistance = SCENE_DISTANCE * Math.max(1, size.height / size.width)
+            let zDistance = immersive ? 0.1 : SCENE_DISTANCE * Math.max(1, size.height / size.width)
             let parallaxX = pointerOffset.current.x * mouseParallax
             let parallaxY = pointerOffset.current.y * mouseParallax
 
@@ -1033,6 +1037,7 @@ function SphereScene({
         return focusOnTileSequence()
     }, [
         revealComplete,
+        immersive,
         camera,
         focusDistanceFor,
         activeTile,
@@ -1049,6 +1054,7 @@ function SphereScene({
         if (!group) return
 
         if (revealComplete && activeTile === null && !animating.current) {
+            if (!immersive && !dragging.current) orientation.targetSpin += Math.min(delta, .05) * .065
             orientation.spin = MathUtils.damp(orientation.spin, orientation.targetSpin, 12, delta)
             orientation.tilt = MathUtils.damp(orientation.tilt, orientation.targetTilt, 12, delta)
 
@@ -1077,7 +1083,9 @@ function SphereScene({
 
     return (
         <group rotation-x={1} rotation-y={3} scale={0.5} ref={groupRef} onPointerMissed={onDismiss}>
-            <mesh>
+            <mesh onClick={(event) => {
+                if (!immersive) { event.stopPropagation(); select(0) }
+            }}>
                 <sphereGeometry args={[0.99, 64, 64]} />
 
                 <meshBasicMaterial
@@ -1135,6 +1143,8 @@ export function SphereGallery({
     className,
     onActiveChange,
     activeIndex,
+    immersive = false,
+    onEnter,
     onReady,
     mode,
     priority,
@@ -1155,8 +1165,9 @@ export function SphereGallery({
         onActiveChange?.(index)
     }, [activeIndex, onActiveChange])
     const select = useCallback((index: number) => {
+        if (!immersive) { onEnter?.(); return }
         setActiveTile(activeTile !== null ? null : index)
-    }, [activeTile, setActiveTile])
+    }, [activeTile, immersive, onEnter, setActiveTile])
     const dismiss = useCallback(() => {
         setActiveTile(null)
     }, [setActiveTile])
@@ -1173,7 +1184,15 @@ export function SphereGallery({
     }, [dismiss])
 
     return (
-        <div ref={surface} className={`select-none ${className ?? ""}`}>
+        <div ref={surface} data-gallery-view={activeTile !== null ? "project" : immersive ? "inside" : "globe"}
+            role={immersive ? undefined : "button"} tabIndex={immersive ? -1 : 0}
+            aria-label={immersive ? "Galeria imersiva de projetos" : "Entrar no globo de projetos"}
+            onKeyDown={(event) => {
+                if (!immersive && (event.key === "Enter" || event.key === " ")) {
+                    event.preventDefault()
+                    onEnter?.()
+                }
+            }} className={`select-none ${className ?? ""}`}>
             {/* Basic SEO/accessibility layer */}
             <ul className="sr-only" aria-hidden="true" inert>
                 {items.map((image, index) => (
@@ -1210,6 +1229,7 @@ export function SphereGallery({
                             sources={items.map((image) => image.src)}
                             surface={surface}
                             activeTile={activeTile}
+                            immersive={immersive}
                             onSelect={select}
                             onNavigate={setActiveTile}
                             onDismiss={dismiss}

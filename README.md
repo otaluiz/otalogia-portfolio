@@ -49,7 +49,7 @@ Verificação: `node --experimental-strip-types --test tests/*.test.mjs` (Node 2
 
 ## Projetos e transições entre seções
 
-A seção `#projetos` usa a galeria esférica do Atelier UI / Codrops, adaptada em `components/atelier/`. Arrastar gira a esfera; selecionar aproxima uma imagem. A esfera completa fica centralizada, sem painel ao redor. A descrição e o link aparecem abaixo com transição somente depois de selecionar um projeto, com navegação pelos cinco projetos em botões acessíveis. A cena carrega sob demanda ao se aproximar da seção. Sem WebGL ou com movimento reduzido, a imagem original substitui a esfera e os mesmos controles continuam disponíveis.
+A seção `#projetos` usa a galeria esférica do Atelier UI / Codrops, adaptada em `components/atelier/`. Arrastar gira a esfera; selecionar aproxima uma imagem. A esfera completa fica centralizada, sem painel ao redor, e gira lentamente. O primeiro clique entra na galeria imersiva sem selecionar projeto; dentro dela, outro clique escolhe uma imagem. “Voltar ao globo” restaura a visão externa e a rotação suave. A descrição e o link aparecem abaixo com transição somente depois de selecionar um projeto, com navegação pelos cinco projetos em botões acessíveis. A cena carrega sob demanda ao se aproximar da seção. Sem WebGL ou com movimento reduzido, a imagem original substitui a esfera e os mesmos controles continuam disponíveis.
 
 `lib/projects.ts` preserva as cinco capturas fornecidas pelo usuário, títulos, descrições, textos alternativos e links públicos. A seção mantém o fluxo normal da página em todas as larguras.
 
