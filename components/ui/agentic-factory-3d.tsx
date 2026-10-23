@@ -13,9 +13,9 @@ export default function AgenticFactory3D({height='clamp(460px, 60vw, 760px)',cla
       <p className="process-loading" data-loading>Preparando a operação 3D…</p>
       <div className="process-error" data-error hidden role="status">A visualização 3D está indisponível neste navegador. As cinco etapas continuam descritas nos botões abaixo.</div>
     </div>
-    <div className="process-live"><span data-step>01 / Dados</span><strong data-product>Dados recebidos</strong><span>Arraste para girar · scroll para zoom</span><p className="process-function" data-function>Organiza e conecta dados</p><div className="process-track"><i data-progress/></div></div>
-    <div className="process-controls"><div role="group" aria-label="Acompanhamento do processo"><button type="button" data-mode="order" aria-pressed="true">Acompanhar processo</button><button type="button" data-play aria-pressed="false">Pausar</button></div></div>
-    <p className="process-caption">Arraste para girar, use o scroll para aproximar e arraste com o botão direito para mover. Selecione uma etapa para acompanhar sua função; “Acompanhar processo” restaura a câmera automática.</p>
+    <div className="process-live"><span data-step>01 / Dados</span><strong data-product>Dados recebidos</strong><span>Arraste para girar · scroll para zoom</span><p className="process-function" data-function aria-live="polite" aria-atomic="true">Organiza e conecta dados</p><div className="process-track"><i data-progress/></div></div>
+    <div className="process-controls"><div role="group" aria-label="Acompanhamento do processo"><button type="button" data-mode="order" aria-pressed="true">Acompanhar processo</button><button type="button" data-step-next disabled>Próxima etapa →</button><button type="button" data-play aria-pressed="false">Pausar</button></div></div>
+    <p className="process-caption">Arraste para girar, use o scroll para aproximar e arraste com o botão direito para mover. Selecione uma etapa para acompanhar sua função; “Próxima etapa” acompanha o produto até a próxima estação e pausa para mostrar sua função. “Acompanhar processo” retoma a sequência automática.</p>
   </div>
 }
 
