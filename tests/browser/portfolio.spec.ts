@@ -22,11 +22,11 @@ test('contact stays below earlier sections and anchors reveal it in Strict Mode'
 test('carousel opens project details, traps focus and restores its opener', async ({ page }) => {
   await page.locator('a[href="#projetos"]').first().click()
   await page.getByRole('button', { name: 'Próximo projeto' }).click()
-  await expect(page.locator('.spiral-controls p')).toContainText('Otalogia Post')
-  const opener = page.locator('.spiral-card[aria-current="true"]')
+  await expect(page.locator('.spiral-controls p')).toContainText('CRM WhatsApp')
+  const opener = page.getByRole('button', { name: 'Abrir projeto CRM WhatsApp', exact: true })
   await opener.click()
   await expect(page.getByRole('dialog')).toBeVisible()
-  await expect(page.getByRole('heading', { name: 'Otalogia Post' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'CRM WhatsApp', exact: true })).toBeVisible()
   await page.keyboard.press('Escape')
   await expect(page.getByRole('dialog')).toHaveCount(0)
   await expect(opener).toBeFocused()
@@ -136,4 +136,75 @@ test('mobile project cards remain separated throughout scroll and manual navigat
     await expect.poll(() => page.locator('.spiral-card[aria-current="true"]').count()).toBe(1)
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(width)
   }
+})
+
+test('desktop helix keeps visible cards separated throughout a complete turn', async ({ page }) => {
+  test.setTimeout(90000)
+  await page.locator('a[href="#projetos"]').first().click()
+  for (const width of [900, 1440, 1920]) {
+    await page.setViewportSize({ width, height: 1000 })
+    const collisions = await page.evaluate(async () => {
+      let collisions = 0
+      for (let turn = 0; turn < 5; turn++) {
+        document.querySelector<HTMLButtonElement>('[aria-label="Próximo projeto"]')!.click()
+        const end = performance.now() + 750
+        while (performance.now() < end) {
+          await new Promise<void>(resolve => requestAnimationFrame(() => resolve()))
+          const viewport = document.querySelector('.spiral-viewport')!.getBoundingClientRect()
+          const boxes = [...document.querySelectorAll('.spiral-card')]
+            .filter(el => getComputedStyle(el).visibility !== 'hidden' && Number(getComputedStyle(el).opacity) > 0.05)
+            .map(el => el.getBoundingClientRect())
+            .filter(box => box.right > viewport.left && box.left < viewport.right && box.bottom > viewport.top && box.top < viewport.bottom)
+          for (let i = 0; i < boxes.length; i++) for (let j = i + 1; j < boxes.length; j++) {
+            const a = boxes[i], b = boxes[j]
+            if (Math.min(a.right, b.right) - Math.max(a.left, b.left) > 1 &&
+                Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top) > 1) collisions++
+          }
+        }
+      }
+      return collisions
+    })
+    expect(collisions, `visible cards overlap at ${width}px`).toBe(0)
+  }
+})
+
+test('all five projects have a local image, details and their correct public link', async ({ page }) => {
+  test.setTimeout(90000)
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.locator('a[href="#projetos"]').first().click()
+  const expected = [
+    ['Aidea Lab', 'https://aidealab.com.br/#hero'],
+    ['CRM WhatsApp', 'https://crm-api-tfa2.vercel.app/dashboard'],
+    ['Pulso — Gestão de Manutenção', 'https://crm-manut.vercel.app/analises'],
+    ['Shape MT', 'https://shapemt.vercel.app/'],
+    ['Hora da Chipa', 'https://horadachipa.com.br/'],
+  ]
+  await expect(page.locator('.spiral-card')).toHaveCount(5)
+  for (const [title, url] of expected) {
+    const opener = page.locator('.spiral-card[aria-current="true"]')
+    await expect(opener).toHaveAttribute('aria-label', `Abrir projeto ${title}`)
+    await expect.poll(() => opener.locator('img').evaluate(img => img instanceof HTMLImageElement && img.complete && img.naturalWidth > 0)).toBe(true)
+    await opener.click()
+    await expect(page.getByRole('dialog')).toBeVisible()
+    await expect(page.getByRole('heading', { name: title, exact: true })).toBeVisible()
+    await expect(page.getByRole('link', { name: 'Explorar projeto' })).toHaveAttribute('href', url)
+    await page.keyboard.press('Escape')
+    await expect(page.getByRole('dialog')).toHaveCount(0)
+    await expect(opener).toBeFocused()
+    await page.getByRole('button', { name: 'Próximo projeto' }).click()
+  }
+})
+
+test('project description is revealed by smooth dialog scrolling and closing restores the page', async ({ page }) => {
+  await page.locator('a[href="#projetos"]').first().click()
+  const opener = page.locator('.spiral-card[aria-current="true"]')
+  await opener.click()
+  const dialog = page.getByRole('dialog')
+  await expect.poll(() => dialog.evaluate(el => el.scrollTop)).toBeGreaterThan(20)
+  await expect(dialog.locator('.project-description')).toBeInViewport()
+  await expect.poll(() => dialog.evaluate(el => el.classList.contains('lenis'))).toBe(true)
+  await page.getByRole('button', { name: 'Fechar projeto' }).click()
+  await expect(dialog).toHaveCount(0)
+  await expect(opener).toBeFocused()
+  expect(await page.evaluate(() => document.body.style.overflow)).not.toBe('hidden')
 })

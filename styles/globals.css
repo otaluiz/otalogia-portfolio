@@ -895,23 +895,25 @@ body { overflow-x: clip; }
 .projects-heading h2 { margin: 14px 0 0; font-size: clamp(42px, 5vw, 72px); }
 .projects-heading p { max-width: 300px; color: #c4bfc9; }
 .projects-eyebrow { font: 12px ui-monospace, monospace; letter-spacing: .14em; color: #fc5000; }
-.spiral-viewport { flex: 1; min-height: 240px; overflow: clip; perspective: 1100px; touch-action: pan-y; }
-.spiral-stage { width: 0; height: 0; position: relative; top: 50%; left: 50%; transform-style: preserve-3d; transform: rotateZ(-12deg); }
-.spiral-card { --project-card-width: 400px; position: absolute; left: calc(var(--project-card-width) * -.5); top: -145px; width: var(--project-card-width); padding: 0; border: 1px solid #ffffff35; border-radius: 14px; overflow: hidden; background: #17121b; cursor: pointer; backface-visibility: hidden; transform-style: preserve-3d; }
-.spiral-card img { display: block; width: 100%; height: auto; pointer-events: none; }
+.spiral-viewport { flex: 1; min-height: 240px; overflow: clip; perspective: none; touch-action: pan-y; }
+.spiral-stage { width: 0; height: 0; position: relative; top: 50%; left: 50%; transform-style: preserve-3d; transform: rotateZ(-8deg); }
+.spiral-card { --project-card-width: clamp(240px, 26vw, 360px); position: absolute; left: calc(var(--project-card-width) * -.5); top: 0; width: var(--project-card-width); padding: 0; border: 1px solid #ffffff35; border-radius: 14px; overflow: hidden; background: #17121b; cursor: pointer; backface-visibility: hidden; transform-style: preserve-3d; }
+.spiral-card img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: contain; background: #080c12; pointer-events: none; }
 .spiral-card-caption { display: flex; justify-content: space-between; padding: 16px 20px; color: white; background: #141017; font-size: 16px; }
+.project-external-icon { display: inline-block; width: 20px; height: 20px; vertical-align: middle; flex-shrink: 0; }
+.spiral-card-caption small { display: block; margin-bottom: 7px; font: 9px ui-monospace, monospace; letter-spacing: .1em; color: #d4c6d9; }
 .spiral-card:focus-visible, .spiral-controls button:focus-visible, .project-dialog button:focus-visible { outline: 3px solid #fc5000; outline-offset: 5px; }
 .spiral-controls { display: flex; justify-content: center; align-items: center; gap: 24px; position: relative; z-index: 20; }
 .spiral-controls button { width: 48px; height: 48px; border: 1px solid #ffffff40; border-radius: 50%; background: #201921; color: white; font-size: 23px; cursor: pointer; }
 .spiral-controls p { display: grid; min-width: 210px; text-align: center; gap: 6px; }
 .spiral-controls p span { color: #fc5000; font: 12px ui-monospace, monospace; }
-.project-dialog { position: fixed; inset: 0; width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; padding: 32px 20px; border: 0; background: #070607e8; color: white; overflow-y: auto; overscroll-behavior: contain; }
-.project-dialog[open] { display: grid; align-items: center; }
+.project-dialog { position: fixed; inset: 0; width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; padding: 72px 20px 32px; border: 0; background: #070607e8; color: white; overflow-y: auto; overscroll-behavior: contain; }
+.project-dialog[open] { display: block; }
 .project-dialog::backdrop { background: #070607c0; backdrop-filter: blur(12px); }
-.project-dialog-content { position: relative; width: min(100%, 960px); margin: auto; background: #17121b; border: 1px solid #ffffff25; border-radius: 24px; overflow: hidden; }
-.project-close { position: absolute; right: 16px; top: 16px; z-index: 2; border: 1px solid #ffffff60; border-radius: 30px; padding: 12px 18px; background: #070607; color: white; cursor: pointer; }
-.project-media img { display: block; width: 100%; max-height: 65svh; object-fit: contain; background: #070607; }
-.project-description { padding: clamp(24px, 4vw, 44px); }
+.project-dialog-content { position: relative; width: min(100%, 960px); margin: 0 auto; min-height: calc(100svh + 120px); background: #17121b; border: 1px solid #ffffff25; border-radius: 24px; overflow: hidden; }
+.project-close { position: fixed; right: 24px; top: 20px; z-index: 2; border: 1px solid #ffffff60; border-radius: 30px; padding: 12px 18px; background: #070607; color: white; cursor: pointer; }
+.project-media img { display: block; width: 100%; height: auto; max-height: 65svh; object-fit: contain; background: #070607; }
+.project-description { min-height: 400px; padding: clamp(24px, 4vw, 44px); padding-bottom: max(80px, 15svh); }
 .project-description > span { font: 12px ui-monospace, monospace; color: #fc5000; }
 .project-description h3 { margin: 12px 0; font-size: clamp(32px, 5vw, 50px); }
 .project-description p { max-width: 75ch; color: #ddd6e2; line-height: 1.7; }
@@ -920,10 +922,10 @@ body { overflow-x: clip; }
   .projects-heading { flex-direction: column; align-items: start; padding: 24px 0; gap: 12px; }
   .spiral-viewport { min-height: 240px; perspective: 900px; }
   .spiral-stage { scale: 1; transform: none; }
-  .spiral-card { --project-card-width: min(320px, calc(100vw - 64px)); top: -140px; }
+  .spiral-card { --project-card-width: min(320px, calc(100vw - 64px)); top: 0; }
   .spiral-controls { gap: 12px; }
   .spiral-controls p { min-width: 170px; font-size: 14px; }
-  .project-dialog { padding: 16px 12px; }
+  .project-dialog { padding: 72px 12px 24px; }
 }
 @media (max-height: 759px) {
   .projects-section { height: auto; }
