@@ -82,4 +82,4 @@ O laboratório inicia em **Acompanhar processo**, com órbita suave em torno do 
 
 O laboratório permite zoom com scroll, rotação ao arrastar e deslocamento com o botão direito. A interação assume a câmera até selecionar “Acompanhar processo”. A seção Sobre e seu card de texto têm fundo transparente.
 
-“Próxima etapa” no laboratório acompanha o produto com a câmera até a estação seguinte e pausa após a transformação, mantendo a função visível. Cada clique avança uma estação; após Resultados, retorna a Dados. Com movimento reduzido, a troca ocorre imediatamente. “Acompanhar processo” retoma a visualização contínua.
+“Acompanhar etapas” no laboratório segue o produto continuamente, de estação em estação, mostrando a função atual sem pausar nem exigir cliques adicionais. Após Resultados, continua em Dados. “Pausar” interrompe somente quando solicitado e “Reproduzir” retoma o acompanhamento. “Acompanhar processo” retorna à visão geral. Movimento reduzido mantém o processo parado até uma reprodução explícita.
