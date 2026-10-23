@@ -87,7 +87,7 @@ test('scroll continuously rotates the project spiral while the section is pinned
   const before = await first.evaluate(el => el.style.transform)
   await page.evaluate(y => window.scrollTo(0, y), start + 850)
   await expect.poll(() => first.evaluate(el => el.style.transform)).not.toBe(before)
-  await expect.poll(() => page.locator('#projetos').evaluate(el => Math.abs(el.getBoundingClientRect().top - 110))).toBeLessThan(3)
+  await expect.poll(() => page.locator('#projetos').evaluate(el => Math.abs(el.getBoundingClientRect().top))).toBeLessThan(3)
   await expect.poll(() => page.locator('#contato').evaluate(el => el.getBoundingClientRect().top)).toBeGreaterThan(1000)
 })
 

@@ -890,23 +890,38 @@ body { overflow-x: clip; }
 .caldera-container > section { position: relative; z-index: 1; }
 .caldera-container > section[data-st-01]:not([data-st-01="pin"]) { will-change: transform; }
 .caldera-container > section[data-st-01="reveal"] { background-color: #fc5000; }
-.projects-section { margin-block: 80px; padding-block: 20px; background: transparent; border: 0; border-radius: 0; height: calc(100svh - 130px); min-height: 520px; display: flex; flex-direction: column; }
-.projects-heading { display: flex; align-items: end; justify-content: space-between; gap: 32px; padding: 20px 0; }
-.projects-heading h2 { margin: 14px 0 0; font-size: clamp(36px, 4vw, 56px); }
-.projects-heading p { max-width: 300px; color: #c4bfc9; }
+.projects-section { --helix-exit: 0; position: relative; isolation: isolate; width: 100vw; margin-inline: calc(50% - 50vw); margin-block: 80px; padding: 0; border: 0; border-radius: 0; height: 100svh; min-height: 680px; background: radial-gradient(ellipse at 25% 30%, #062f4b, transparent 55%), #020b15; }
+.projects-heading { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
 .projects-eyebrow { font: 12px ui-monospace, monospace; letter-spacing: .14em; color: #fc5000; }
-.spiral-viewport { flex: 1; min-height: 240px; overflow: clip; perspective: none; touch-action: pan-y; }
+.spiral-background-title { position: absolute; inset: 0; display: grid; place-items: center; font: italic clamp(72px, 10vw, 180px) Georgia, serif; color: white; pointer-events: none; }
+.projects-section[data-helix-ready] .spiral-background-title { visibility: hidden; }
+.spiral-viewport { position: absolute; inset: 0; overflow: hidden; perspective: none; touch-action: pan-y; z-index: 1; }
+.spiral-canvas { position: absolute; inset: 0; width: 100%; height: 100%; cursor: default; }
 .spiral-stage { width: 0; height: 0; position: relative; top: 50%; left: 50%; transform-style: preserve-3d; transform: rotateZ(25deg); }
-.spiral-card { --project-card-width: clamp(220px, 22vw, 320px); position: absolute; left: calc(var(--project-card-width) * -.5); top: 0; width: var(--project-card-width); padding: 0; border: 1px solid #ffffff35; border-radius: 14px; overflow: hidden; background: #17121b; cursor: pointer; backface-visibility: hidden; transform-style: preserve-3d; }
-.spiral-card img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: contain; background: #080c12; pointer-events: none; }
-.spiral-card-caption { display: flex; justify-content: space-between; padding: 16px 20px; color: white; background: #141017; font-size: 16px; }
+.projects-section[data-helix-ready] .spiral-stage { opacity: 0; visibility: hidden; pointer-events: none; }
+.spiral-card { --project-card-width: clamp(260px, 24vw, 420px); position: absolute; left: calc(var(--project-card-width) * -.5); top: 0; width: var(--project-card-width); padding: 0; border: 1px solid #ffffff50; border-radius: 12px; overflow: hidden; background: #080c12; cursor: pointer; backface-visibility: hidden; transform-style: preserve-3d; }
+.spiral-card img { display: block; width: 100%; height: auto; aspect-ratio: 5 / 4; object-fit: cover; pointer-events: none; }
+.spiral-card-caption { display: none; }
 .project-external-icon { display: inline-block; width: 20px; height: 20px; vertical-align: middle; flex-shrink: 0; }
-.spiral-card-caption small { display: block; margin-bottom: 7px; font: 9px ui-monospace, monospace; letter-spacing: .1em; color: #d4c6d9; }
-.spiral-card:focus-visible, .spiral-controls button:focus-visible, .project-dialog button:focus-visible { outline: 3px solid #fc5000; outline-offset: 5px; }
-.spiral-controls { display: flex; justify-content: center; align-items: center; gap: 24px; position: relative; z-index: 20; }
-.spiral-controls button { width: 48px; height: 48px; border: 1px solid #ffffff40; border-radius: 50%; background: #201921; color: white; font-size: 23px; cursor: pointer; }
-.spiral-controls p { display: grid; min-width: 210px; text-align: center; gap: 6px; }
-.spiral-controls p span { color: #fc5000; font: 12px ui-monospace, monospace; }
+.spiral-card:focus-visible, .spiral-controls button:focus-visible, .project-dialog button:focus-visible, .spiral-all:focus-visible, .spiral-catalogue-trigger:focus-visible { outline: 3px solid #fc5000; outline-offset: 5px; }
+.spiral-controls { display: flex; justify-content: center; align-items: center; gap: 12px; position: absolute; right: 32px; bottom: 28px; z-index: 4; opacity: 0; transition: opacity .2s; }
+.spiral-controls:hover, .projects-section:focus-within .spiral-controls { opacity: 1; }
+.spiral-controls button { width: 36px; height: 36px; border: 1px solid #ffffff40; border-radius: 50%; background: #020b1580; color: white; font-size: 20px; cursor: pointer; }
+.spiral-controls p { display: grid; min-width: 190px; text-align: center; gap: 5px; color: white; font-size: 12px; }
+.spiral-controls p span { color: #9abace; font: 10px ui-monospace, monospace; }
+.spiral-controls .spiral-current { width: auto; height: auto; border: 0; border-radius: 0; background: transparent; font-size: 12px; }
+.spiral-all { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 3; opacity: var(--helix-exit); background: none; border: 0; white-space: nowrap; color: white; font: italic clamp(64px, 8vw, 140px) Georgia, serif; cursor: pointer; }
+.spiral-current .project-external-icon, .spiral-catalogue-trigger .project-external-icon { width: 12px; height: 12px; }
+.spiral-catalogue-trigger { opacity: 0; transition: opacity .2s; position: absolute; bottom: 34px; left: 32px; z-index: 4; border: 0; background: transparent; color: #d3e3ef; font-size: 11px; letter-spacing: .06em; cursor: pointer; }
+.spiral-catalogue-trigger:hover, .projects-section:focus-within .spiral-catalogue-trigger { opacity: 1; }
+.project-catalogue-content { width: min(100%, 1200px); margin: 32px auto; }
+.project-catalogue-content h3 { margin: 20px 0 36px; font-size: clamp(32px, 5vw, 64px); }
+.project-catalogue-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+.project-catalogue-grid button { position: relative; display: grid; text-align: left; gap: 10px; padding: 16px; background: #121723; color: white; border: 1px solid #ffffff30; border-radius: 16px; cursor: pointer; }
+.project-catalogue-grid img { width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: contain; background: #080c12; border-radius: 8px; }
+.project-catalogue-grid small { color: #a5bbce; font: 10px ui-monospace, monospace; letter-spacing: .08em; }
+.project-catalogue-grid strong { padding-right: 20px; font-size: 19px; }
+.project-catalogue-grid button > span { position: absolute; right: 16px; bottom: 16px; }
 .project-dialog { position: fixed; inset: 0; width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; padding: 72px 20px 32px; border: 0; background: #070607e8; color: white; overflow-y: auto; overscroll-behavior: contain; }
 .project-dialog[open] { display: block; }
 .project-dialog::backdrop { background: #070607c0; backdrop-filter: blur(12px); }
@@ -919,17 +934,20 @@ body { overflow-x: clip; }
 .project-description p { max-width: 75ch; color: #ddd6e2; line-height: 1.7; }
 .project-description a { display: inline-block; margin-top: 16px; color: #fc5000; }
 @media (max-width: 768px) {
-  .projects-heading { flex-direction: column; align-items: start; padding: 24px 0; gap: 12px; }
-  .spiral-viewport { min-height: 240px; perspective: 900px; }
-  .spiral-stage { scale: 1; transform: none; }
-  .spiral-card { --project-card-width: min(320px, calc(100vw - 64px)); top: 0; }
-  .spiral-controls { gap: 12px; }
-  .spiral-controls p { min-width: 170px; font-size: 14px; }
+  .projects-section { height: calc(100svh - 130px); min-height: 520px; }
+  .spiral-viewport { inset: 64px 0 110px; perspective: none; }
+  .spiral-stage { transform: none; }
+  .spiral-card { --project-card-width: min(320px, calc(100vw - 64px)); }
+  .spiral-card img { aspect-ratio: 16 / 9; object-fit: contain; }
+  .spiral-background-title { font-size: 64px; opacity: .35; }
+  .spiral-controls { right: auto; left: 50%; bottom: 54px; transform: translateX(-50%); opacity: 1; gap: 8px; }
+  .spiral-controls p { min-width: 170px; font-size: 12px; }
+  .spiral-catalogue-trigger { opacity: 1; left: 50%; bottom: 22px; transform: translateX(-50%); white-space: nowrap; }
   .project-dialog { padding: 72px 12px 24px; }
+  .project-catalogue-grid { grid-template-columns: 1fr; }
 }
-@media (max-height: 759px) {
-  .projects-section { height: auto; }
-  .spiral-viewport { flex: none; height: 400px; }
+@media (max-height: 759px) and (min-width: 769px) {
+  .projects-section { min-height: 600px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .caldera-container > section[data-st-01] { will-change: auto; }
@@ -943,7 +961,7 @@ body { overflow-x: clip; }
 .stat-row-caldera { background: transparent; }
 .stat-card-caldera, .stat-card-caldera.limestone,
 .solution-card-caldera, .process-card-caldera, .about-content-card,
-.caldera-dashboard, .caldera-footer-pill, .spiral-card, .project-dialog-content {
+.caldera-dashboard, .caldera-footer-pill, .project-dialog-content {
   background: linear-gradient(135deg, rgba(255,255,255,.13), rgba(255,255,255,.025)), rgba(25,16,32,.28);
   border: 1px solid rgba(255,255,255,.27);
   -webkit-backdrop-filter: blur(20px) saturate(1.25);
@@ -955,9 +973,7 @@ body { overflow-x: clip; }
 }
 .stat-number { font-variant-numeric: tabular-nums; }
 .stat-number, .stat-desc, .spiral-card-caption { text-shadow: 0 1px 12px rgba(0,0,0,.55); }
-.spiral-card { padding: 12px; border-radius: 24px; }
-.spiral-card img { border-radius: 14px; }
-.spiral-card-caption { background: transparent; padding: 16px 8px 6px; }
+
 .spiral-controls button, .project-close { background: rgba(255,255,255,.1); backdrop-filter: blur(16px); }
 .project-dialog { background: transparent; }
 .project-dialog::backdrop { background: rgba(7,6,7,.45); }
