@@ -11,7 +11,7 @@ const AtelierGallery = lazy(async () => {
     <WebglProvider contained dpr={[1, 1.5]} className="atelier-canvas" gl={{ alpha: true, antialias: true }}>
       <SphereGallery items={projects.map(p => ({ src: p.cover, alt: p.coverAlt }))}
         className="atelier-sphere"
-        tileColor="#17121b" sphereColor="#17121b"
+        tileColor={null} sphereColor={null} padding={0} cornerRadius={0}
         lensBlur={0} immersive={immersive} onEnter={onEnter} activeIndex={active} onActiveChange={onChange} />
     </WebglProvider>
   ) }
@@ -53,7 +53,7 @@ export default function ProjectGallery() {
   return (
     <section ref={root} id="projetos" className="atelier-projects" aria-labelledby="projects-title">
       <header className="atelier-heading">
-        <span className="projects-eyebrow">03 / PROJETOS SELECIONADOS</span>
+        <span className="projects-eyebrow">04 / PROJETOS SELECIONADOS</span>
         <h2 id="projects-title">IDEIAS EM <em>MOVIMENTO.</em></h2>
         <p>Explore a galeria. Selecione um projeto para conhecer os detalhes.</p>
       </header>

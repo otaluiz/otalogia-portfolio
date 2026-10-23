@@ -172,15 +172,15 @@ export default function App() {
                 Soluções
               </a>
               <span className="nav-divider-dot" />
+              <a href="#processo" className="caldera-nav-link">
+                Processo
+              </a>
+              <span className="nav-divider-dot" />
               <a href="#laboratorio" className="caldera-nav-link">
                 Laboratório
               </a>
               <span className="nav-divider-dot" />
               <a href="#projetos" className="caldera-nav-link">Projetos</a>
-              <span className="nav-divider-dot" />
-              <a href="#processo" className="caldera-nav-link">
-                Processo
-              </a>
               <span className="nav-divider-dot" />
               <a href="#sobre" className="caldera-nav-link">
                 Sobre
@@ -213,9 +213,9 @@ export default function App() {
               >
                 {[
                   ['Soluções', '#solucoes'],
+                  ['Processo', '#processo'],
                   ['Laboratório', '#laboratorio'],
                   ['Projetos', '#projetos'],
-                  ['Processo', '#processo'],
                   ['Sobre', '#sobre'],
                   ['Contato', '#contato'],
                 ].map(([t, h]) => (
@@ -389,12 +389,40 @@ export default function App() {
             </div>
           </section>
 
+          {/* Process Section (Caldera Step Cards) */}
+          <section id="processo" className="mb-20">
+            <div>
+              <span className="text-[13px] font-mono tracking-widest text-[#f4f1fa]/70 uppercase font-medium">
+                02 / COMO TRABALHO
+              </span>
+              <h2 className="text-[clamp(44px,5.5vw,82px)] mt-3">
+                ANTES DO CÓDIGO, O <em>CONTEXTO.</em>
+              </h2>
+            </div>
+
+            <div className="process-grid-caldera">
+              {[
+                ['01', 'ENTENDER', 'Mapear o desafio, a estrutura da equipe, as ferramentas e o fluxo atual da operação para identificar gargalos reais.'],
+                ['02', 'CONSTRUIR', 'Definir prioridades de alto impacto e desenvolver sistemas e rotinas funcionais que possam ser testados e validados rapidamente.'],
+                ['03', 'EVOLUIR', 'Acompanhar métricas de uso e indicadores de conversão, ajustando e escalando a tecnologia de forma sustentável.'],
+              ].map(([num, title, desc]) => (
+                <div key={num} className="process-card-caldera">
+                  <div>
+                    <span className="step-num">{num}</span>
+                    <h3>{title}</h3>
+                  </div>
+                  <p className="text-[15px] text-[#f4f1fa]/80 leading-relaxed">{desc}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+
           {/* Laboratory & Interactive 3D Machine (Caldera Dark Card, 40px radius) */}
           <section id="laboratorio" className="lab-caldera lab-open">
             <div className="flex flex-col md:flex-row justify-between items-start gap-6">
               <div>
                 <span className="text-[13px] font-mono tracking-widest text-[#fc5000] uppercase font-medium">
-                  02 / LABORATÓRIO INTERATIVO
+                  03 / LABORATÓRIO INTERATIVO
                 </span>
                 <h2 className="mt-3">
                   DO CONCEITO AO <em>FUNCIONAMENTO.</em>
@@ -464,34 +492,6 @@ export default function App() {
 
           <ProjectGallery />
 
-          {/* Process Section (Caldera Step Cards) */}
-          <section id="processo" className="mb-20">
-            <div>
-              <span className="text-[13px] font-mono tracking-widest text-[#f4f1fa]/70 uppercase font-medium">
-                03 / COMO TRABALHO
-              </span>
-              <h2 className="text-[clamp(44px,5.5vw,82px)] mt-3">
-                ANTES DO CÓDIGO, O <em>CONTEXTO.</em>
-              </h2>
-            </div>
-
-            <div className="process-grid-caldera">
-              {[
-                ['01', 'ENTENDER', 'Mapear o desafio, a estrutura da equipe, as ferramentas e o fluxo atual da operação para identificar gargalos reais.'],
-                ['02', 'CONSTRUIR', 'Definir prioridades de alto impacto e desenvolver sistemas e rotinas funcionais que possam ser testados e validados rapidamente.'],
-                ['03', 'EVOLUIR', 'Acompanhar métricas de uso e indicadores de conversão, ajustando e escalando a tecnologia de forma sustentável.'],
-              ].map(([num, title, desc]) => (
-                <div key={num} className="process-card-caldera">
-                  <div>
-                    <span className="step-num">{num}</span>
-                    <h3>{title}</h3>
-                  </div>
-                  <p className="text-[15px] text-[#f4f1fa]/80 leading-relaxed">{desc}</p>
-                </div>
-              ))}
-            </div>
-          </section>
-
           {/* About Section (Otalogia Brand & Background) */}
           <section id="sobre" className="about-caldera">
             <div className="about-mark-card about-photo-card">
@@ -515,7 +515,7 @@ export default function App() {
             <div className="about-content-card">
               <div>
                 <span className="text-[13px] font-mono tracking-widest text-[#f4f1fa]/70 uppercase font-medium">
-                  04 / POR TRÁS DA OTALOGIA
+                  05 / POR TRÁS DA OTALOGIA
                 </span>
                 <h2 className="mt-3">
                   ENGENHARIA PARA CONSTRUIR.

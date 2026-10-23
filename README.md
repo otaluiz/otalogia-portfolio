@@ -49,7 +49,7 @@ Verificação: `node --experimental-strip-types --test tests/*.test.mjs` (Node 2
 
 ## Projetos e transições entre seções
 
-A seção `#projetos` usa a galeria esférica do Atelier UI / Codrops, adaptada em `components/atelier/`. Arrastar gira a esfera; selecionar aproxima uma imagem. A esfera completa fica centralizada, sem painel ao redor, e gira lentamente. O primeiro clique entra na galeria imersiva sem selecionar projeto; dentro dela, outro clique escolhe uma imagem. “Voltar ao globo” restaura a visão externa e a rotação suave. A descrição e o link aparecem abaixo com transição somente depois de selecionar um projeto, com navegação pelos cinco projetos em botões acessíveis. A cena carrega sob demanda ao se aproximar da seção. Sem WebGL ou com movimento reduzido, a imagem original substitui a esfera e os mesmos controles continuam disponíveis.
+A seção `#projetos` usa a galeria esférica do Atelier UI / Codrops, adaptada em `components/atelier/`. Arrastar gira a esfera; selecionar aproxima uma imagem. A esfera completa fica centralizada e gira lentamente, exibindo somente as imagens, sem cards, preenchimento preto ou bordas ao redor. O primeiro clique entra na galeria imersiva sem selecionar projeto; dentro dela, outro clique escolhe uma imagem. “Voltar ao globo” restaura a visão externa e a rotação suave. A descrição e o link aparecem abaixo com transição somente depois de selecionar um projeto, com navegação pelos cinco projetos em botões acessíveis. A cena carrega sob demanda ao se aproximar da seção. Sem WebGL ou com movimento reduzido, a imagem original substitui a esfera e os mesmos controles continuam disponíveis.
 
 `lib/projects.ts` preserva as cinco capturas fornecidas pelo usuário, títulos, descrições, textos alternativos e links públicos. A seção mantém o fluxo normal da página em todas as larguras.
 
@@ -61,7 +61,7 @@ A seção `#projetos` usa a galeria esférica do Atelier UI / Codrops, adaptada 
 
 Os modos foram escolhidos a partir da estrutura existente. `data-st-y`, `data-st-opacity` (limitado a 0–1) e `data-st-overlay` podem ser ajustados nos elementos. `pin` ignora a distância. O primeiro bloco não pode revelar; o último não pode fixar nem fazer parallax. Defaults globais ficam em `DEFAULT_CONFIG` na função. O modo móvel padrão `simplify`, até 768px, converte parallax em pin e remove deslocamento de reveal. `same` preserva os movimentos e `disable` desativa as transições com movimento vertical. Movimento reduzido desativa a coreografia e o Lenis, preservando a navegação nativa. Overlays, estilos, triggers, ticker e observadores são limpos ao desmontar ou mudar as media queries. O reveal mantém a posição relativa e anima apenas durante a entrada da seção; isso evita que o contato apareça atrás do restante da página.
 
-Revisão visual: verificar hero com o formato e as cores originais, piso do laboratório translúcido com bordas de vidro, títulos completos nas folhas abertas, galeria esférica e descrições e transições Processo → Sobre → Contato. Conferir também 390px, navegação por teclado, Escape e preferência de movimento reduzido.
+Revisão visual: verificar hero com o formato e as cores originais, piso do laboratório translúcido com bordas de vidro, títulos completos nas folhas abertas, galeria esférica e descrições e sequência Processo → Laboratório → Projetos → Sobre → Contato. Conferir também 390px, navegação por teclado, Escape e preferência de movimento reduzido.
 
 Testes de navegação e lifecycle (Playwright, dependência de desenvolvimento):
 
