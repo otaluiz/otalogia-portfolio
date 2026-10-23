@@ -7,12 +7,12 @@ const AtelierGallery = lazy(async () => {
     import('@/components/atelier/sphere-gallery/sphere-gallery'),
     import('@/components/atelier/webgl-provider/webgl-provider'),
   ])
-  return { default: ({ active, onChange }: { active: number | null; onChange: (index: number | null) => void }) => (
+  return { default: ({ active, onChange, immersive, onEnter }: { active: number | null; onChange: (index: number | null) => void; immersive: boolean; onEnter: () => void }) => (
     <WebglProvider contained dpr={[1, 1.5]} className="atelier-canvas" gl={{ alpha: true, antialias: true }}>
       <SphereGallery items={projects.map(p => ({ src: p.cover, alt: p.coverAlt }))}
         className="atelier-sphere"
         tileColor="#17121b" sphereColor="#17121b"
-        lensBlur={0} activeIndex={active} onActiveChange={onChange} />
+        lensBlur={0} immersive={immersive} onEnter={onEnter} activeIndex={active} onActiveChange={onChange} />
     </WebglProvider>
   ) }
 })
@@ -26,6 +26,7 @@ class GalleryBoundary extends Component<{ children: ReactNode; fallback: ReactNo
 export default function ProjectGallery() {
   const reduced = useReducedMotion()
   const [active, setActive] = useState<number | null>(null)
+  const [immersive, setImmersive] = useState(false)
   const [webgl, setWebgl] = useState(false)
   const [near, setNear] = useState(false)
   const root = useRef<HTMLElement>(null)
@@ -40,7 +41,12 @@ export default function ProjectGallery() {
     if (root.current) observer.observe(root.current)
     return () => observer.disconnect()
   }, [])
-  const onChange = useCallback((index: number | null) => setActive(index), [])
+  const onEnter = useCallback(() => setImmersive(true), [])
+  const onChange = useCallback((index: number | null) => {
+    setActive(index)
+    if (index !== null) setImmersive(true)
+  }, [])
+  const returnToGlobe = () => { setActive(null); setImmersive(false) }
   const selectedIndex = (active ?? 0) % projects.length
   const current = projects[selectedIndex]
   const fallback = <img className="atelier-fallback" src={current.cover} alt={current.coverAlt} width={current.coverWidth} height={current.coverHeight} />
@@ -53,10 +59,11 @@ export default function ProjectGallery() {
       </header>
       <div className="atelier-stage">
         {webgl && !reduced && near ? <GalleryBoundary fallback={fallback}>
-          <Suspense fallback={fallback}><AtelierGallery active={active} onChange={onChange} /></Suspense>
+          <Suspense fallback={fallback}><AtelierGallery active={active} onChange={onChange} immersive={immersive} onEnter={onEnter} /></Suspense>
         </GalleryBoundary> : fallback}
-        {webgl && !reduced && <p className="atelier-hint">Arraste para girar · clique em um projeto</p>}
+        {webgl && !reduced && <p className="atelier-hint">{immersive ? "Arraste para explorar · clique em um projeto" : "Clique no globo para entrar · arraste para girar"}</p>}
       </div>
+      {immersive && <div className="atelier-navigation"><button type="button" onClick={returnToGlobe}>Voltar ao globo</button></div>}
       <AnimatePresence mode="wait" initial={false}>
         {active !== null && <motion.div key={projects[selectedIndex].id} className="atelier-details"
           initial={{ opacity: 0, y: reduced ? 0 : 20 }} animate={{ opacity: 1, y: 0 }}
@@ -75,7 +82,7 @@ export default function ProjectGallery() {
         </motion.div>}
       </AnimatePresence>
       <nav className="atelier-index" aria-label="Selecionar projeto">
-        {projects.map((project, index) => <button key={project.id} type="button" aria-pressed={active !== null && selectedIndex === index} onClick={() => setActive(index)}>
+        {projects.map((project, index) => <button key={project.id} type="button" aria-pressed={active !== null && selectedIndex === index} onClick={() => onChange(index)}>
           <span>{String(index + 1).padStart(2, '0')}</span> {project.title} <span aria-hidden="true">↗</span>
         </button>)}
       </nav>
