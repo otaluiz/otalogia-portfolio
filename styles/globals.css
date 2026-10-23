@@ -939,7 +939,7 @@ body { overflow-x: clip; }
 .atelier-selection a { display: inline-flex; padding-block: 16px; margin-top: 14px; color: #ffad87; text-decoration: underline; text-underline-offset: 6px; }
 .atelier-navigation { display: flex; justify-content: center; gap: 12px; margin-top: 16px; }
 .atelier-navigation button { min-width: 48px; min-height: 48px; padding: 10px 16px; border: 1px solid #ffffff80; border-radius: 40px; color: white; background: #ffffff10; cursor: pointer; }
-.atelier-index { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border-top: 1px solid #ffffff50; }
+.atelier-index { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid #ffffff50; }
 .atelier-index button { display: flex; gap: 12px; align-items: center; text-align: left; padding: 20px 12px; min-height: 64px; border: 0; border-bottom: 1px solid #ffffff40; background: transparent; color: #f4f1fa; cursor: pointer; font-size: 14px; }
 .atelier-index button > span:first-child { color: #ffad87; font: 11px ui-monospace, monospace; }
 .atelier-index button > span:last-child { margin-left: auto; }
@@ -964,3 +964,5 @@ body { overflow-x: clip; }
 
 #sobre, #sobre .about-content-card { background: transparent; background-image: none; }
 #sobre .about-content-card { -webkit-backdrop-filter: none; backdrop-filter: none; box-shadow: none !important; }
+
+.atelier-video { display: block; width: min(100%, 420px); height: auto; max-height: 75svh; object-fit: contain; margin: 24px auto 0; background: transparent; }
