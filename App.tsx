@@ -172,11 +172,11 @@ export default function App() {
                 Soluções
               </a>
               <span className="nav-divider-dot" />
-              <a href="#projetos" className="caldera-nav-link">Projetos</a>
-              <span className="nav-divider-dot" />
               <a href="#laboratorio" className="caldera-nav-link">
                 Laboratório
               </a>
+              <span className="nav-divider-dot" />
+              <a href="#projetos" className="caldera-nav-link">Projetos</a>
               <span className="nav-divider-dot" />
               <a href="#processo" className="caldera-nav-link">
                 Processo
@@ -213,8 +213,8 @@ export default function App() {
               >
                 {[
                   ['Soluções', '#solucoes'],
-                  ['Projetos', '#projetos'],
                   ['Laboratório', '#laboratorio'],
+                  ['Projetos', '#projetos'],
                   ['Processo', '#processo'],
                   ['Sobre', '#sobre'],
                   ['Contato', '#contato'],
@@ -389,8 +389,6 @@ export default function App() {
             </div>
           </section>
 
-          <ProjectSpiral />
-
           {/* Laboratory & Interactive 3D Machine (Caldera Dark Card, 40px radius) */}
           <section id="laboratorio" className="lab-caldera lab-open">
             <div className="flex flex-col md:flex-row justify-between items-start gap-6">
@@ -464,8 +462,10 @@ export default function App() {
 
           </section>
 
+          <ProjectSpiral />
+
           {/* Process Section (Caldera Step Cards) */}
-          <section id="processo" className="mb-20" data-st-01="pin">
+          <section id="processo" className="mb-20">
             <div>
               <span className="text-[13px] font-mono tracking-widest text-[#f4f1fa]/70 uppercase font-medium">
                 03 / COMO TRABALHO

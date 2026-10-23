@@ -23,25 +23,36 @@ export function initMachineScene(root:HTMLElement, _font:string, options:Options
   const camera=new THREE.PerspectiveCamera(38,1,.1,120)
   const controls=new OrbitControls(camera,renderer.domElement)
   controls.enablePan=false;controls.enableZoom=false;controls.enableDamping=true;controls.dampingFactor=.08;controls.minPolarAngle=.1;controls.maxPolarAngle=Math.PI*.43
-  if(matchMedia('(pointer:coarse)').matches)controls.enableRotate=false
+  controls.enableRotate=false // The guided orbit owns the camera; stage buttons select the stop.
   const reduced=matchMedia('(prefers-reduced-motion: reduce)')
-  let mode:MachineMode='assembled',view:MachineCamera='overview',playing=!reduced.matches,selected:StationId='cabinet',time=0,spread=0,spreadV=0,activeStage=-1,inViewport=true,contextLost=false,last=performance.now(),cameraMoving=true,ready=false
+  let mode:MachineMode='order',view:MachineCamera='flight',playing=!reduced.matches,selected:StationId='cabinet',time=0,spread=0,spreadV=0,activeStage=-1,inViewport=true,contextLost=false,last=performance.now(),cameraMoving=true,ready=false
   const targetPosition=new THREE.Vector3(),targetLook=new THREE.Vector3(),cameraVelocity=new THREE.Vector3(),lookVelocity=new THREE.Vector3()
   const listen=(target:EventTarget,type:string,fn:EventListener)=>{target.addEventListener(type,fn);cleanups.push(()=>target.removeEventListener(type,fn))}
   function material(color:string,emissive=false){const m=new THREE.MeshStandardMaterial({color,metalness:.45,roughness:.35,emissive:emissive?color:'#000',emissiveIntensity: emissive ? .7 : 0});materials.add(m);return m}
   const black=material('#171721'),edge=material('#333343'),blue=material('#3285ff',true),purple=material('#a168ff',true),orange=material('#fc5000',true),white=material('#e7e8ef')
-  const floorMat=new THREE.MeshStandardMaterial({color:'#ffffff',metalness:0,roughness:.9});materials.add(floorMat)
+  const floorMat=new THREE.MeshPhysicalMaterial({color:'#e3dcf5',transparent:true,opacity:.14,metalness:.08,roughness:.12,clearcoat:1,clearcoatRoughness:.08,depthWrite:false,side:THREE.DoubleSide});materials.add(floorMat)
   const railWhite=material('#ffffff',true)
   function mesh(parent:THREE.Object3D,g:THREE.BufferGeometry,m:THREE.Material,x=0,y=0,z=0){geometries.add(g);const obj=new THREE.Mesh(g,m);obj.position.set(x,y,z);parent.add(obj);return obj}
   function box(parent:THREE.Object3D,w:number,h:number,d:number,x:number,y:number,z:number,m:THREE.Material){return mesh(parent,new RoundedBoxGeometry(w,h,d,2,Math.min(.055,w/4,h/4,d/4)),m,x,y,z)}
   function cylinder(parent:THREE.Object3D,r:number,h:number,x:number,y:number,z:number,m:THREE.Material){return mesh(parent,new THREE.CylinderGeometry(r,r,h,32),m,x,y,z)}
   function line(parent:THREE.Object3D,a:THREE.Vector3,b:THREE.Vector3,r:number,m:THREE.Material){const delta=b.clone().sub(a);const o=cylinder(parent,r,delta.length(),0,0,0,m);o.position.copy(a).add(b).multiplyScalar(.5);o.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),delta.normalize());return o}
-  function label(parent:THREE.Object3D,text:string,x:number,y:number,z:number,w=2.1){const c=document.createElement('canvas');c.width=640;c.height=96;const ctx=c.getContext('2d')!;ctx.fillStyle='#09090e';ctx.fillRect(0,0,640,96);ctx.font='500 34px sans-serif';ctx.textAlign='center';ctx.fillStyle='#eeeef6';ctx.fillText(text,320,60);const tex=new THREE.CanvasTexture(c);tex.colorSpace=THREE.SRGBColorSpace;textures.add(tex);const m=new THREE.MeshBasicMaterial({map:tex,side:THREE.DoubleSide});materials.add(m);return mesh(parent,new THREE.PlaneGeometry(w,.32),m,x,y,z)}
+  function label(parent:THREE.Object3D,text:string,x:number,y:number,z:number,w=2.1){
+    const c=document.createElement('canvas');c.width=768;c.height=112
+    const ctx=c.getContext('2d')!;ctx.fillStyle='rgba(16,12,25,.78)';ctx.roundRect(0,0,768,112,24);ctx.fill()
+    ctx.strokeStyle='rgba(255,255,255,.3)';ctx.lineWidth=2;ctx.stroke()
+    ctx.font='500 32px sans-serif';ctx.textAlign='center';ctx.fillStyle='#f5f1ff';ctx.fillText(text,384,68,724)
+    const tex=new THREE.CanvasTexture(c);tex.colorSpace=THREE.SRGBColorSpace;textures.add(tex)
+    const m=new THREE.SpriteMaterial({map:tex,depthWrite:false,depthTest:false});materials.add(m)
+    const sprite=new THREE.Sprite(m);sprite.position.set(x,y,z);sprite.scale.set(w,w*112/768,1);parent.add(sprite);return sprite
+  }
   scene.add(new THREE.HemisphereLight('#e8eaff','#171020',2.5))
   const key=new THREE.DirectionalLight('#ffffff',3);key.position.set(-5,12,10);scene.add(key)
   const rim=new THREE.DirectionalLight('#ffffff',2);rim.position.set(5,7,-6);scene.add(rim)
   const machine=new THREE.Group();scene.add(machine)
-  box(machine,21,.18,15,0,.1,0,floorMat)
+  const floor=box(machine,21,.18,15,0,.1,0,floorMat)
+  const floorEdges=new THREE.EdgesGeometry(floor.geometry);geometries.add(floorEdges)
+  const floorEdgeMaterial=new THREE.LineBasicMaterial({color:'#eee5ff',transparent:true,opacity:.24,depthWrite:false});materials.add(floorEdgeMaterial)
+  const glassRim=new THREE.LineSegments(floorEdges,floorEdgeMaterial);glassRim.position.copy(floor.position);machine.add(glassRim)
   const track=new THREE.Group();machine.add(track)
   // The original horizontal rotary layout: stations sit outside the swept belt envelope.
   class RailCurve extends THREE.Curve<THREE.Vector3> {
@@ -99,7 +110,7 @@ export function initMachineScene(root:HTMLElement, _font:string, options:Options
       box(g,1.6,1.05,.18,0,1.45,0,black)
       for(let j=0;j<4;j++)box(g,.2,.18+j*.16,.03,-.5+j*.33,1.13+(.18+j*.16)/2,.115,j===3?orange:blue)
     }
-    const explanation=label(g,s.shape,0,2.85,.1,2.3);explanation.visible=false;details.push(explanation)
+    const explanation=label(g,s.function,0,2.85,.1,3.1);explanation.visible=true;details.push(explanation)
     g.traverse(o=>{o.userData.station=s.id})
     // Stop markers lie outside the stations, flush to the rail; they do not cross the payload.
 
@@ -140,15 +151,42 @@ export function initMachineScene(root:HTMLElement, _font:string, options:Options
   const cartMaterials:THREE.Material[]=[]
   cart.traverse(o=>{if(o instanceof THREE.Mesh){o.material=o.material.clone();o.material.transparent=true;materials.add(o.material);cartMaterials.push(o.material)}})
   function fit(immediate=false){if(!host.clientWidth||!host.clientHeight)return;const w=host.clientWidth,h=host.clientHeight;renderer.setSize(w,h);camera.aspect=w/h;camera.updateProjectionMatrix();setCameraGoal();if(immediate){camera.position.copy(targetPosition);controls.target.copy(targetLook);controls.update();cameraMoving=false}}
-  function setCameraGoal(){const span=19.4;const distance=Math.max(24,span/(2*Math.tan(THREE.MathUtils.degToRad(19))*camera.aspect)*1.15);targetLook.set(0,.75,.3);if(view==='station'){const idx=PROCESS.findIndex(s=>s.id===selected);targetLook.copy(stationGroups[idx].position).add(new THREE.Vector3(0,1,0));targetPosition.copy(targetLook).add(new THREE.Vector3(.8,3,6.5))}else if(view==='top')targetPosition.set(.01,distance,.31);else if(view==='side')targetPosition.set(1,distance*.22,distance);else targetPosition.set(.5,distance*.72,distance*.8);cameraMoving=true}
+  function followProduct(){
+    const state=sampleProcess(time,spread),station=stationGroups[state.stage].position
+    const distance=Math.max(9,7/camera.aspect),angle=.8+time*.1
+    targetLook.set(state.x*.8+station.x*.2,1,state.z*.8+station.z*.2)
+    targetPosition.set(targetLook.x+Math.cos(angle)*distance,targetLook.y+distance*.72,targetLook.z+Math.sin(angle)*distance)
+    cameraMoving=true
+  }
+  function setCameraGoal(){
+    if(view==='flight'){followProduct();return}
+    const span=19.4,distance=Math.max(24,span/(2*Math.tan(THREE.MathUtils.degToRad(19))*camera.aspect)*1.15)
+    targetLook.set(0,.75,.3)
+    if(view==='station'){const idx=PROCESS.findIndex(s=>s.id===selected);targetLook.copy(stationGroups[idx].position).add(new THREE.Vector3(0,1,0));targetPosition.copy(targetLook).add(new THREE.Vector3(.8,3,6.5))}
+    else if(view==='top')targetPosition.set(.01,distance,.31)
+    else if(view==='side')targetPosition.set(1,distance*.22,distance)
+    else targetPosition.set(.5,distance*.72,distance*.8)
+    cameraMoving=true
+  }
   function sync(){root.querySelectorAll<HTMLElement>('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode===mode)));root.querySelectorAll<HTMLElement>('[data-camera]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.camera===view)));const play=root.querySelector<HTMLButtonElement>('[data-play]')!;play.textContent=playing?'Pausar':'Reproduzir';play.setAttribute('aria-pressed',String(!playing));root.querySelector<HTMLElement>('[data-status]')!.textContent=playing?'Processo em movimento':'Processo pausado'}
-  function focusStation(id:string){const index=PROCESS.findIndex(s=>s.id===id);if(index<0)return false;selected=PROCESS[index].id;view='station';setCameraGoal();sync();options.onStation?.(selected);return true}
-  const api:MachineApi={setMode(name){if(!['assembled','cutaway','stations','order'].includes(name))return false;mode=name as MachineMode;view='overview';if(mode==='order'){time=0;activeStage=-1}details.forEach(x=>x.visible=mode==='cutaway'||mode==='stations');setCameraGoal();sync();return true},focusStation,setCamera(name){if(!['overview','side','top','station','flight'].includes(name))return false;view=name as MachineCamera;setCameraGoal();sync();return true},play(){playing=true;sync();return true},pause(){playing=false;sync();return true}}
+  function focusStation(id:string){
+    const index=PROCESS.findIndex(s=>s.id===id);if(index<0)return false
+    selected=PROCESS[index].id;mode='order';view='flight'
+    // Seek to the selected stop after its transformation, then continue in order.
+    time=Math.floor(time/LAYOUT.cycle)*LAYOUT.cycle+index*LAYOUT.stationSeconds+1.4
+    activeStage=-1;playing=!reduced.matches;setCameraGoal();sync();options.onStation?.(selected);return true
+  }
+  const api:MachineApi={
+    setMode(name){if(!['assembled','cutaway','stations','order'].includes(name))return false;mode=name as MachineMode;view=mode==='order'?'flight':'overview';if(mode==='order'&&!reduced.matches)playing=true;details.forEach(x=>x.visible=true);setCameraGoal();sync();return true},
+    focusStation,
+    setCamera(name){if(!['overview','side','top','station','flight'].includes(name))return false;view=name as MachineCamera;setCameraGoal();sync();return true},
+    play(){mode='order';view='flight';playing=true;setCameraGoal();sync();return true},
+    pause(){playing=false;sync();return true},
+  }
   window.__machine=api
   root.querySelectorAll<HTMLElement>('[data-mode]').forEach(b=>listen(b,'click',()=>api.setMode(b.dataset.mode!)))
   root.querySelectorAll<HTMLElement>('[data-camera]').forEach(b=>listen(b,'click',()=>api.setCamera(b.dataset.camera!)))
   listen(root.querySelector('[data-play]')!,'click',()=>playing?api.pause():api.play())
-  const onDrag=()=>{cameraMoving=false;view='overview';sync()};controls.addEventListener('start',onDrag)
   const raycaster=new THREE.Raycaster(),pointer=new THREE.Vector2();let downX=0,downY=0
   listen(renderer.domElement,'pointerdown',((e:PointerEvent)=>{downX=e.clientX;downY=e.clientY}) as EventListener)
   listen(renderer.domElement,'pointerup',((e:PointerEvent)=>{if(Math.hypot(e.clientX-downX,e.clientY-downY)>6)return;const r=host.getBoundingClientRect();pointer.set((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1);raycaster.setFromCamera(pointer,camera);const hit=raycaster.intersectObjects(stationGroups,true)[0];if(hit)focusStation(hit.object.userData.station)}) as EventListener)
@@ -173,15 +211,17 @@ export function initMachineScene(root:HTMLElement, _font:string, options:Options
     if(productLabel)productLabel.textContent=product.transforming?'Transformando o produto…':product.name
 
     indicators.forEach((m,i)=>m.emissiveIntensity=i === state.stage ? .9 : .15)
-    if(state.stage!==activeStage){activeStage=state.stage;root.querySelector<HTMLElement>('[data-step]')!.textContent=`0${state.stage+1} / ${PROCESS[state.stage].name}`;if(mode==='order')options.onStation?.(PROCESS[state.stage].id)}
+    if(state.stage!==activeStage){activeStage=state.stage;selected=PROCESS[state.stage].id;root.querySelector<HTMLElement>('[data-function]')!.textContent=PROCESS[state.stage].function;root.querySelector<HTMLElement>('[data-step]')!.textContent=`0${state.stage+1} / ${PROCESS[state.stage].name}`;if(mode==='order')options.onStation?.(PROCESS[state.stage].id)}
     root.querySelector<HTMLElement>('[data-progress]')!.style.transform=`scaleX(${state.progress})`
-    if(view==='flight'&&playing&&!reduced.matches){targetPosition.x=Math.sin(time*.12)*2;cameraMoving=true}
+    if(view==='flight')followProduct()
     if(cameraMoving){if(reduced.matches){camera.position.copy(targetPosition);controls.target.copy(targetLook);cameraMoving=false}else{dampVector(camera.position,cameraVelocity,targetPosition,dt);dampVector(controls.target,lookVelocity,targetLook,dt);if(camera.position.distanceTo(targetPosition)<.005)cameraMoving=false}}
     controls.update();renderer.render(scene,camera);if(!ready){ready=true;loading.hidden=true;options.onReady?.()}
   }
   const debug = {
     getState: () => ({
       mode, camera: view, playing, time, spread, activeStage,
+      floor: { transparent: floorMat.transparent, opacity: floorMat.opacity, depthWrite: floorMat.depthWrite },
+      functionsVisible: details.every(x=>x.visible), cameraPosition: camera.position.toArray(), cameraTarget: controls.target.toArray(),
       order: PROCESS.map(s => s.id),
       payload: sampleProcess(time, spread),
       product: sampleProduct(time),
@@ -193,6 +233,6 @@ export function initMachineScene(root:HTMLElement, _font:string, options:Options
   }
   window.__machineDebug=debug
   raf=requestAnimationFrame(animate)
-  return()=>{disposed=true;cancelAnimationFrame(raf);cleanups.forEach(fn=>fn());ro.disconnect();io.disconnect();controls.removeEventListener('start',onDrag);controls.dispose();treads.dispose();geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());textures.forEach(t=>t.dispose());renderer.dispose();renderer.domElement.remove();if(window.__machine===api)delete window.__machine;if(window.__machineDebug===debug)delete window.__machineDebug}
+  return()=>{disposed=true;cancelAnimationFrame(raf);cleanups.forEach(fn=>fn());ro.disconnect();io.disconnect();controls.dispose();treads.dispose();geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());textures.forEach(t=>t.dispose());renderer.dispose();renderer.domElement.remove();if(window.__machine===api)delete window.__machine;if(window.__machineDebug===debug)delete window.__machineDebug}
 }
 

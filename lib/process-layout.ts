@@ -1,10 +1,10 @@
 /** Shared geometry envelopes and timing. Distances are world units, time in seconds. */
 export const PROCESS = [
-  { id: 'cabinet', name: 'Dados', shape: 'Banco de dados', color: '#3285ff', indeindex: 2 },
-  { id: 'engine', name: 'IA aplicada', shape: 'Processador neural', color: '#a168ff', index: 1 },
-  { id: 'admin', name: 'Sistemas', shape: 'Servidores', color: '#3285ff', index: 2 },
-  { id: 'storefront', name: 'Integrações', shape: 'Hub de conexões', color: '#a168ff', index: 3 },
-  { id: 'cashdesk', name: 'Resultados', shape: 'Painel de indicadores', color: '#fc5000', index: 4 },
+  { id: 'cabinet', name: 'Dados', shape: 'Banco de dados', function: 'Organiza e conecta dados', color: '#3285ff', indeindex: 2 },
+  { id: 'engine', name: 'IA aplicada', shape: 'Processador neural', function: 'Analisa e enriquece dados', color: '#a168ff', index: 1 },
+  { id: 'admin', name: 'Sistemas', shape: 'Servidores', function: 'Executa regras do negócio', color: '#3285ff', index: 2 },
+  { id: 'storefront', name: 'Integrações', shape: 'Hub de conexões', function: 'Conecta sistemas e APIs', color: '#a168ff', index: 3 },
+  { id: 'cashdesk', name: 'Resultados', shape: 'Painel de indicadores', function: 'Exibe métricas e resultados', color: '#fc5000', index: 4 },
 ] as const
 export type StationId = typeof PROCESS[number]['id']
 export const LAYOUT = { stationHalfWidth: 1, stationHalfDepth: .95, laneHalfWidth: .5, cartHalfSize: .35, stationSeconds: 4, dwellSeconds: 1.6, cycle: 20, spacingScale: 1.22 } as const

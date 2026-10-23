@@ -83,20 +83,22 @@ export default function ProjectSpiral() {
         const current = ((Math.round(value) % projects.length) + projects.length) % projects.length
         if (current !== lastIndex) { lastIndex = current; setActive(current) }
         const width = cards[0].offsetWidth
-        const height = cards[0].offsetHeight
+        const height = Math.max(...cards.map(card => card.offsetHeight))
         const step = width + 40
-        // A helix around a diagonal axis: linear pitch keeps neighboring
-        // cards apart, while sine/cosine supply its orbit and depth.
-        const angleStep = 0.8
-        const pitch = width + 110
+        // A vertical helix tilted by the stage: the orbit curves around its
+        // axis instead of spreading the projects along a horizontal line.
+        // Size its pitch from the tallest card, including wrapped captions.
+        const angleStep = 0.9
+        const radius = width * 1.55
+        const pitch = height + 160
         cards.forEach((card, i) => {
           const offset = gsap.utils.wrap(-projects.length / 2, projects.length / 2, i - value)
           const angle = offset * angleStep
           const distance = Math.abs(offset)
-          setters[i]({ x: mobile ? offset * step : offset * pitch + Math.sin(angle) * 48,
-            y: mobile ? 0 : -Math.sin(angle) * height * 0.18 - offset * height * 0.02,
-            z: mobile ? 0 : (Math.cos(angle) - 1) * 260,
-            rotationY: mobile ? 0 : -Math.sin(angle) * 32, rotationZ: mobile ? 0 : offset * 3,
+          setters[i]({ x: mobile ? offset * step : Math.sin(angle) * radius,
+            y: mobile ? 0 : -offset * pitch,
+            z: mobile ? 0 : (Math.cos(angle) - 1) * radius,
+            rotationY: mobile ? 0 : -Math.sin(angle) * 60, rotationZ: 0,
             transformPerspective: 0, scale: mobile ? 1 : 1 - Math.min(distance, 2.25) * 0.07,
             opacity: mobile ? 1 : gsap.utils.clamp(0, 1, (2.25 - distance) * 4),
             visibility: !mobile && distance >= 2.25 ? 'hidden' : 'visible',

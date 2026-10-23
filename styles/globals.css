@@ -891,13 +891,13 @@ body { overflow-x: clip; }
 .caldera-container > section[data-st-01]:not([data-st-01="pin"]) { will-change: transform; }
 .caldera-container > section[data-st-01="reveal"] { background-color: #fc5000; }
 .projects-section { margin-block: 80px; padding-block: 20px; background: transparent; border: 0; border-radius: 0; height: calc(100svh - 130px); min-height: 520px; display: flex; flex-direction: column; }
-.projects-heading { display: flex; align-items: end; justify-content: space-between; gap: 32px; padding: 32px 0; }
-.projects-heading h2 { margin: 14px 0 0; font-size: clamp(42px, 5vw, 72px); }
+.projects-heading { display: flex; align-items: end; justify-content: space-between; gap: 32px; padding: 20px 0; }
+.projects-heading h2 { margin: 14px 0 0; font-size: clamp(36px, 4vw, 56px); }
 .projects-heading p { max-width: 300px; color: #c4bfc9; }
 .projects-eyebrow { font: 12px ui-monospace, monospace; letter-spacing: .14em; color: #fc5000; }
 .spiral-viewport { flex: 1; min-height: 240px; overflow: clip; perspective: none; touch-action: pan-y; }
-.spiral-stage { width: 0; height: 0; position: relative; top: 50%; left: 50%; transform-style: preserve-3d; transform: rotateZ(-8deg); }
-.spiral-card { --project-card-width: clamp(240px, 26vw, 360px); position: absolute; left: calc(var(--project-card-width) * -.5); top: 0; width: var(--project-card-width); padding: 0; border: 1px solid #ffffff35; border-radius: 14px; overflow: hidden; background: #17121b; cursor: pointer; backface-visibility: hidden; transform-style: preserve-3d; }
+.spiral-stage { width: 0; height: 0; position: relative; top: 50%; left: 50%; transform-style: preserve-3d; transform: rotateZ(25deg); }
+.spiral-card { --project-card-width: clamp(220px, 22vw, 320px); position: absolute; left: calc(var(--project-card-width) * -.5); top: 0; width: var(--project-card-width); padding: 0; border: 1px solid #ffffff35; border-radius: 14px; overflow: hidden; background: #17121b; cursor: pointer; backface-visibility: hidden; transform-style: preserve-3d; }
 .spiral-card img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: contain; background: #080c12; pointer-events: none; }
 .spiral-card-caption { display: flex; justify-content: space-between; padding: 16px 20px; color: white; background: #141017; font-size: 16px; }
 .project-external-icon { display: inline-block; width: 20px; height: 20px; vertical-align: middle; flex-shrink: 0; }

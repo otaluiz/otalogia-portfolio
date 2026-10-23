@@ -208,3 +208,29 @@ test('project description is revealed by smooth dialog scrolling and closing res
   await expect(opener).toBeFocused()
   expect(await page.evaluate(() => document.body.style.overflow)).not.toBe('hidden')
 })
+
+
+test('projects follow the laboratory and process never overlaps about while scrolling', async ({ page }) => {
+  test.setTimeout(60000)
+  expect(await page.evaluate(() => {
+    const lab = document.getElementById('laboratorio')!
+    const projects = document.getElementById('projetos')!
+    const process = document.getElementById('processo')!
+    return !!(lab.compareDocumentPosition(projects) & Node.DOCUMENT_POSITION_FOLLOWING) &&
+      !!(projects.compareDocumentPosition(process) & Node.DOCUMENT_POSITION_FOLLOWING)
+  })).toBe(true)
+  for (const width of [1440, 390]) {
+    await page.setViewportSize({ width, height: 1000 })
+    const start = await page.locator('#processo').evaluate(el => el.getBoundingClientRect().top + scrollY - 500)
+    for (const offset of [0, 200, 450, 700, 1000, 1400]) {
+      await page.evaluate(y => window.scrollTo(0, y), start + offset)
+      await page.waitForTimeout(180)
+      const gap = await page.evaluate(() => {
+        const process = document.getElementById('processo')!.getBoundingClientRect()
+        const about = document.getElementById('sobre')!.getBoundingClientRect()
+        return about.top - process.bottom
+      })
+      expect(gap, `Processo overlaps Sobre at ${width}px, scroll offset ${offset}`).toBeGreaterThanOrEqual(0)
+    }
+  }
+})
