@@ -5,7 +5,7 @@ import { PROCESS, LAYOUT, BELT, BELT_LENGTH, stationPosition, PRODUCTS, sampleBe
 export type { StationId } from './process-layout'
 export type MachineMode = 'assembled' | 'cutaway' | 'stations' | 'order'
 export type MachineCamera = 'overview' | 'side' | 'top' | 'station' | 'flight' | 'product'
-export type MachineApi = { setMode:(name:string)=>boolean; focusStation:(id:string)=>boolean; setCamera:(name:string)=>boolean; play:()=>boolean; pause:()=>boolean; nextStep:()=>boolean }
+export type MachineApi = { setMode:(name:string)=>boolean; focusStation:(id:string)=>boolean; setCamera:(name:string)=>boolean; play:()=>boolean; pause:()=>boolean; followSteps:()=>boolean }
 declare global { interface Window { __machine?:MachineApi; __machineDebug?:{getState:()=>Record<string,unknown>} } }
 type Options={embedded?:boolean;onStation?:(id:StationId)=>void;onReady?:()=>void}
 export function initMachineScene(root:HTMLElement, _font:string, options:Options={}):()=>void {
@@ -31,7 +31,6 @@ export function initMachineScene(root:HTMLElement, _font:string, options:Options
   controls.addEventListener('start',beginManual)
   cleanups.push(()=>controls.removeEventListener('start',beginManual))
   const reduced=matchMedia('(prefers-reduced-motion: reduce)')
-  let stepTarget:number|null=null
   let mode:MachineMode='order',view:MachineCamera='flight',playing=!reduced.matches,selected:StationId='cabinet',time=0,spread=0,spreadV=0,activeStage=-1,inViewport=true,contextLost=false,last=performance.now(),cameraMoving=true,ready=false
   const targetPosition=new THREE.Vector3(),targetLook=new THREE.Vector3(),cameraVelocity=new THREE.Vector3(),lookVelocity=new THREE.Vector3()
   const listen=(target:EventTarget,type:string,fn:EventListener)=>{target.addEventListener(type,fn);cleanups.push(()=>target.removeEventListener(type,fn))}
@@ -197,41 +196,33 @@ export function initMachineScene(root:HTMLElement, _font:string, options:Options
     root.querySelectorAll<HTMLElement>('[data-camera]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.camera===view)))
     const play=root.querySelector<HTMLButtonElement>('[data-play]')!
     play.textContent=playing?'Pausar':'Reproduzir';play.setAttribute('aria-pressed',String(!playing))
-    const step=root.querySelector<HTMLButtonElement>('[data-step-next]')!
-    step.disabled=stepTarget!==null;step.textContent=stepTarget!==null?'Avançando…':'Próxima etapa →'
-    root.querySelector<HTMLElement>('[data-status]')!.textContent=stepTarget!==null?'Acompanhando o produto até a próxima etapa':view==='product'&&!playing?`Etapa ${sampleProcess(time).stage+1} de ${PROCESS.length} · clique para avançar`:playing?'Processo em movimento':'Processo pausado'
+    const step=root.querySelector<HTMLButtonElement>('[data-follow-steps]')!
+    step.disabled=false;step.setAttribute('aria-pressed',String(view==='product'))
+    root.querySelector<HTMLElement>('[data-status]')!.textContent=playing?(view==='product'?'Acompanhando o produto por todas as etapas':'Processo em movimento'):'Processo pausado'
   }
-  function nextStep(){
-    if(stepTarget!==null)return false
-    const stage=sampleProcess(time).stage
-    const target=Math.floor(time/LAYOUT.cycle)*LAYOUT.cycle+(stage+1)*LAYOUT.stationSeconds+1.4
-    mode='order';view='product';manualCamera=false;stepTarget=target;playing=true
-    if(reduced.matches){
-      time=target;playing=false;stepTarget=null
-      const next=sampleProcess(time).stage;updateStage(next)
-      root.querySelector<HTMLElement>('[data-product]')!.textContent=PRODUCTS[next]
-    }
+  function followSteps(){
+    mode='order';view='product';manualCamera=false;playing=!reduced.matches
     setCameraGoal();sync();return true
   }
   function focusStation(id:string){
     const index=PROCESS.findIndex(s=>s.id===id);if(index<0)return false
-    selected=PROCESS[index].id;mode='order';view='flight';stepTarget=null
+    selected=PROCESS[index].id;mode='order';if(view!=='product')view='flight'
     // Seek to the selected stop after its transformation, then continue in order.
     time=Math.floor(time/LAYOUT.cycle)*LAYOUT.cycle+index*LAYOUT.stationSeconds+1.4
     activeStage=-1;playing=!reduced.matches;if(!manualCamera)setCameraGoal();sync();options.onStation?.(selected);return true
   }
   const api:MachineApi={
-    setMode(name){if(!['assembled','cutaway','stations','order'].includes(name))return false;stepTarget=null;mode=name as MachineMode;view=mode==='order'?'flight':'overview';manualCamera=false;if(mode==='order'&&!reduced.matches)playing=true;details.forEach(x=>x.visible=true);setCameraGoal();sync();return true},
+    setMode(name){if(!['assembled','cutaway','stations','order'].includes(name))return false;mode=name as MachineMode;view=mode==='order'?'flight':'overview';manualCamera=false;if(mode==='order'&&!reduced.matches)playing=true;details.forEach(x=>x.visible=true);setCameraGoal();sync();return true},
     focusStation,
     setCamera(name){if(!['overview','side','top','station','flight','product'].includes(name))return false;view=name as MachineCamera;manualCamera=false;setCameraGoal();sync();return true},
-    play(){stepTarget=null;mode='order';view='flight';playing=true;if(!manualCamera)setCameraGoal();sync();return true},
-    pause(){stepTarget=null;playing=false;sync();return true},
-    nextStep,
+    play(){mode='order';playing=true;if(!manualCamera)setCameraGoal();sync();return true},
+    pause(){playing=false;sync();return true},
+    followSteps,
   }
   window.__machine=api
   root.querySelectorAll<HTMLElement>('[data-mode]').forEach(b=>listen(b,'click',()=>api.setMode(b.dataset.mode!)))
   root.querySelectorAll<HTMLElement>('[data-camera]').forEach(b=>listen(b,'click',()=>api.setCamera(b.dataset.camera!)))
-  listen(root.querySelector('[data-step-next]')!,'click',()=>api.nextStep())
+  listen(root.querySelector('[data-follow-steps]')!,'click',()=>api.followSteps())
   listen(root.querySelector('[data-play]')!,'click',()=>playing?api.pause():api.play())
   const raycaster=new THREE.Raycaster(),pointer=new THREE.Vector2();let downX=0,downY=0
   listen(renderer.domElement,'pointerdown',((e:PointerEvent)=>{downX=e.clientX;downY=e.clientY}) as EventListener)
@@ -243,10 +234,8 @@ export function initMachineScene(root:HTMLElement, _font:string, options:Options
   listen(reduced,'change',()=>{if(reduced.matches)api.pause()})
   fit(true);sync()
   function dampVector(current:THREE.Vector3,velocity:THREE.Vector3,target:THREE.Vector3,dt:number){for(const axis of ['x','y','z'] as const){const s=spring(current[axis],velocity[axis],target[axis],dt,7);current[axis]=s.position;velocity[axis]=s.velocity}}
-  function animate(now:number){if(disposed)return;raf=requestAnimationFrame(animate);const elapsed=Math.min(Math.max((now-last)/1000,0),.25),dt=Math.min(elapsed,.05);last=now;if((!inViewport&&stepTarget===null)||document.hidden||contextLost)return;if(playing){
-      time=stepTarget===null?time+dt:Math.min(time+elapsed,stepTarget)
-      if(stepTarget!==null&&time>=stepTarget){stepTarget=null;playing=false;sync()}
-    }
+  function animate(now:number){if(disposed)return;raf=requestAnimationFrame(animate);const elapsed=Math.min(Math.max((now-last)/1000,0),.25),dt=Math.min(elapsed,.05);last=now;if((!inViewport&&view!=='product')||document.hidden||contextLost)return;
+    if(playing)time+=view==='product'?elapsed:dt
     const smooth=spring(spread,spreadV,mode==='stations'?1:0,dt,7);spread=smooth.position;spreadV=smooth.velocity
     const scale=1+spread*(LAYOUT.spacingScale-1);stationGroups.forEach((g,i)=>{const p=stationPosition(i,spread);g.position.set(p.x,0,p.z)});track.scale.set(scale,1,scale)
     const state=sampleProcess(time,spread), product=sampleProduct(time)
@@ -262,13 +251,14 @@ export function initMachineScene(root:HTMLElement, _font:string, options:Options
     indicators.forEach((m,i)=>m.emissiveIntensity=i === state.stage ? .9 : .15)
     if(state.stage!==activeStage)updateStage(state.stage)
     root.querySelector<HTMLElement>('[data-progress]')!.style.transform=`scaleX(${state.progress})`
+    if(!inViewport)return
     if((view==='flight'||view==='product')&&!manualCamera)followProduct()
     if(cameraMoving){if(reduced.matches){camera.position.copy(targetPosition);controls.target.copy(targetLook);cameraMoving=false}else{dampVector(camera.position,cameraVelocity,targetPosition,dt);dampVector(controls.target,lookVelocity,targetLook,dt);if(camera.position.distanceTo(targetPosition)<.005)cameraMoving=false}}
     controls.update();renderer.render(scene,camera);if(!ready){ready=true;loading.hidden=true;options.onReady?.()}
   }
   const debug = {
     getState: () => ({
-      mode, camera: view, stepTarget, manualCamera, cameraDistance: camera.position.distanceTo(controls.target), playing, time, spread, activeStage,
+      mode, camera: view, manualCamera, cameraDistance: camera.position.distanceTo(controls.target), playing, time, spread, activeStage,
       floor: { transparent: floorMat.transparent, opacity: floorMat.opacity, depthWrite: floorMat.depthWrite },
       functionsVisible: details.every(x=>x.visible), cameraPosition: camera.position.toArray(), cameraTarget: controls.target.toArray(),
       order: PROCESS.map(s => s.id),
