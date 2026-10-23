@@ -13,9 +13,9 @@ export default function AgenticFactory3D({height='clamp(460px, 60vw, 760px)',cla
       <p className="process-loading" data-loading>Preparando a operação 3D…</p>
       <div className="process-error" data-error hidden role="status">A visualização 3D está indisponível neste navegador. As cinco etapas continuam descritas nos botões abaixo.</div>
     </div>
-    <div className="process-live"><span data-step>01 / Dados</span><strong data-product>Dados recebidos</strong><span>Visão completa · selecione uma etapa para acompanhar</span><p className="process-function" data-function>Organiza e conecta dados</p><div className="process-track"><i data-progress/></div></div>
+    <div className="process-live"><span data-step>01 / Dados</span><strong data-product>Dados recebidos</strong><span>Arraste para girar · scroll para zoom</span><p className="process-function" data-function>Organiza e conecta dados</p><div className="process-track"><i data-progress/></div></div>
     <div className="process-controls"><div role="group" aria-label="Acompanhamento do processo"><button type="button" data-mode="order" aria-pressed="true">Acompanhar processo</button><button type="button" data-play aria-pressed="false">Pausar</button></div></div>
-    <p className="process-caption">A câmera percorre a operação em órbita suave, mantendo as cinco estações visíveis. Selecione uma etapa para começar por ela; as funções permanecem visíveis.</p>
+    <p className="process-caption">Arraste para girar, use o scroll para aproximar e arraste com o botão direito para mover. Selecione uma etapa para acompanhar sua função; “Acompanhar processo” restaura a câmera automática.</p>
   </div>
 }
 

@@ -22,8 +22,8 @@ import { WebglScene, type WebglSceneProps } from "../webgl-scene/webgl-scene"
 
 const TAU = Math.PI * 2
 const MAX_TILT = Math.PI / 4
-const SCENE_DISTANCE = 0.1 as const
-const INITIAL_DISTANCE = 2 as const
+const SCENE_DISTANCE = 2.3 as const
+const INITIAL_DISTANCE = 3 as const
 const PEEK_DEPTH = 1.5 as const
 const PEEK_MARGIN = 0.05 as const
 const FOCUS_EASING = [0.7, 0.03, 0.26, 0.99] as Easing
@@ -227,6 +227,9 @@ const TileMaterial = shaderMaterial(
             float imageHalfHeight = min(content.x / uImageAspect, content.y);
             vec2 imageHalfSize = vec2(imageHalfHeight * uImageAspect, imageHalfHeight);
             vec2 imageUv = point / (imageHalfSize * 2.0) + 0.5;
+            // Tiles face inward for the focused view; keep their backs readable
+            // when the complete globe is viewed from outside.
+            if (!gl_FrontFacing) imageUv.x = 1.0 - imageUv.x;
 
             bool inside = all(greaterThanEqual(imageUv, vec2(0.0))) &&
                 all(lessThanEqual(imageUv, vec2(1.0)));

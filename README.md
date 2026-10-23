@@ -49,7 +49,7 @@ Verificação: `node --experimental-strip-types --test tests/*.test.mjs` (Node 2
 
 ## Projetos e transições entre seções
 
-A seção `#projetos` usa a galeria esférica do Atelier UI / Codrops, adaptada em `components/atelier/`. Arrastar gira a esfera; selecionar aproxima uma imagem. A descrição e o link do projeto aparecem ao lado, com navegação pelos cinco projetos em botões acessíveis. A cena carrega sob demanda ao se aproximar da seção. Sem WebGL ou com movimento reduzido, a imagem original substitui a esfera e os mesmos controles continuam disponíveis.
+A seção `#projetos` usa a galeria esférica do Atelier UI / Codrops, adaptada em `components/atelier/`. Arrastar gira a esfera; selecionar aproxima uma imagem. A esfera completa fica centralizada, sem painel ao redor. A descrição e o link aparecem abaixo com transição somente depois de selecionar um projeto, com navegação pelos cinco projetos em botões acessíveis. A cena carrega sob demanda ao se aproximar da seção. Sem WebGL ou com movimento reduzido, a imagem original substitui a esfera e os mesmos controles continuam disponíveis.
 
 `lib/projects.ts` preserva as cinco capturas fornecidas pelo usuário, títulos, descrições, textos alternativos e links públicos. A seção mantém o fluxo normal da página em todas as larguras.
 
@@ -75,7 +75,9 @@ CHROMIUM_PATH=/usr/bin/chromium npm run test:browser
 Os testes verificam âncoras, resize, movimento reduzido, transições, indicadores e ordem das seções. `visual-fixes.spec.ts` verifica que os três títulos das pastas estão expostos, que todos os projetos têm imagem, descrição e link no desktop e no celular, e que o laboratório não tem contêiner com corte. `atelier-gallery.spec.ts` exercita a galeria real com WebGL por software.
 
 
-Indicadores, serviços e projetos usam superfícies glass com gradiente translúcido, borda e backdrop blur. A linha dos indicadores não tem fundo sólido. Os indicadores animam de zero aos valores publicados ao entrar na tela; rótulos acessíveis mantêm os valores finais sem anúncios a cada quadro, e movimento reduzido mostra diretamente os valores finais. No mobile, a galeria fica acima da descrição, com botões para selecionar todos os projetos e sem rolagem horizontal da página.
+Indicadores, serviços e projetos usam superfícies glass com gradiente translúcido, borda e backdrop blur. A linha dos indicadores não tem fundo sólido. Os indicadores animam de zero aos valores publicados ao entrar na tela; rótulos acessíveis mantêm os valores finais sem anúncios a cada quadro, e movimento reduzido mostra diretamente os valores finais. No mobile, a esfera continua centralizada e a descrição aparece somente após a seleção, sem rolagem horizontal da página.
 
 
 O laboratório inicia em **Acompanhar processo**, com órbita suave em torno do produto em movimento. Clicar em uma etapa posiciona o produto naquele ponto e continua o ciclo, atualizando as funções e a etapa selecionada. As legendas 3D usam sprites voltados à câmera e as funções também permanecem em texto abaixo da cena. O piso usa material físico translúcido com contorno de vidro; apenas os controles de acompanhamento e pausa permanecem. A preferência por movimento reduzido mantém o processo inicialmente pausado. `tests/browser/laboratory.spec.ts` valida a cena com WebGL por software, separado dos testes de layout que desativam WebGL.
+
+O laboratório permite zoom com scroll, rotação ao arrastar e deslocamento com o botão direito. A interação assume a câmera até selecionar “Acompanhar processo”. A seção Sobre e seu card de texto têm fundo transparente.
