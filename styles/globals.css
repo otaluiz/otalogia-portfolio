@@ -890,7 +890,7 @@ body { overflow-x: clip; }
 .caldera-container > section { position: relative; z-index: 1; }
 .caldera-container > section[data-st-01]:not([data-st-01="pin"]) { will-change: transform; }
 .caldera-container > section[data-st-01="reveal"] { background-color: #fc5000; }
-.projects-section { --helix-exit: 0; position: relative; isolation: isolate; width: 100vw; margin-inline: calc(50% - 50vw); margin-block: 80px; padding: 0; border: 0; border-radius: 0; height: 100svh; min-height: 680px; background: radial-gradient(ellipse at 25% 30%, #062f4b, transparent 55%), #020b15; }
+.projects-section { --helix-exit: 0; position: relative; isolation: isolate; width: 100vw; margin-inline: calc(50% - 50vw); margin-block: 80px; padding: 0; border: 0; border-radius: 0; height: 100svh; min-height: 680px; background: transparent; }
 .projects-heading { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
 .projects-eyebrow { font: 12px ui-monospace, monospace; letter-spacing: .14em; color: #fc5000; }
 .spiral-background-title { position: absolute; inset: 0; display: grid; place-items: center; font: italic clamp(72px, 10vw, 180px) Georgia, serif; color: white; pointer-events: none; }

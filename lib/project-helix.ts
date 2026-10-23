@@ -13,7 +13,7 @@ export async function createProjectHelix(host: HTMLElement, projects: Project[],
   const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: 'low-power' })
   renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5))
   renderer.outputColorSpace = THREE.SRGBColorSpace
-  renderer.setClearColor('#020b15', 1)
+  renderer.setClearColor('#070607', 0)
   renderer.domElement.setAttribute('aria-hidden', 'true')
   renderer.domElement.className = 'spiral-canvas'
   const scene = new THREE.Scene()
@@ -74,30 +74,6 @@ export async function createProjectHelix(host: HTMLElement, projects: Project[],
     helix.add(mesh)
     return mesh
   })
-  const backgroundGeometry = new THREE.PlaneGeometry(2, 2)
-  const backgroundMaterial = new THREE.ShaderMaterial({
-    depthTest: false, depthWrite: false,
-    uniforms: { uPhase: { value: 0 }, uAspect: { value: 1 }, uExit: { value: 0 } },
-    vertexShader: 'varying vec2 vUv; void main(){vUv=uv;gl_Position=vec4(position.xy,0.9999,1.0);}',
-    fragmentShader: `
-      varying vec2 vUv; uniform float uPhase; uniform float uAspect; uniform float uExit;
-      float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
-      void main(){
-        vec2 p=(vUv-.5)*vec2(uAspect,1.)*4.;
-        vec2 q=p+vec2(sin(p.y*1.9+uPhase*.08),cos(p.x*1.7-uPhase*.06))*.55;
-        float a=abs(sin(q.x*1.7+q.y*.8+sin(q.y*1.8)));
-        float b=abs(sin(q.y*1.9-q.x*.6+cos(q.x*1.4)));
-        float light=pow(1.-min(a,b),5.);
-        float halo=pow(1.-min(a,b),1.8);
-        vec3 color=vec3(.003,.014,.027)+vec3(.003,.11,.20)*light+vec3(.001,.045,.078)*halo;
-        color*=.65+.35*(1.-smoothstep(.05,1.4,length(vUv-.5)));
-        color+=(hash(gl_FragCoord.xy)-.5)*.024;
-        gl_FragColor=vec4(color*(1.-uExit*.78),1.);
-      }`,
-  })
-  const background = new THREE.Mesh(backgroundGeometry, backgroundMaterial)
-  background.frustumCulled = false; background.renderOrder = -100
-  scene.add(background)
   const titleCanvas = document.createElement('canvas')
   titleCanvas.width = 2048; titleCanvas.height = 512
   const titleContext = titleCanvas.getContext('2d')!
@@ -118,15 +94,12 @@ export async function createProjectHelix(host: HTMLElement, projects: Project[],
     // Keep the same panel scale on wide screens; fit the cylinder on narrow desktops.
     camera.position.z = Math.max(15, 19 / camera.aspect)
     camera.updateProjectionMatrix()
-    backgroundMaterial.uniforms.uAspect.value = camera.aspect
     render(phase, exit)
   }
   function render(nextPhase: number, nextExit: number) {
     if (disposed || (!dirty && phase === nextPhase && exit === nextExit)) return
     dirty = false
     phase = nextPhase; exit = nextExit
-    backgroundMaterial.uniforms.uPhase.value = phase
-    backgroundMaterial.uniforms.uExit.value = exit
     titleMaterial.opacity = 1 - exit
     renderer.domElement.style.pointerEvents = exit > .6 ? 'none' : 'auto'
     panels.forEach(mesh => {
@@ -173,7 +146,7 @@ export async function createProjectHelix(host: HTMLElement, projects: Project[],
       renderer.domElement.removeEventListener('pointermove', onMove)
       panels.forEach(mesh => mesh.material.dispose())
       textures.forEach(texture => texture.dispose())
-      titleTexture.dispose(); titleMaterial.dispose(); alpha.dispose(); geometry.dispose(); backgroundGeometry.dispose(); backgroundMaterial.dispose()
+      titleTexture.dispose(); titleMaterial.dispose(); alpha.dispose(); geometry.dispose();
       renderer.dispose(); renderer.domElement.remove()
     },
   }
