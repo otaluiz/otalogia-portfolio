@@ -165,7 +165,7 @@ export default function App() {
         <header className="caldera-nav-wrapper">
           <div className="caldera-nav">
             <a href="#inicio" className="caldera-logo" aria-label="Otalogia início">
-              OTALOGIA<span>↗</span>
+              OTALOGIA
             </a>
 
             <nav className="caldera-nav-links" aria-label="Principal">
