@@ -7,6 +7,7 @@ import BackgroundShader from '@/components/ui/background-shader'
 import HalftoneText from '@/components/ui/halftone-text'
 import GlassFolder, { type FolderFile, type ArtPreset } from '@/components/ui/glass-folder-cards'
 import ProjectGallery from '@/components/ui/project-gallery'
+import EntryPreloader from '@/components/ui/entry-preloader'
 import PixelPortrait from '@/components/ui/pixel-portrait'
 import CursorEdgeGlowButton from '@/components/ui/cursor-edge-glow-button'
 
@@ -152,6 +153,7 @@ export default function App() {
 
   return (
     <MotionConfig reducedMotion="user">
+      <EntryPreloader />
       <div ref={root} className="otalogia-page min-h-screen relative pb-12">
         {/* Global Grain Gradient Background Shader */}
         <BackgroundShader />

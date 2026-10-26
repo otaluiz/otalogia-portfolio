@@ -988,3 +988,16 @@ body { overflow-x: clip; }
 @media (prefers-reduced-motion: reduce) {
   .pixel-portrait__canvas { display: none; }
 }
+
+.entry-preloader { position: fixed; inset: 0; z-index: 10000; display: grid; place-items: center; background: #100d0b; color: #f7f6f2; clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%); }
+.entry-preloader__content { width: min(280px, 70vw); text-align: center; }
+.entry-preloader__content strong { display: block; font-family: var(--font-display); font-size: 42px; letter-spacing: .04em; }
+.entry-preloader__content > span { font: 10px ui-monospace, monospace; letter-spacing: .12em; color: #f7f6f299; }
+.entry-preloader__bar { height: 2px; margin: 24px 0 18px; background: #ffffff20; overflow: hidden; }
+.entry-preloader__bar span { display: block; height: 100%; background: #ff7a28; transform-origin: left; animation: entry-progress 2.5s ease-out forwards; transition: transform 180ms ease-out; }
+.entry-preloader[data-state="leaving"] .entry-preloader__bar span { animation: none; transform: scaleX(1); }
+@keyframes entry-progress { from { transform: scaleX(.03); } to { transform: scaleX(.9); } }
+@media (prefers-reduced-motion: reduce) {
+  .entry-preloader { transition: none; }
+  .entry-preloader__bar span { animation: none; }
+}

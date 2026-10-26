@@ -7,16 +7,17 @@ test.beforeEach(async ({ page }) => {
   }
 })
 
-test('portrait gains definition once when it enters view, without an entry preloader', async ({ page }) => {
+test('portrait gains definition once when it enters view, after the entry preloader', async ({ page }) => {
   await page.goto('/')
-  await expect(page.locator('.entry-preloader, .lenticular-canvas')).toHaveCount(0)
+  await expect(page.locator('.entry-preloader')).toHaveCount(0, { timeout: 10000 })
+  await expect(page.locator('.lenticular-canvas')).toHaveCount(0)
   const card = page.locator('.pixel-portrait')
   await expect(card).not.toHaveAttribute('data-pixel-state', 'complete')
   await card.scrollIntoViewIfNeeded()
   await expect(card).toHaveAttribute('data-pixel-state', 'revealing')
   const canvas = card.locator('canvas')
-  const initial = await canvas.evaluate(el => el.width)
-  await expect.poll(() => canvas.evaluate(el => el.width)).toBeGreaterThan(initial)
+  const initial = await canvas.evaluate(el => (el as HTMLCanvasElement).width)
+  await expect.poll(() => canvas.evaluate(el => (el as HTMLCanvasElement).width)).toBeGreaterThan(initial)
   await expect(card).toHaveAttribute('data-pixel-state', 'complete')
   await expect(canvas).toBeHidden()
   await expect(card.locator('img')).toBeVisible()
