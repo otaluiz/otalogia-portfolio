@@ -15,7 +15,6 @@ const WaveGrid = lazy(() => import('@/components/ui/wave-grid'))
 const Factory = lazy(() => import('@/components/ui/agentic-factory-3d'))
 
 const instagram = 'https://www.instagram.com/otalogia/'
-const phone = '+55 65 992791582'
 const whatsappUrl = 'https://wa.me/5565992791582?text=Ol%C3%A1!%20Vim%20pelo%20site%20da%20Otalogia.'
 
 const services: {
@@ -592,17 +591,6 @@ export default function App() {
                   Conte sobre a sua operação, sua ideia de sistema ou aquele processo que precisa de fluidez e
                   automação.
                 </p>
-                <div className="mt-3 flex items-center gap-2 flex-wrap text-[14px]">
-                  <span className="font-mono text-[#f4f1fa]/75">WhatsApp / Contato:</span>
-                  <a
-                    href={whatsappUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-mono font-bold text-[#f4f1fa] hover:underline"
-                  >
-                    {phone} ↗
-                  </a>
-                </div>
               </div>
 
               <div className="flex flex-wrap items-center gap-3">

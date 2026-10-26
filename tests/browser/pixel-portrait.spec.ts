@@ -13,6 +13,12 @@ test('portrait gains definition once when it enters view, after the entry preloa
   await expect(page.locator('.lenticular-canvas')).toHaveCount(0)
   const card = page.locator('.pixel-portrait')
   await expect(card).not.toHaveAttribute('data-pixel-state', 'complete')
+  await page.locator('#sobre').evaluate(el => window.scrollTo(0, el.getBoundingClientRect().top + scrollY - innerHeight * .85))
+  await expect(card).toHaveAttribute('data-pixel-state', 'waiting')
+  // Loading the image near the viewport must not consume the reveal animation.
+  await page.waitForTimeout(1400)
+  await expect(card).toHaveAttribute('data-pixel-state', 'waiting')
+  await expect(card.locator('canvas')).toHaveAttribute('width', '8')
   await card.scrollIntoViewIfNeeded()
   await expect(card).toHaveAttribute('data-pixel-state', 'revealing')
   const canvas = card.locator('canvas')

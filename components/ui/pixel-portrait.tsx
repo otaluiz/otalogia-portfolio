@@ -5,11 +5,12 @@ export default function PixelPortrait({ children }: { children: ReactNode }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   useEffect(() => {
     const card = ref.current!
+    const section = card.closest('section') ?? card
     const canvas = canvasRef.current!
     const image = card.querySelector('img')!
     const context = canvas.getContext('2d')
     const motion = matchMedia('(prefers-reduced-motion: reduce)')
-    let frame = 0, visible = false, started = false, finished = false, start = 0, columns = 8
+    let frame = 0, started = false, finished = false, start = 0, columns = 8
     const finish = () => {
       finished = true
       cancelAnimationFrame(frame)
@@ -43,28 +44,46 @@ export default function PixelPortrait({ children }: { children: ReactNode }) {
       else frame = requestAnimationFrame(animate)
     }
     const begin = () => {
-      if (finished || started || !visible || !image.complete || !image.naturalWidth) return
+      const rect = section.getBoundingClientRect()
+      const arrived = rect.top <= innerHeight * .7 && rect.bottom > 0
+      if (finished || started || !arrived || document.querySelector('.entry-preloader') || !image.complete || !image.naturalWidth) return
       started = true
+      loadingObserver.disconnect()
       if (motion.matches || !context) { finish(); return }
       draw()
       canvas.hidden = false
       card.dataset.pixelState = 'revealing'
       frame = requestAnimationFrame(animate)
     }
-    const observer = new IntersectionObserver(entries => {
-      if (entries.some(entry => entry.isIntersecting)) { visible = true; begin() }
-    }, { threshold: .15 })
+    const prepare = () => {
+      if (!finished && !started && image.complete && image.naturalWidth && !motion.matches && context) {
+        draw()
+        canvas.hidden = false
+        card.dataset.pixelState = 'waiting'
+      }
+      begin()
+    }
+    const observer = new IntersectionObserver(() => begin(), { rootMargin: '0px 0px -30% 0px' })
+    // A direct #sobre entry must wait until the preloader has actually left.
+    const loadingObserver = new MutationObserver(() => begin())
+    const loader = document.querySelector('.entry-preloader')
+    if (loader?.parentElement) loadingObserver.observe(loader.parentElement, { childList: true })
     const resize = new ResizeObserver(() => { if (started && !finished) draw() })
     const changeMotion = () => { if (motion.matches) finish() }
-    observer.observe(card)
+    observer.observe(section)
     resize.observe(card)
-    image.addEventListener('load', begin)
+    image.addEventListener('load', prepare)
+    window.addEventListener('scroll', begin, { passive: true })
+    window.addEventListener('resize', begin)
+    prepare()
     image.addEventListener('error', finish)
     motion.addEventListener('change', changeMotion)
     return () => {
       cancelAnimationFrame(frame)
-      observer.disconnect(); resize.disconnect()
-      image.removeEventListener('load', begin)
+      observer.disconnect(); resize.disconnect(); loadingObserver.disconnect()
+      image.removeEventListener('load', prepare)
+      window.removeEventListener('scroll', begin)
+      window.removeEventListener('resize', begin)
       image.removeEventListener('error', finish)
       motion.removeEventListener('change', changeMotion)
       canvas.hidden = true
