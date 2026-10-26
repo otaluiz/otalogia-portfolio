@@ -7,6 +7,8 @@ import BackgroundShader from '@/components/ui/background-shader'
 import HalftoneText from '@/components/ui/halftone-text'
 import GlassFolder, { type FolderFile, type ArtPreset } from '@/components/ui/glass-folder-cards'
 import ProjectGallery from '@/components/ui/project-gallery'
+import EntryPreloader from '@/components/ui/entry-preloader'
+import LenticularPortrait from '@/components/ui/lenticular-portrait'
 import CursorEdgeGlowButton from '@/components/ui/cursor-edge-glow-button'
 
 const WaveGrid = lazy(() => import('@/components/ui/wave-grid'))
@@ -151,6 +153,7 @@ export default function App() {
 
   return (
     <MotionConfig reducedMotion="user">
+      <EntryPreloader />
       <div ref={root} className="otalogia-page min-h-screen relative pb-12">
         {/* Global Grain Gradient Background Shader */}
         <BackgroundShader />
@@ -494,7 +497,7 @@ export default function App() {
 
           {/* About Section (Otalogia Brand & Background) */}
           <section id="sobre" className="about-caldera">
-            <div className="about-mark-card about-photo-card">
+            <LenticularPortrait>
               <img
                 className="about-portrait"
                 src="/images/otalogia-portrait.jpg"
@@ -510,7 +513,7 @@ export default function App() {
               <p className="text-[15px] text-white/90">
                 A tecnologia só faz sentido quando resolve um problema real para quem opera o negócio.
               </p>
-            </div>
+            </LenticularPortrait>
 
             <div className="about-content-card">
               <div>

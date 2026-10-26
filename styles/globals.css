@@ -980,3 +980,40 @@ body { overflow-x: clip; }
   .atelier-view.is-selected { grid-template-columns: minmax(0, 1fr); gap: 24px; }
   .atelier-view.is-selected .atelier-canvas { height: min(460px, 65svh); }
 }
+
+/* Keep the original portrait and copy underneath a progressive lenticular surface. */
+.lenticular-portrait {
+  transform: perspective(1000px) rotateX(var(--portrait-rx, 0deg)) rotateY(var(--portrait-ry, 0deg));
+  transition: transform 220ms ease-out, box-shadow 220ms ease-out;
+  border: 1px solid #ffffff25;
+  box-shadow: 0 18px 50px #0003;
+  touch-action: pan-y;
+}
+.lenticular-canvas { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; pointer-events: none; }
+.lenticular-portrait .about-portrait { z-index: -3; }
+.lenticular-portrait:hover { box-shadow: 0 24px 65px #0006, 0 0 24px #ff7a2818; }
+@media (prefers-reduced-motion: reduce) {
+  .lenticular-portrait { transform: none; transition: none; }
+}
+
+.entry-preloader { position: fixed; inset: 0; z-index: 10000; overflow: hidden; }
+.entry-preloader__cover { position: absolute; inset: 0; background: #100d0b; clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%); }
+.entry-preloader__tiles { position: absolute; inset: 0; pointer-events: none; }
+.entry-preloader__tile { position: absolute; width: clamp(130px, 24vw, 360px); aspect-ratio: 1.6; overflow: hidden; border-radius: 10px; border: 1px solid #ffffff20; box-shadow: 0 16px 48px #0008; }
+.entry-preloader__tile img { width: 100%; height: 100%; object-fit: cover; }
+.entry-preloader__tile--0 { left: -4%; top: 8%; transform: rotate(-12deg); }
+.entry-preloader__tile--1 { right: 1%; top: -5%; transform: rotate(14deg); }
+.entry-preloader__tile--2 { right: -8%; bottom: 15%; transform: rotate(-9deg); }
+.entry-preloader__tile--3 { left: 4%; bottom: -6%; transform: rotate(9deg); }
+.entry-preloader__tile--4 { right: 26%; bottom: -15%; transform: rotate(-8deg); }
+.entry-preloader__copy { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; flex-direction: column; color: #f7f6f2; padding: 24px; text-align: center; }
+.entry-preloader__copy > span { font: 10px monospace; letter-spacing: .2em; color: #ff7a28; }
+.entry-preloader__copy strong { font-size: clamp(56px, 13vw, 170px); letter-spacing: -.075em; line-height: 1.35; }
+.entry-preloader__copy strong span { font-size: .15em; vertical-align: super; letter-spacing: 0; margin-left: .3em; }
+.entry-preloader__copy p { font-size: clamp(12px, 1.3vw, 16px); color: #f7f6f299; }
+.entry-preloader__copy button { margin-top: 32px; padding: 10px 20px; border: 1px solid #ffffff40; border-radius: 24px; font-size: 12px; background: #100d0b; cursor: pointer; }
+.entry-preloader__copy button:focus-visible { outline: 2px solid #ff7a28; outline-offset: 5px; }
+@media (max-width: 600px) {
+  .entry-preloader__tile { width: 42vw; }
+  .entry-preloader__tile--4 { bottom: 6%; right: -10%; }
+}
