@@ -22,9 +22,8 @@ export function initMachineScene(root:HTMLElement, _font:string, options:Options
   host.appendChild(renderer.domElement)
   const camera=new THREE.PerspectiveCamera(38,1,.1,120)
   const controls=new OrbitControls(camera,renderer.domElement)
-  controls.enablePan=true;controls.enableZoom=true;controls.minDistance=8;controls.maxDistance=100;controls.enableDamping=true;controls.dampingFactor=.08;controls.minPolarAngle=.1;controls.maxPolarAngle=Math.PI*.43
+  controls.enablePan=true;controls.enableZoom=false;controls.minDistance=8;controls.maxDistance=100;controls.enableDamping=true;controls.dampingFactor=.08;controls.minPolarAngle=.1;controls.maxPolarAngle=Math.PI*.43
   controls.enableRotate=true
-  renderer.domElement.setAttribute('data-lenis-prevent', '')
   renderer.domElement.style.touchAction='none'
   let manualCamera=false
   const beginManual=()=>{manualCamera=true;cameraMoving=false;cameraVelocity.set(0,0,0);lookVelocity.set(0,0,0)}
@@ -166,9 +165,8 @@ export function initMachineScene(root:HTMLElement, _font:string, options:Options
       cameraMoving=true
       return
     }
-    // Frame the complete operation throughout the orbit, including labels.
-    // A bounding sphere stays within both the horizontal and vertical frustum.
-    const radius=12,halfFov=THREE.MathUtils.degToRad(camera.fov/2)
+    // Bring the process labels closer while retaining the orbit around the operation.
+    const radius=8.5,halfFov=THREE.MathUtils.degToRad(camera.fov/2)
     const limitingFov=Math.min(halfFov,Math.atan(Math.tan(halfFov)*camera.aspect))
     const distance=radius/Math.sin(limitingFov)*1.08,angle=.8+time*.055
     targetLook.set(0,1,0)
@@ -209,7 +207,7 @@ export function initMachineScene(root:HTMLElement, _font:string, options:Options
     selected=PROCESS[index].id;mode='order';if(view!=='product')view='flight'
     // Seek to the selected stop after its transformation, then continue in order.
     time=Math.floor(time/LAYOUT.cycle)*LAYOUT.cycle+index*LAYOUT.stationSeconds+1.4
-    activeStage=-1;playing=!reduced.matches;if(!manualCamera)setCameraGoal();sync();options.onStation?.(selected);return true
+    updateStage(index);playing=!reduced.matches;if(!manualCamera)setCameraGoal();sync();return true
   }
   const api:MachineApi={
     setMode(name){if(!['assembled','cutaway','stations','order'].includes(name))return false;mode=name as MachineMode;view=mode==='order'?'flight':'overview';manualCamera=false;if(mode==='order'&&!reduced.matches)playing=true;details.forEach(x=>x.visible=true);setCameraGoal();sync();return true},

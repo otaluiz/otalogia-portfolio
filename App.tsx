@@ -344,7 +344,12 @@ export default function App() {
 
             <div className="solutions-grid-caldera">
               {services.map((s, i) => (
-                <div key={s.n} className="solution-card-caldera overflow-visible">
+                <div key={s.n} className="solution-card-caldera wave-card overflow-visible">
+                  <div className="card-wave-backdrop" aria-hidden="true">
+                    <Suspense fallback={null}>
+                      <WaveGrid colorBase="#171126" colorHigh="#fc5000" />
+                    </Suspense>
+                  </div>
                   <div>
                     <div className="flex justify-between items-center">
                       <span className="text-[12px] font-mono tracking-wider text-[#f4f1fa]/60 uppercase font-semibold">
@@ -435,21 +440,6 @@ export default function App() {
               </span>
             </div>
 
-            <div className="lab-scene my-6">
-              <Suspense
-                fallback={
-                  <div className="min-h-[540px] flex flex-col items-center justify-center p-8 text-center">
-                    <div className="w-8 h-8 border-2 border-[#fc5000] border-t-transparent rounded-full animate-spin mb-4" />
-                    <p className="font-mono text-[13px] text-white/70 uppercase tracking-wider">
-                      Carregando laboratório 3D interativo…
-                    </p>
-                  </div>
-                }
-              >
-                <Factory onStation={setStation} onReady={() => setReady(true)} />
-              </Suspense>
-            </div>
-
             <div className="lab-pills-row" role="group" aria-label="Etapas da operação">
               {steps.map((s, i) => (
                 <button
@@ -464,6 +454,21 @@ export default function App() {
                   0{i + 1} {s.name}
                 </button>
               ))}
+            </div>
+
+            <div className="lab-scene my-6">
+              <Suspense
+                fallback={
+                  <div className="min-h-[540px] flex flex-col items-center justify-center p-8 text-center">
+                    <div className="w-8 h-8 border-2 border-[#fc5000] border-t-transparent rounded-full animate-spin mb-4" />
+                    <p className="font-mono text-[13px] text-white/70 uppercase tracking-wider">
+                      Carregando laboratório 3D interativo…
+                    </p>
+                  </div>
+                }
+              >
+                <Factory onStation={setStation} onReady={() => setReady(true)} />
+              </Suspense>
             </div>
 
             <div className="mt-6 py-6 border-t border-white/15">
@@ -495,7 +500,12 @@ export default function App() {
               </p>
             </PixelPortrait>
 
-            <div className="about-content-card">
+            <div className="about-content-card wave-card">
+              <div className="card-wave-backdrop" aria-hidden="true">
+                <Suspense fallback={null}>
+                  <WaveGrid colorBase="#171126" colorHigh="#fc5000" />
+                </Suspense>
+              </div>
               <div>
                 <h2 className="mt-3">
                   ENGENHARIA PARA CONSTRUIR.

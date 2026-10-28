@@ -23,13 +23,25 @@ export default function EntryPreloader() {
         setState('done')
       }
       if (motion.matches) { complete(); return }
+      const columns = innerWidth < 768 ? 12 : 24
+      const rows = Math.ceil(innerHeight / (innerWidth / columns))
+      const layer = overlay.current!.querySelector<HTMLElement>('.entry-preloader__pixels')!
+      const pixels = Array.from({ length: columns * rows }, () => document.createElement('span'))
+      layer.style.gridTemplateColumns = `repeat(${columns}, 1fr)`
+      layer.style.gridTemplateRows = `repeat(${rows}, 1fr)`
+      layer.append(...pixels)
       timeline = gsap.timeline({ onComplete: complete })
+      timeline.set(overlay.current, { backgroundColor: 'transparent' }, 0)
       timeline.to(overlay.current!.querySelector('.entry-preloader__content'), {
-        opacity: 0, y: -18, duration: .25, ease: 'expo.in',
-      }, .15)
-      timeline.to(overlay.current, {
-        clipPath: 'polygon(50% 50%, 50% 50%, 50% 50%, 50% 50%)',
-        duration: .9, ease: 'expo.inOut',
+        opacity: 0, y: -8, duration: .25, ease: 'power2.inOut',
+      }, 0)
+      timeline.to(pixels, {
+        opacity: 0, duration: .55, ease: 'power2.inOut',
+        stagger: (index: number) => {
+          const x = (index % columns + .5) / columns - .5
+          const y = (Math.floor(index / columns) + .5) / rows - .5
+          return Math.hypot(x, y) * .55 + Math.random() * .22
+        },
       }, .15)
     }
     const deadline = window.setTimeout(leave, 2500)
@@ -55,6 +67,7 @@ export default function EntryPreloader() {
   }, [])
   if (state === 'done') return null
   return <div ref={overlay} className="entry-preloader" data-state={state} data-lenis-prevent="true">
+    <div className="entry-preloader__pixels" aria-hidden="true" />
     <div className="entry-preloader__content">
       <strong>OTALOGIA</strong>
       <div className="entry-preloader__bar" role="progressbar" aria-label="Carregando o site">

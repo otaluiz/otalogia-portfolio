@@ -819,7 +819,7 @@ button.btn-dark:hover {
 .contact-caldera, .contact-title-huge { color: #070607; }
 .contact-caldera [class*="text-[#f4f1fa]"] { color: #070607; }
 @media (max-width: 1023px) {
-  .caldera-nav .nimbus-items, .caldera-nav .nimbus-drop { display: none; }
+  .caldera-nav .nimbus-items, .caldera-nav .nimbus-drop, .caldera-nav .nimbus-water { display: none; }
   .caldera-menu-btn { display: block; min-height: 44px; }
   #mobile-nav { max-width: var(--page-max-width); margin-inline: auto; backdrop-filter: blur(16px); }
 }
@@ -954,6 +954,10 @@ body { overflow-x: clip; }
 #sobre, #sobre .about-content-card { background: transparent; background-image: none; }
 #sobre .about-content-card { -webkit-backdrop-filter: none; backdrop-filter: none; box-shadow: none !important; }
 
+.wave-card { position: relative; isolation: isolate; }
+.wave-card > :not(.card-wave-backdrop) { position: relative; z-index: 1; }
+.wave-card > .card-wave-backdrop { position: absolute; inset: 0; z-index: 0; border-radius: inherit; overflow: hidden; pointer-events: none; opacity: .42; mask-image: linear-gradient(135deg, transparent, #000 75%); }
+
 .atelier-video { display: block; width: min(100%, 420px); height: auto; max-height: 75svh; object-fit: contain; margin: 24px auto 0; background: transparent; }
 
 /* Only a selected project uses columns; the idle globe stays centered. */
@@ -976,8 +980,10 @@ body { overflow-x: clip; }
 .pixel-portrait::before { z-index: 2; pointer-events: none; }
 .pixel-portrait > span, .pixel-portrait > p { z-index: 3; }
 
-.entry-preloader { position: fixed; inset: 0; z-index: 10000; display: grid; place-items: center; background: #100d0b; color: #f7f6f2; clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%); }
-.entry-preloader__content { width: min(280px, 70vw); text-align: center; }
+.entry-preloader { position: fixed; inset: 0; z-index: 10000; display: grid; place-items: center; background: #100d0b; color: #f7f6f2; }
+.entry-preloader__pixels { position: absolute; inset: 0; display: grid; pointer-events: none; }
+.entry-preloader__pixels > span { background: #100d0b; }
+.entry-preloader__content { position: relative; width: min(280px, 70vw); text-align: center; }
 .entry-preloader__content strong { display: block; font-family: var(--font-display); font-size: 42px; letter-spacing: .04em; }
 .entry-preloader__content > span { font: 10px ui-monospace, monospace; letter-spacing: .12em; color: #f7f6f299; }
 .entry-preloader__bar { height: 2px; margin: 24px 0 18px; background: #ffffff20; overflow: hidden; }
