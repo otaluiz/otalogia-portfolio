@@ -142,7 +142,7 @@ em {
   padding-right: 24px;
 }
 
-/* Caldera Navigation Bar: Floating Pill in Limestone */
+/* A single liquid glass surface, without an outer background shell. */
 .caldera-nav-wrapper {
   position: sticky;
   top: 20px;
@@ -151,16 +151,19 @@ em {
   margin-bottom: 30px;
 }
 
-.caldera-nav {
+.caldera-nav.nimbus-nav {
+  width: 100%;
   max-width: var(--page-max-width);
   margin: 0 auto;
-  background: var(--color-limestone);
-  border: 1px solid rgba(7, 6, 7, 0.08);
+  background: transparent;
+  border: 0;
   border-radius: var(--radius-pills);
   padding: 10px 16px 10px 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 24px;
+  font-family: var(--font-body);
 }
 
 .caldera-logo {
@@ -178,28 +181,21 @@ em {
   font-size: 24px;
 }
 
-.caldera-nav-links.nimbus-nav {
-  font-family: var(--font-body);
-}
-.caldera-nav-links.nimbus-nav[data-tone="dark"] {
-  --n-tint: rgba(255, 255, 255, .04);
+.caldera-nav.nimbus-nav[data-tone="dark"] {
+  --n-tint: rgba(15, 12, 25, .18);
   --n-fg: #f4f1fa;
   --n-fg-soft: rgba(244, 241, 250, .8);
 }
-.caldera-nav-links .nimbus-item {
+.caldera-nav .nimbus-item {
   height: 44px;
 }
-.caldera-nav-links .nimbus-item:focus-visible {
+.caldera-nav .nimbus-item:focus-visible {
   outline-color: var(--color-ember);
 }
-.caldera-nav-links .nimbus-glass,
-.caldera-nav-links .nimbus-drop {
+.caldera-nav .nimbus-glass,
+.caldera-nav .nimbus-drop {
   box-shadow: inset 0 1px 1px var(--n-rim), inset 0 0 0 1px #ffffff20 !important;
 }
-@media (max-width: 1023px) {
-  .caldera-nav-links.nimbus-nav { display: none; }
-}
-
 .caldera-menu-btn {
   display: none;
   white-space: nowrap;
@@ -728,9 +724,6 @@ button.btn-dark:hover {
 }
 
 @media (max-width: 680px) {
-  .caldera-nav-links {
-    display: none;
-  }
   .caldera-menu-btn {
     display: block;
   }
@@ -815,8 +808,7 @@ button.btn-dark:hover {
 .otalogia-grain canvas { display: block; }
 .hero-wave-backdrop { opacity: .28; mask-image: linear-gradient(90deg, transparent, #000 90%); }
 .hero-caldera-single { background: rgba(7,6,7,.15); border-color: #ffffff18; }
-.caldera-nav, .solution-card-caldera, .process-card-caldera, .about-content-card, .caldera-dashboard, .caldera-footer-pill, .stat-card-caldera.limestone { border: 1px solid #ffffff20; }
-.caldera-nav { backdrop-filter: blur(16px); }
+.solution-card-caldera, .process-card-caldera, .about-content-card, .caldera-dashboard, .caldera-footer-pill, .stat-card-caldera.limestone { border: 1px solid #ffffff20; }
 .lab-caldera { background: rgba(7,6,7,.78); }
 .dashboard-select { border-color: #ffffff60; min-height: 44px; }
 .dashboard-select option { background: #101018; color: #f4f1fa; }
@@ -827,7 +819,7 @@ button.btn-dark:hover {
 .contact-caldera, .contact-title-huge { color: #070607; }
 .contact-caldera [class*="text-[#f4f1fa]"] { color: #070607; }
 @media (max-width: 1023px) {
-  .caldera-nav-links { display: none; }
+  .caldera-nav .nimbus-items, .caldera-nav .nimbus-drop { display: none; }
   .caldera-menu-btn { display: block; min-height: 44px; }
   #mobile-nav { max-width: var(--page-max-width); margin-inline: auto; backdrop-filter: blur(16px); }
 }
@@ -836,7 +828,7 @@ button.btn-dark:hover {
   .otalogia-page { padding-top: max(12px, env(safe-area-inset-top)); }
   .caldera-container { padding-inline: 16px; }
   .caldera-nav-wrapper { top: 10px; padding-inline: 12px; margin-bottom: 24px; }
-  .caldera-nav { padding: 8px 12px 8px 18px; }
+  .caldera-nav.nimbus-nav { padding: 8px 12px 8px 18px; }
   .caldera-logo { font-size: 27px; }
   .caldera-nav > div > a, .caldera-nav > div > .group { display: none; }
   .hero-caldera-single, .hero-single-content { min-height: 0; }

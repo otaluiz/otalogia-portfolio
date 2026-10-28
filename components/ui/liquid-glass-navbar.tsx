@@ -24,6 +24,8 @@ export type LiquidNavItem = {
 
 export type LiquidNavbarProps = {
   items?: LiquidNavItem[]
+  leading?: React.ReactNode
+  trailing?: React.ReactNode
   defaultActive?: number
   active?: number
   onChange?: (index: number, item: LiquidNavItem) => void
@@ -67,6 +69,7 @@ const NIMBUS_CSS = `
   position:relative;display:inline-flex;align-items:center;gap:2px;padding:6px;border-radius:999px;isolation:isolate;
   font-family:ui-sans-serif,-apple-system,"SF Pro Text","Segoe UI",system-ui,sans-serif;-webkit-font-smoothing:antialiased;user-select:none;-webkit-tap-highlight-color:transparent}
 .nimbus-nav[data-tone="dark"]{--n-tint:rgba(10,18,40,.26);--n-fg:#F1F7FF;--n-fg-soft:rgba(241,247,255,.66);--n-rim:rgba(255,255,255,.34)}
+.nimbus-items{display:flex;align-items:center;gap:2px}
 .nimbus-glass{position:absolute;inset:0;border-radius:inherit;z-index:-2;overflow:hidden;background:var(--n-tint);
   -webkit-backdrop-filter:blur(10px) saturate(1.2) brightness(1.08);backdrop-filter:blur(10px) saturate(1.2) brightness(1.08);
   box-shadow:inset 0 1px 1px var(--n-rim),inset 0 0 0 1px rgba(255,255,255,.2),0 12px 32px -14px rgba(0,40,90,.5),0 2px 6px rgba(0,40,90,.1)}
@@ -230,6 +233,8 @@ function supportsRefraction() {
 
 export function LiquidNavbar({
   items = DEFAULT_ITEMS,
+  leading,
+  trailing,
   defaultActive = 0,
   active,
   onChange,
@@ -290,6 +295,9 @@ export function LiquidNavbar({
     } else if (dropRef.current) {
       const left = Math.min(s.a.x, s.b.x) - s.q - r - PAD
       const width = sep + 2 * (s.q + r)
+      dropRef.current.style.top = `${T.cy - T.r - PAD}px`
+      dropRef.current.style.height = `${T.r * 2}px`
+      dropRef.current.style.bottom = "auto"
       dropRef.current.style.width = `${width}px`
       dropRef.current.style.transform = `translateX(${left}px) scaleY(${s.sy.s})`
     }
@@ -515,8 +523,9 @@ export function LiquidNavbar({
 
   const onKeyDown = (e: React.KeyboardEvent) => {
     if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return
-    e.preventDefault()
     const focused = itemRefs.current.indexOf(document.activeElement as HTMLElement)
+    if (focused < 0) return
+    e.preventDefault()
     const n = (focused + (e.key === "ArrowRight" ? 1 : -1) + items.length) % items.length
     itemRefs.current[n]?.focus()
   }
@@ -557,6 +566,8 @@ export function LiquidNavbar({
       <span className="nimbus-glass" aria-hidden="true" />
       <canvas className="nimbus-water" ref={canvasRef} aria-hidden="true" />
       <span className="nimbus-drop" ref={dropRef} aria-hidden="true" />
+      {leading}
+      <div className="nimbus-items">
       {items.map((it, i) => {
         const kind = it.fx ?? "pop"
         const playing = fx.i === i && kind !== "none"
@@ -582,6 +593,8 @@ export function LiquidNavbar({
           <button key={it.label + i} {...props} type="button" aria-label={it.label}>{content}</button>
         )
       })}
+      </div>
+      {trailing}
     </nav>
   )
 }

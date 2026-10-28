@@ -164,17 +164,26 @@ export default function App() {
         </a>
         <div className="scroll-line" aria-hidden="true" />
 
-        {/* Caldera Floating Pill Navigation Bar */}
+        {/* One liquid glass surface contains the brand, links and actions. */}
         <header className="caldera-nav-wrapper">
-          <div className="caldera-nav">
-            <a href="#inicio" className="caldera-logo" aria-label="Otalogia início">
-              OTALOGIA
-            </a>
-
             <LiquidNavbar
-              className="caldera-nav-links"
+              className="caldera-nav"
               tone="dark"
               compact={false}
+              leading={<a href="#inicio" className="caldera-logo" aria-label="Otalogia início">OTALOGIA</a>}
+              trailing={<div className="caldera-nav-actions flex items-center gap-3">
+                <CursorEdgeGlowButton href="#contato" variant="ember" size="sm">
+                  Vamos conversar ↗
+                </CursorEdgeGlowButton>
+                <button
+                  className="caldera-menu-btn"
+                  aria-expanded={menu}
+                  aria-controls="mobile-nav"
+                  onClick={() => setMenu(!menu)}
+                >
+                  {menu ? 'Fechar −' : 'Menu +'}
+                </button>
+              </div>}
               items={[
                 { label: 'Soluções', href: '#solucoes' },
                 { label: 'Processo', href: '#processo' },
@@ -183,21 +192,6 @@ export default function App() {
                 { label: 'Sobre', href: '#sobre' },
               ]}
             />
-
-            <div className="flex items-center gap-3">
-              <CursorEdgeGlowButton href="#contato" variant="ember" size="sm">
-                Vamos conversar ↗
-              </CursorEdgeGlowButton>
-              <button
-                className="caldera-menu-btn"
-                aria-expanded={menu}
-                aria-controls="mobile-nav"
-                onClick={() => setMenu(!menu)}
-              >
-                {menu ? 'Fechar −' : 'Menu +'}
-              </button>
-            </div>
-          </div>
 
           <AnimatePresence>
             {menu && (

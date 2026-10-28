@@ -11,7 +11,11 @@ test('liquid navbar preserves anchors, keyboard activation and the CSS fallback'
   const nav = page.getByRole('navigation', { name: 'Principal', exact: true })
   await expect(nav).toHaveAttribute('data-gl', 'off')
   await expect(nav.locator('.nimbus-drop')).toBeVisible()
-  await expect(nav.getByRole('link')).toHaveCount(5)
+  await expect(nav.locator('.nimbus-items').getByRole('link')).toHaveCount(5)
+  await expect(nav.getByRole('link', { name: 'Otalogia início' })).toBeVisible()
+  await expect(nav.getByRole('link', { name: 'Vamos conversar' })).toBeVisible()
+  await expect(nav.locator('.nimbus-glass')).toHaveCount(1)
+  expect(await nav.evaluate(el => getComputedStyle(el).backgroundColor)).toBe('rgba(0, 0, 0, 0)')
   await nav.getByRole('link', { name: 'Soluções', exact: true }).focus()
   await page.keyboard.press('ArrowRight')
   const process = nav.getByRole('link', { name: 'Processo', exact: true })
@@ -26,7 +30,7 @@ test('liquid navbar preserves anchors, keyboard activation and the CSS fallback'
   await expect.poll(() => nav.locator('.nimbus-drop').evaluate(el => {
     const drop = el.getBoundingClientRect()
     const active = el.parentElement!.querySelector('[aria-current]')!.getBoundingClientRect()
-    return Math.abs(drop.left - active.left) < 1 && Math.abs(drop.width - active.width) < 1
+    return Math.abs(drop.left - active.left) < 1 && Math.abs(drop.width - active.width) < 1 && Math.abs(drop.height - active.height) < 1
   })).toBe(true)
   await page.screenshot({ path: test.info().outputPath('navbar-desktop.png') })
 })
@@ -36,14 +40,15 @@ test('mobile menu works and the liquid navbar remeasures after resize', async ({
     await page.setViewportSize({ width, height: 900 })
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(width)
     if (width < 1024) {
-      await expect(page.locator('.nimbus-nav')).toBeHidden()
+      await expect(page.locator('.nimbus-nav')).toBeVisible()
+      await expect(page.locator('.nimbus-items')).toBeHidden()
       if (width <= 680) await expect(page.locator('.caldera-nav').getByRole('link', { name: 'Vamos conversar' })).toBeHidden()
       await page.getByRole('button', { name: 'Menu +' }).click()
       await page.locator('#mobile-nav').getByRole('link', { name: 'Projetos' }).click()
       await expect(page).toHaveURL(/#projetos$/)
       await expect(page.locator('#mobile-nav')).toHaveCount(0)
     } else {
-      const links = await page.locator('.caldera-nav > *').evaluateAll(elements => elements.map(el => {
+      const links = await page.locator('.caldera-logo, .nimbus-items, .caldera-nav-actions').evaluateAll(elements => elements.map(el => {
         const { left, right } = el.getBoundingClientRect()
         return { left, right }
       }))
@@ -59,6 +64,7 @@ test('mobile menu works and the liquid navbar remeasures after resize', async ({
 
 test.describe('WebGL water', () => {
   test('shader renders and context loss keeps navigation usable', async () => {
+    test.setTimeout(60000)
     const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH, args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader'] })
     try {
       const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce' })
