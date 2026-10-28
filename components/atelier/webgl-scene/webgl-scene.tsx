@@ -2,9 +2,9 @@
 
 import { shaderMaterial, useFBO } from "@react-three/drei"
 import { createPortal, extend, type ThreeElement, useFrame, useThree } from "@react-three/fiber"
-import { type ReactNode, type RefObject, useLayoutEffect, useMemo, useRef } from "react"
+import { type ReactNode, type RefObject, useLayoutEffect, useMemo, useRef, useState } from "react"
 import { type Mesh, PerspectiveCamera, Scene, Texture } from "three"
-import { webglTeleport } from "../webgl-portal/webgl-portal"
+import { webglTeleport } from "../../webgl-portal/webgl-portal"
 
 const DisplayMaterial = shaderMaterial(
     { uMap: new Texture() },
@@ -75,6 +75,7 @@ function WebglScenePortal({
         width: 0,
         height: 0,
     })
+    const [sceneSize, setSceneSize] = useState({ width: 1, height: 1, top: 0, left: 0 })
 
     const gl = useThree((s) => s.gl)
     const size = useThree((s) => s.size)
@@ -96,6 +97,8 @@ function WebglScenePortal({
             bounds.current.y = rect.top + window.scrollY
             bounds.current.width = rect.width
             bounds.current.height = rect.height
+            setSceneSize(previous => previous.width === rect.width && previous.height === rect.height
+                ? previous : { width: rect.width, height: rect.height, top: 0, left: 0 })
         }
 
         measure()
@@ -191,10 +194,12 @@ function WebglScenePortal({
 
     const portal = createPortal(children, scene, {
         camera,
+        size: sceneSize,
         events: {
             compute: (event, state) => {
                 const rect = track.current?.getBoundingClientRect()
                 if (!rect) return
+                if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) return
                 state.pointer.set(
                     ((event.clientX - rect.left) / rect.width) * 2 - 1,
                     -(((event.clientY - rect.top) / rect.height) * 2 - 1),

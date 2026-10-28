@@ -17,7 +17,7 @@ import {
 } from "react"
 import * as THREE from "three"
 import { MathUtils } from "three"
-import { useWebglReady } from "../webgl-provider/webgl-provider"
+import { useWebglReady } from "../../webgl-provider/webgl-provider"
 import { WebglScene, type WebglSceneProps } from "../webgl-scene/webgl-scene"
 
 const TAU = Math.PI * 2

@@ -336,7 +336,8 @@ export default function HalftoneText({
       {/* Ghost text element provides the exact computed dimensions without layout shift */}
       <span
         ref={ghostRef}
-        className="invisible block whitespace-nowrap pointer-events-none select-none opacity-0"
+        className="halftone-text-label invisible block whitespace-nowrap pointer-events-none select-none opacity-0"
+        style={{ color: ink }}
         aria-hidden="true"
       >
         {text}

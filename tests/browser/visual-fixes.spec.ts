@@ -99,3 +99,32 @@ test('three Instagram video projects use original covers and play locally on sel
   const playerWidth = await page.locator('.atelier-video').evaluate(el => el.getBoundingClientRect().width)
   expect(playerWidth).toBeLessThanOrEqual(390)
 })
+
+
+test('project CTA, clean section headings and globe return spacing on desktop and mobile', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  const cta = page.getByRole('link', { name: 'Explorar projetos', exact: false })
+  await expect(cta).toHaveAttribute('href', '#projetos')
+  await cta.click()
+  await expect(page).toHaveURL(/#projetos$/)
+  await expect(page.locator('.process-caption')).toHaveCount(0)
+  await expect(page.getByText(/0[1-5] \/ (O QUE POSSO|COMO TRABALHO|LABORATÓRIO|PROJETOS SELECIONADOS|POR TRÁS)/)).toHaveCount(0)
+  for (const width of [1440, 390]) {
+    await page.setViewportSize({ width, height: 900 })
+    await page.locator('.atelier-index button').first().click()
+    const back = page.getByRole('button', { name: 'Voltar ao globo', exact: true })
+    await expect(back).toBeVisible()
+    const spacing = await page.locator('.atelier-return').evaluate(el => {
+      const style = getComputedStyle(el)
+      return [parseFloat(style.marginTop), parseFloat(style.marginBottom)]
+    })
+    expect(spacing).toEqual([24, 32])
+    await back.scrollIntoViewIfNeeded()
+    await page.screenshot({ path: test.info().outputPath(`project-return-${width}.png`) })
+    await back.click()
+    await expect(page.locator('.atelier-selection')).toHaveCount(0)
+    await page.locator('.pixel-portrait').scrollIntoViewIfNeeded()
+    await page.screenshot({ path: test.info().outputPath(`about-${width}.png`) })
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(width)
+  }
+})

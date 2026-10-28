@@ -17,6 +17,7 @@
     "hooks": "@/hooks"
   },
   "registries": {
-    "@microkit": "https://microkit.co/r/{name}.json"
+    "@microkit": "https://microkit.co/r/{name}.json",
+    "@atelier": "https://www.atelier-ui.com/r/{name}.json"
   }
 }

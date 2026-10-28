@@ -10,6 +10,8 @@ import ProjectGallery from '@/components/ui/project-gallery'
 import EntryPreloader from '@/components/ui/entry-preloader'
 import PixelPortrait from '@/components/ui/pixel-portrait'
 import CursorEdgeGlowButton from '@/components/ui/cursor-edge-glow-button'
+import LiquidNavbar from '@/components/ui/liquid-glass-navbar'
+import AtelierEffects from '@/components/ui/atelier-effects'
 
 const WaveGrid = lazy(() => import('@/components/ui/wave-grid'))
 const Factory = lazy(() => import('@/components/ui/agentic-factory-3d'))
@@ -169,25 +171,18 @@ export default function App() {
               OTALOGIA
             </a>
 
-            <nav className="caldera-nav-links" aria-label="Principal">
-              <a href="#solucoes" className="caldera-nav-link">
-                Soluções
-              </a>
-              <span className="nav-divider-dot" />
-              <a href="#processo" className="caldera-nav-link">
-                Processo
-              </a>
-              <span className="nav-divider-dot" />
-              <a href="#laboratorio" className="caldera-nav-link">
-                Laboratório
-              </a>
-              <span className="nav-divider-dot" />
-              <a href="#projetos" className="caldera-nav-link">Projetos</a>
-              <span className="nav-divider-dot" />
-              <a href="#sobre" className="caldera-nav-link">
-                Sobre
-              </a>
-            </nav>
+            <LiquidNavbar
+              className="caldera-nav-links"
+              tone="dark"
+              compact={false}
+              items={[
+                { label: 'Soluções', href: '#solucoes' },
+                { label: 'Processo', href: '#processo' },
+                { label: 'Laboratório', href: '#laboratorio' },
+                { label: 'Projetos', href: '#projetos' },
+                { label: 'Sobre', href: '#sobre' },
+              ]}
+            />
 
             <div className="flex items-center gap-3">
               <CursorEdgeGlowButton href="#contato" variant="ember" size="sm">
@@ -235,6 +230,7 @@ export default function App() {
           </AnimatePresence>
         </header>
 
+        <AtelierEffects>
         <main id="conteudo" tabIndex={-1} className="caldera-container">
           {/* Caldera Unified Hero Section: 3D Wave Grid occupies the entire background */}
           <section id="inicio" className="hero-caldera-single">
@@ -302,8 +298,8 @@ export default function App() {
                     whileHover={reduced ? {} : { scale: 1.03 }}
                     whileTap={{ scale: 0.98 }}
                   >
-                    <CursorEdgeGlowButton href="#laboratorio" variant="secondary" size="lg">
-                      Explorar laboratório ↓
+                    <CursorEdgeGlowButton href="#projetos" variant="secondary" size="lg">
+                      Explorar projetos ↓
                     </CursorEdgeGlowButton>
                   </motion.div>
                 </div>
@@ -342,9 +338,6 @@ export default function App() {
           <section id="solucoes" className="mb-20">
             <div className="flex flex-col md:flex-row justify-between items-start gap-6 mb-8">
               <div>
-                <span className="text-[13px] font-mono tracking-widest text-[#f4f1fa]/70 uppercase font-medium">
-                  01 / O QUE POSSO CONSTRUIR COM VOCÊ
-                </span>
                 <h2 className="text-[clamp(44px,5.5vw,82px)] mt-3">
                   SEU DESAFIO. A TECNOLOGIA <em>CERTA.</em>
                 </h2>
@@ -394,9 +387,6 @@ export default function App() {
           {/* Process Section (Caldera Step Cards) */}
           <section id="processo" className="mb-20">
             <div>
-              <span className="text-[13px] font-mono tracking-widest text-[#f4f1fa]/70 uppercase font-medium">
-                02 / COMO TRABALHO
-              </span>
               <h2 className="text-[clamp(44px,5.5vw,82px)] mt-3">
                 ANTES DO CÓDIGO, O <em>CONTEXTO.</em>
               </h2>
@@ -423,9 +413,6 @@ export default function App() {
           <section id="laboratorio" className="lab-caldera lab-open">
             <div className="flex flex-col md:flex-row justify-between items-start gap-6">
               <div>
-                <span className="text-[13px] font-mono tracking-widest text-[#fc5000] uppercase font-medium">
-                  03 / LABORATÓRIO INTERATIVO
-                </span>
                 <h2 className="mt-3">
                   DO CONCEITO AO <em>FUNCIONAMENTO.</em>
                 </h2>
@@ -516,9 +503,6 @@ export default function App() {
 
             <div className="about-content-card">
               <div>
-                <span className="text-[13px] font-mono tracking-widest text-[#f4f1fa]/70 uppercase font-medium">
-                  05 / POR TRÁS DA OTALOGIA
-                </span>
                 <h2 className="mt-3">
                   ENGENHARIA PARA CONSTRUIR.
                   <br />
@@ -651,6 +635,7 @@ export default function App() {
             </div>
           </footer>
         </main>
+        </AtelierEffects>
       </div>
     </MotionConfig>
   )

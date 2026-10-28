@@ -1,19 +1,17 @@
 import { Component, lazy, Suspense, useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { projects } from '@/lib/projects'
+import { useAtelierWebgl } from './atelier-effects'
 
 const AtelierGallery = lazy(async () => {
-  const [{ SphereGallery }, { WebglProvider }] = await Promise.all([
-    import('@/components/atelier/sphere-gallery/sphere-gallery'),
-    import('@/components/atelier/webgl-provider/webgl-provider'),
-  ])
-  return { default: ({ active, onChange, immersive, onEnter, paused }: { active: number | null; onChange: (index: number | null) => void; immersive: boolean; onEnter: () => void; paused: boolean }) => (
-    <WebglProvider contained paused={paused} dpr={[1, 1.5]} className="atelier-canvas" gl={{ alpha: true, antialias: true }}>
+  const { SphereGallery } = await import('@/components/atelier/sphere-gallery/sphere-gallery')
+  return { default: ({ active, onChange, immersive, onEnter }: { active: number | null; onChange: (index: number | null) => void; immersive: boolean; onEnter: () => void }) => (
+    <div className="atelier-canvas">
       <SphereGallery items={projects.map(p => ({ src: p.cover, alt: p.coverAlt }))}
         className="atelier-sphere"
         tileColor={null} sphereColor={null} padding={0} cornerRadius={0}
         lensBlur={0} immersive={immersive} onEnter={onEnter} activeIndex={active} onActiveChange={onChange} />
-    </WebglProvider>
+    </div>
   ) }
 })
 
@@ -27,14 +25,10 @@ export default function ProjectGallery() {
   const reduced = useReducedMotion()
   const [active, setActive] = useState<number | null>(null)
   const [immersive, setImmersive] = useState(false)
-  const [webgl, setWebgl] = useState(false)
+  const webgl = useAtelierWebgl()
   const [near, setNear] = useState(false)
   const root = useRef<HTMLElement>(null)
   useEffect(() => {
-    const canvas = document.createElement('canvas')
-    const context = canvas.getContext('webgl2')
-    setWebgl(Boolean(context))
-    context?.getExtension('WEBGL_lose_context')?.loseContext()
     const observer = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting) { setNear(true); observer.disconnect() }
     }, { rootMargin: '300px' })
@@ -54,7 +48,6 @@ export default function ProjectGallery() {
   return (
     <section ref={root} id="projetos" className="atelier-projects" aria-labelledby="projects-title">
       <header className="atelier-heading">
-        <span className="projects-eyebrow">04 / PROJETOS SELECIONADOS</span>
         <h2 id="projects-title">IDEIAS EM <em>MOVIMENTO.</em></h2>
         <p>Explore a galeria. Selecione um projeto para conhecer os detalhes.</p>
       </header>
@@ -62,7 +55,7 @@ export default function ProjectGallery() {
       <div className="atelier-stage">
         <div className={`atelier-scene${showingVideo ? ' is-hidden' : ''}`} aria-hidden={showingVideo} inert={showingVideo}>
           {webgl && !reduced && near ? <GalleryBoundary fallback={fallback}>
-            <Suspense fallback={fallback}><AtelierGallery active={active} onChange={onChange} immersive={immersive} onEnter={onEnter} paused={showingVideo} /></Suspense>
+            <Suspense fallback={fallback}>{showingVideo ? <div className="atelier-canvas" /> : <AtelierGallery active={active} onChange={onChange} immersive={immersive} onEnter={onEnter} />}</Suspense>
           </GalleryBoundary> : fallback}
         </div>
         {showingVideo && current.video && <div className="atelier-selected-video">
@@ -93,7 +86,7 @@ export default function ProjectGallery() {
         </motion.div>}
       </AnimatePresence>
       </div>
-      {immersive && <div className="atelier-navigation"><button type="button" onClick={returnToGlobe}>Voltar ao globo</button></div>}
+      {immersive && <div className="atelier-navigation atelier-return"><button type="button" onClick={returnToGlobe}>Voltar ao globo</button></div>}
       <nav className="atelier-index" aria-label="Selecionar projeto">
         {projects.map((project, index) => <button key={project.id} type="button" aria-pressed={active !== null && selectedIndex === index} onClick={() => onChange(index)}>
           <span>{String(index + 1).padStart(2, '0')}</span> {project.title} <span aria-hidden="true">↗</span>

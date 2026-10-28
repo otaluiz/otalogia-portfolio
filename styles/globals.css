@@ -178,36 +178,31 @@ em {
   font-size: 24px;
 }
 
-.caldera-nav-links {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.caldera-nav-link {
+.caldera-nav-links.nimbus-nav {
   font-family: var(--font-body);
-  font-weight: 500;
-  font-size: 15px;
-  color: #f4f1fa;
-  padding: 8px 16px;
-  border-radius: var(--radius-pills);
-  transition: all 0.15s;
 }
-
-.caldera-nav-link:hover {
-  background: rgba(7, 6, 7, 0.06);
-  color: var(--color-ember);
+.caldera-nav-links.nimbus-nav[data-tone="dark"] {
+  --n-tint: rgba(255, 255, 255, .04);
+  --n-fg: #f4f1fa;
+  --n-fg-soft: rgba(244, 241, 250, .8);
 }
-
-.nav-divider-dot {
-  width: 4px;
-  height: 4px;
-  background: rgba(7, 6, 7, 0.25);
-  border-radius: 50%;
+.caldera-nav-links .nimbus-item {
+  height: 44px;
+}
+.caldera-nav-links .nimbus-item:focus-visible {
+  outline-color: var(--color-ember);
+}
+.caldera-nav-links .nimbus-glass,
+.caldera-nav-links .nimbus-drop {
+  box-shadow: inset 0 1px 1px var(--n-rim), inset 0 0 0 1px #ffffff20 !important;
+}
+@media (max-width: 1023px) {
+  .caldera-nav-links.nimbus-nav { display: none; }
 }
 
 .caldera-menu-btn {
   display: none;
+  white-space: nowrap;
   background: none;
   border: none;
   font-family: var(--font-body);
@@ -827,7 +822,6 @@ button.btn-dark:hover {
 .dashboard-select option { background: #101018; color: #f4f1fa; }
 .caldera-chart { border-color: #ffffff40; }
 .caldera-chart i { background: #3285ff; }
-.nav-divider-dot { background: #ffffff40; }
 .caldera-container > section { scroll-margin-top: 110px; }
 .solutions-grid-caldera > *, .about-caldera > *, .process-grid-caldera > * { min-width: 0; }
 .contact-caldera, .contact-title-huge { color: #070607; }
@@ -844,10 +838,13 @@ button.btn-dark:hover {
   .caldera-nav-wrapper { top: 10px; padding-inline: 12px; margin-bottom: 24px; }
   .caldera-nav { padding: 8px 12px 8px 18px; }
   .caldera-logo { font-size: 27px; }
-  .caldera-nav > div > a { display: none; }
+  .caldera-nav > div > a, .caldera-nav > div > .group { display: none; }
   .hero-caldera-single, .hero-single-content { min-height: 0; }
   .hero-single-content { padding: 42px 20px; }
   .hero-display-title { font-size: clamp(36px, 10.3vw, 68px); line-height: 1; }
+  /* Solid letterforms keep the headline readable at small display sizes. */
+  .hero-display-title .halftone-text-label { visibility: visible; opacity: 1; }
+  .hero-display-title .halftone-text-root canvas { display: none; }
   .hero-single-content > div > span { font-size: 10px; letter-spacing: .08em; }
   .hero-single-desc { font-size: 16px; }
   .hero-single-content .hero-reveal.flex { gap: 12px; }
@@ -923,12 +920,12 @@ body { overflow-x: clip; }
 
 /* Atelier UI sphere gallery: DOM descriptions stay readable alongside WebGL. */
 .atelier-projects { padding-block: 40px; margin-bottom: 80px; }
-.projects-eyebrow { font: 12px ui-monospace, monospace; letter-spacing: .12em; color: #ff9566; }
+.atelier-navigation.atelier-return { margin-block: 24px 32px; }
 .atelier-heading h2 { margin-block: 16px; font-size: clamp(42px, 6vw, 82px); }
 .atelier-heading > p { color: #f0edf5; }
 .atelier-heading { text-align: center; }
 .atelier-stage { position: relative; width: 100vw; margin-inline: calc(50% - 50vw); background: transparent; border: 0; overflow: visible; }
-.atelier-canvas { width: 100%; height: clamp(520px, 82svh, 900px); }
+.atelier-canvas { position: relative; width: 100%; height: clamp(520px, 82svh, 900px); }
 .atelier-sphere { position: absolute; inset: 0; touch-action: pan-y; }
 .atelier-fallback { display: block; width: 100%; height: clamp(300px, 38vw, 540px); object-fit: contain; }
 .atelier-hint { position: absolute; bottom: 8px; left: 0; right: 0; text-align: center; color: #f4f1fa; font: 12px ui-monospace, monospace; pointer-events: none; }
@@ -981,13 +978,11 @@ body { overflow-x: clip; }
   .atelier-view.is-selected .atelier-canvas { height: min(460px, 65svh); }
 }
 
-/* The original image remains accessible underneath the temporary pixel reveal. */
-.pixel-portrait .about-portrait { z-index: -3; }
-.pixel-portrait__canvas { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; pointer-events: none; image-rendering: pixelated; }
-.pixel-portrait__canvas[hidden] { display: none; }
-@media (prefers-reduced-motion: reduce) {
-  .pixel-portrait__canvas { display: none; }
-}
+/* Photo and captions straddle Atelier's shared canvas while the DOM image stays available. */
+.pixel-portrait { isolation: auto; }
+.pixel-portrait .about-portrait { z-index: 0; }
+.pixel-portrait::before { z-index: 2; pointer-events: none; }
+.pixel-portrait > span, .pixel-portrait > p { z-index: 3; }
 
 .entry-preloader { position: fixed; inset: 0; z-index: 10000; display: grid; place-items: center; background: #100d0b; color: #f7f6f2; clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%); }
 .entry-preloader__content { width: min(280px, 70vw); text-align: center; }

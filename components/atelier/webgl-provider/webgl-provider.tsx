@@ -13,13 +13,14 @@ import { EffectComposer } from "@react-three/postprocessing"
 import { cancelFrame, type FrameData, frame } from "motion"
 import { type ComponentRef, type ReactNode, useEffect, useMemo, useRef, useState } from "react"
 import { type Camera, Scene, UnsignedByteType } from "three"
-import { effectTeleport, overlayTeleport, WebglPortal } from "../webgl-portal/webgl-portal"
+import { effectTeleport, overlayTeleport, WebglPortal } from "../../webgl-portal/webgl-portal"
 
 type WebglProviderProps = Omit<CanvasProps, "children" | "eventSource"> & {
     children: ReactNode
     className?: string
     contained?: boolean
     paused?: boolean
+    eventSource?: HTMLElement
 }
 
 type WebglReadyOptions = {
@@ -154,6 +155,7 @@ export function WebglProvider({
     style,
     contained = false,
     paused = false,
+    eventSource: providedEventSource,
     ...canvasProps
 }: WebglProviderProps) {
     const [eventSource, setEventSource] = useState<ComponentRef<"div"> | null>(null)
@@ -170,7 +172,7 @@ export function WebglProvider({
                 dpr={[1, 1.8]}
                 {...canvasProps}
                 frameloop="never"
-                eventSource={eventSource ?? undefined}
+                eventSource={providedEventSource ?? eventSource ?? undefined}
                 style={{
                     position: contained ? "absolute" : "fixed",
                     inset: 0,
