@@ -887,12 +887,12 @@ body { overflow-x: clip; }
 .about-caldera { background: transparent; }
 
 
-/* Transparent cards expose the page background without tinted gradients. */
+/* Solid dark cards follow the original palette; About keeps its grid overlay. */
 .stat-row-caldera { background: transparent; }
 .stat-card-caldera, .stat-card-caldera.limestone,
 .solution-card-caldera, .process-card-caldera, .about-content-card,
 .caldera-dashboard, .caldera-footer-pill {
-  background: transparent;
+  background: #1c1714;
   border: 1px solid rgba(255,255,255,.27);
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
@@ -953,7 +953,7 @@ body { overflow-x: clip; }
 
 .wave-card { position: relative; isolation: isolate; }
 .wave-card > :not(.card-wave-backdrop) { position: relative; z-index: 1; }
-.wave-card > .card-wave-backdrop { display: none; }
+.wave-card > .card-wave-backdrop { position: absolute; inset: 0; z-index: 0; border-radius: inherit; overflow: hidden; pointer-events: none; opacity: .42; mask-image: linear-gradient(135deg, transparent, #000 75%); }
 
 .atelier-video { display: block; width: min(100%, 420px); height: auto; max-height: 75svh; object-fit: contain; margin: 24px auto 0; background: transparent; }
 
