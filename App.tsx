@@ -514,13 +514,28 @@ export default function App() {
                 </h2>
 
                 <p className="text-[16px] text-[#f4f1fa]/85 mb-4 leading-relaxed">
-                  Minha trajetória reúne engenharia de controle e automação, engenharia de software, data
-                  science, gestão ágil de projetos, neurociência e psicologia aplicada.
+                  Sou Luiz Ota. A curiosidade por entender como as coisas funcionam me levou à Engenharia
+                  de Controle e Automação no IFMT, onde ingressei em 2012 e me formei em 2018. Desde o
+                  estágio, em 2017, atuo com automação e melhoria de processos em diferentes segmentos
+                  industriais, do agronegócio à fabricação de gelatina e colágeno.
+                </p>
+                <p className="text-[16px] text-[#f4f1fa]/85 mb-4 leading-relaxed">
+                  Em 2020, passei a integrar uma multinacional de origem belga do setor de gelatina e
+                  colágeno. Ampliei essa experiência com cinco pós-graduações: Gestão de Projetos
+                  Industriais, Geração e Uso de Energia, Ciência de Dados com ênfase em IA, Engenharia
+                  de Software e, em 2025, Neurociência e Psicologia Aplicada pelo Mackenzie. Essa bagagem
+                  conecta processos, tecnologia e a compreensão de quem usa cada solução.
+                </p>
+                <p className="text-[16px] text-[#f4f1fa]/85 mb-4 leading-relaxed">
+                  A Otalogia nasceu para levar esse conhecimento aos pequenos negócios, com criatividade
+                  e atenção à realidade de cada operação. Com o avanço da IA, recursos antes restritos
+                  a grandes estruturas se tornaram mais acessíveis: sistemas sob medida, automações,
+                  dashboards, sites e assistentes que ajudam a organizar o trabalho e apoiar decisões.
                 </p>
                 <p className="text-[16px] text-[#f4f1fa]/85 mb-6 leading-relaxed">
-                  Conecto essa bagagem multidisciplinar ao desenvolvimento de sistemas web eficientes, dashboards
-                  inteligentes e rotinas com inteligência artificial. Também conduzo uma agência de marketing
-                  orientada a dados e produzo conteúdo técnico para simplificar conceitos complexos.
+                  Também transformo ideias em conteúdo, tutoriais e vídeos que tornam a tecnologia mais
+                  fácil de entender. Meu trabalho começa pelo contexto do seu negócio, para construir
+                  soluções úteis, reduzir tarefas repetitivas e abrir espaço para crescer.
                 </p>
               </div>
 

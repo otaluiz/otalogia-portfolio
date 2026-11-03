@@ -898,6 +898,11 @@ body { overflow-x: clip; }
   backdrop-filter: blur(20px) saturate(1.25);
   box-shadow: inset 0 1px 0 rgba(255,255,255,.22), 0 12px 40px rgba(0,0,0,.12) !important;
 }
+/* Warm graphite and ember keep the process cards within the brand palette. */
+.process-card-caldera {
+  background: linear-gradient(135deg, rgba(252,80,0,.12), transparent 65%), #1c1714;
+  border-color: rgba(252,80,0,.28);
+}
 .stat-card-caldera:not(.limestone) {
   background: linear-gradient(135deg, rgba(252,80,0,.2), rgba(255,255,255,.04)), rgba(25,16,32,.18);
 }
