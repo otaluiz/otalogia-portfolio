@@ -514,28 +514,20 @@ export default function App() {
                 </h2>
 
                 <p className="text-[16px] text-[#f4f1fa]/85 mb-4 leading-relaxed">
-                  Sou Luiz Ota. A curiosidade por entender como as coisas funcionam me levou à Engenharia
-                  de Controle e Automação no IFMT, onde ingressei em 2012 e me formei em 2018. Desde o
-                  estágio, em 2017, atuo com automação e melhoria de processos em diferentes segmentos
-                  industriais, do agronegócio à fabricação de gelatina e colágeno.
+                  Sou Luiz Ota, engenheiro de Controle e Automação pelo IFMT. Desde 2017, trabalho com
+                  automação e melhoria de processos industriais. Em 2020, passei a integrar uma
+                  multinacional de origem belga do setor de gelatina e colágeno.
                 </p>
                 <p className="text-[16px] text-[#f4f1fa]/85 mb-4 leading-relaxed">
-                  Em 2020, passei a integrar uma multinacional de origem belga do setor de gelatina e
-                  colágeno. Ampliei essa experiência com cinco pós-graduações: Gestão de Projetos
-                  Industriais, Geração e Uso de Energia, Ciência de Dados com ênfase em IA, Engenharia
-                  de Software e, em 2025, Neurociência e Psicologia Aplicada pelo Mackenzie. Essa bagagem
-                  conecta processos, tecnologia e a compreensão de quem usa cada solução.
-                </p>
-                <p className="text-[16px] text-[#f4f1fa]/85 mb-4 leading-relaxed">
-                  A Otalogia nasceu para levar esse conhecimento aos pequenos negócios, com criatividade
-                  e atenção à realidade de cada operação. Com o avanço da IA, recursos antes restritos
-                  a grandes estruturas se tornaram mais acessíveis: sistemas sob medida, automações,
-                  dashboards, sites e assistentes que ajudam a organizar o trabalho e apoiar decisões.
+                  Reúno cinco pós-graduações nas áreas de projetos, energia, ciência de dados e IA,
+                  software e neurociência e psicologia aplicada. Uma formação que conecta tecnologia,
+                  processos e pessoas.
                 </p>
                 <p className="text-[16px] text-[#f4f1fa]/85 mb-6 leading-relaxed">
-                  Também transformo ideias em conteúdo, tutoriais e vídeos que tornam a tecnologia mais
-                  fácil de entender. Meu trabalho começa pelo contexto do seu negócio, para construir
-                  soluções úteis, reduzir tarefas repetitivas e abrir espaço para crescer.
+                  Criei a Otalogia para levar essa experiência aos pequenos negócios, com sistemas,
+                  automações, dados, sites e IA. Também produzo conteúdo e vídeos para tornar ideias
+                  mais claras. Tudo começa pelo seu contexto, para simplificar a rotina e apoiar
+                  o crescimento do negócio.
                 </p>
               </div>
 
